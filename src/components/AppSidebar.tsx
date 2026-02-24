@@ -1,4 +1,4 @@
-import { Building2, Users, Home, ChevronDown, ChevronRight } from "lucide-react";
+import { Building2, Users, Home, UserCircle, ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
 
 interface AppSidebarProps {
@@ -59,6 +59,17 @@ const AppSidebar = ({ currentView, onNavigate }: AppSidebarProps) => {
             >
               <Home className="h-4 w-4 shrink-0" strokeWidth={1.5} />
               <span>Propiedades</span>
+            </button>
+            <button
+              onClick={() => onNavigate("users")}
+              className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-medium transition-all ${
+                currentView === "users"
+                  ? "bg-sidebar-custom-active text-sidebar-custom-fg-active"
+                  : "text-sidebar-custom-fg hover:bg-sidebar-custom-hover"
+              }`}
+            >
+              <UserCircle className="h-4 w-4 shrink-0" strokeWidth={1.5} />
+              <span>Usuarios</span>
             </button>
           </div>
         )}
