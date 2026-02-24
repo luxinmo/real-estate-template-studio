@@ -1,14 +1,14 @@
-import { LayoutGrid, Building2, FileText, Users, Settings } from "lucide-react";
+import { Building2, Users, ChevronDown, ChevronRight } from "lucide-react";
+import { useState } from "react";
 
-const menuItems = [
-  { icon: LayoutGrid, label: "Overview", active: false },
-  { icon: Building2, label: "Properties", active: false },
-  { icon: FileText, label: "Templates", active: true },
-  { icon: Users, label: "Contacts", active: false },
-  { icon: Settings, label: "Settings", active: false },
-];
+interface AppSidebarProps {
+  currentView: string;
+  onNavigate: (view: string) => void;
+}
 
-const AppSidebar = () => {
+const AppSidebar = ({ currentView, onNavigate }: AppSidebarProps) => {
+  const [templateOpen, setTemplateOpen] = useState(true);
+
   return (
     <aside className="flex w-56 flex-col border-r border-sidebar-custom-border bg-sidebar-custom-bg shrink-0">
       {/* Brand */}
@@ -23,19 +23,35 @@ const AppSidebar = () => {
 
       {/* Navigation */}
       <nav className="flex-1 px-3 py-4 space-y-0.5">
-        {menuItems.map((item) => (
-          <div
-            key={item.label}
-            className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-medium transition-all cursor-default ${
-              item.active
-                ? "bg-sidebar-custom-active text-sidebar-custom-fg-active border-l-2 border-sidebar-custom-active-border -ml-px"
-                : "text-sidebar-custom-fg hover:bg-sidebar-custom-hover"
-            }`}
-          >
-            <item.icon className={`h-4 w-4 shrink-0 ${item.active ? "text-sidebar-custom-fg-active" : ""}`} strokeWidth={item.active ? 2 : 1.5} />
-            <span>{item.label}</span>
+        {/* Template 1 - collapsible group */}
+        <button
+          onClick={() => setTemplateOpen(!templateOpen)}
+          className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-medium text-sidebar-custom-fg-active hover:bg-sidebar-custom-hover transition-colors"
+        >
+          <Building2 className="h-4 w-4 shrink-0" strokeWidth={1.5} />
+          <span className="flex-1 text-left">Template 1</span>
+          {templateOpen ? (
+            <ChevronDown className="h-3.5 w-3.5 text-sidebar-custom-fg" />
+          ) : (
+            <ChevronRight className="h-3.5 w-3.5 text-sidebar-custom-fg" />
+          )}
+        </button>
+
+        {templateOpen && (
+          <div className="ml-4 pl-3 border-l border-sidebar-custom-border space-y-0.5">
+            <button
+              onClick={() => onNavigate("contacts")}
+              className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-medium transition-all ${
+                currentView === "contacts"
+                  ? "bg-sidebar-custom-active text-sidebar-custom-fg-active"
+                  : "text-sidebar-custom-fg hover:bg-sidebar-custom-hover"
+              }`}
+            >
+              <Users className="h-4 w-4 shrink-0" strokeWidth={1.5} />
+              <span>Listado de contactos</span>
+            </button>
           </div>
-        ))}
+        )}
       </nav>
 
       {/* Footer */}
