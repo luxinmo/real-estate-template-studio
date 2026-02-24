@@ -5,9 +5,10 @@ import ContactsListPage from "@/components/ContactsListPage";
 import AddContactPage from "@/components/AddContactPage";
 import ContactDetailPage from "@/components/ContactDetailPage";
 import PropertiesPage from "@/components/PropertiesPage";
+import PropertyDetailPage from "@/components/PropertyDetailPage";
 import UsersPage from "@/components/UsersPage";
 
-type View = "dashboard" | "properties" | "contacts" | "add-contact" | "contact-detail" | "agencies" | "users" | "company" | "settings";
+type View = "dashboard" | "properties" | "property-detail" | "contacts" | "add-contact" | "contact-detail" | "agencies" | "users" | "company" | "settings";
 
 const PlaceholderPage = ({ title }: { title: string }) => (
   <div className="flex-1 overflow-auto">
@@ -24,11 +25,11 @@ const PlaceholderPage = ({ title }: { title: string }) => (
 );
 
 const Index = () => {
-  const [view, setView] = useState<View>("contacts");
+  const [view, setView] = useState<View>("properties");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedContactId, setSelectedContactId] = useState<string>("1");
 
-  const sidebarView = ["add-contact", "contact-detail"].includes(view) ? "contacts" : view;
+  const sidebarView = ["add-contact", "contact-detail"].includes(view) ? "contacts" : (view === "property-detail" ? "properties" : view);
 
   const handleViewContact = (id: string) => {
     setSelectedContactId(id);
@@ -46,7 +47,8 @@ const Index = () => {
       <div className="flex flex-1 flex-col min-w-0">
         <HeaderBar onMenuToggle={() => setSidebarOpen(true)} />
         {view === "dashboard" && <PlaceholderPage title="Dashboard" />}
-        {view === "properties" && <PropertiesPage />}
+        {view === "properties" && <PropertiesPage onViewProperty={() => setView("property-detail")} />}
+        {view === "property-detail" && <PropertyDetailPage onBack={() => setView("properties")} />}
         {view === "contacts" && (
           <ContactsListPage
             onAddContact={() => setView("add-contact")}
