@@ -52,7 +52,7 @@ const ComponentsPage = () => {
                 value={selectedOwner}
                 onValueChange={setSelectedOwner}
                 placeholder="Search owner…"
-                searchPlaceholder="Type to search…"
+                
                 createLabel="Create owner"
                 createFields={[
                   { key: "name", label: "Full Name", placeholder: "Full name" },
