@@ -2,16 +2,18 @@ import { useState } from "react";
 import AppSidebar from "@/components/AppSidebar";
 import HeaderBar from "@/components/HeaderBar";
 import { ContactsListPage, AddContactPage, ContactDetailPage } from "@/components/contacts";
-import { LocationsPage, LocationDetailPage } from "@/components/locations";
-import { LocationNode, LocationLevel, PARENT_LEVEL } from "@/components/locations/types";
-import { mockLocations } from "@/components/locations/mock-data";
+import { CountriesPage, ProvincesPage, TownsPage, TownDetailPage, ZoneFormPage } from "@/components/locations";
 import PropertiesPage from "@/components/PropertiesPage";
 import PropertyDetailPage from "@/components/PropertyDetailPage";
 import AddPropertyPage from "@/components/AddPropertyPage";
 import UsersPage from "@/components/UsersPage";
 import ComponentsPage from "@/components/ComponentsPage";
 
-type View = "dashboard" | "properties" | "property-detail" | "add-property" | "contacts" | "add-contact" | "contact-detail" | "agencies" | "users" | "company" | "settings" | "components" | "locations" | "location-detail";
+type View =
+  | "dashboard" | "properties" | "property-detail" | "add-property"
+  | "contacts" | "add-contact" | "contact-detail"
+  | "agencies" | "users" | "company" | "settings" | "components"
+  | "loc-countries" | "loc-provinces" | "loc-towns" | "loc-town-detail" | "loc-zone-form";
 
 const PlaceholderPage = ({ title }: { title: string }) => (
   <div className="flex-1 overflow-auto">
@@ -31,25 +33,39 @@ const Index = () => {
   const [view, setView] = useState<View>("properties");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedContactId, setSelectedContactId] = useState<string>("1");
-  const [editingLocation, setEditingLocation] = useState<LocationNode | null>(null);
-  const [locationFormParentId, setLocationFormParentId] = useState<string | null>(null);
-  const [locationFormLevel, setLocationFormLevel] = useState<LocationLevel>("country");
 
-  const sidebarView = ["add-contact", "contact-detail"].includes(view) ? "contacts" : (["property-detail", "add-property", "location-detail"].includes(view) ? (view === "location-detail" ? "locations" : "properties") : view);
+  // Location drill-down state
+  const [locCountryId, setLocCountryId] = useState<string>("");
+  const [locProvinceId, setLocProvinceId] = useState<string>("");
+  const [locTownId, setLocTownId] = useState<string>("");
+  const [locZoneId, setLocZoneId] = useState<string | null>(null);
+
+  const sidebarView = (() => {
+    if (["add-contact", "contact-detail"].includes(view)) return "contacts";
+    if (["property-detail", "add-property"].includes(view)) return "properties";
+    if (view.startsWith("loc-")) return "locations";
+    return view;
+  })();
 
   const handleViewContact = (id: string) => {
     setSelectedContactId(id);
     setView("contact-detail");
   };
 
-  const parentNode = locationFormParentId ? mockLocations.find((l) => l.id === locationFormParentId) : null;
-
   return (
     <div className="flex h-screen w-full overflow-hidden">
-      <AppSidebar currentView={sidebarView} onNavigate={(v) => setView(v as View)}
-        open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <AppSidebar
+        currentView={sidebarView}
+        onNavigate={(v) => {
+          if (v === "locations") { setView("loc-countries"); return; }
+          setView(v as View);
+        }}
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
       <div className="flex flex-1 flex-col min-w-0">
         <HeaderBar onMenuToggle={() => setSidebarOpen(true)} />
+
         {view === "dashboard" && <PlaceholderPage title="Dashboard" />}
         {view === "properties" && <PropertiesPage onViewProperty={() => setView("property-detail")} onAddProperty={() => setView("add-property")} />}
         {view === "property-detail" && <PropertyDetailPage onBack={() => setView("properties")} />}
@@ -58,32 +74,58 @@ const Index = () => {
         {view === "add-contact" && <AddContactPage onBack={() => setView("contacts")} />}
         {view === "contact-detail" && <ContactDetailPage contactId={selectedContactId} onBack={() => setView("contacts")} onEdit={() => setView("add-contact")} />}
         {view === "agencies" && <PlaceholderPage title="Agencias" />}
-        {view === "locations" && (
-          <LocationsPage
-            onAdd={(parentId, level) => {
-              setEditingLocation(null);
-              setLocationFormParentId(parentId);
-              setLocationFormLevel(level as LocationLevel);
-              setView("location-detail");
-            }}
-            onEdit={(loc) => {
-              setEditingLocation(loc);
-              setLocationFormLevel(loc.level);
-              setLocationFormParentId(loc.parentId);
-              setView("location-detail");
-            }}
+
+        {/* Location drill-down */}
+        {view === "loc-countries" && (
+          <CountriesPage
+            onSelectCountry={(id) => { setLocCountryId(id); setView("loc-provinces"); }}
+            onAddCountry={() => {}}
+            onEditCountry={() => {}}
           />
         )}
-        {view === "location-detail" && (
-          <LocationDetailPage
-            location={editingLocation}
-            parentName={parentNode?.name}
-            parentLevel={parentNode ? parentNode.level : null}
-            parentGeojson={parentNode?.geojson ?? null}
-            level={locationFormLevel}
-            onBack={() => setView("locations")}
+        {view === "loc-provinces" && (
+          <ProvincesPage
+            countryId={locCountryId}
+            onBack={() => setView("loc-countries")}
+            onSelectProvince={(id) => { setLocProvinceId(id); setView("loc-towns"); }}
+            onEditProvince={() => {}}
           />
         )}
+        {view === "loc-towns" && (
+          <TownsPage
+            countryId={locCountryId}
+            provinceId={locProvinceId}
+            onBackToCountries={() => setView("loc-countries")}
+            onBackToProvinces={() => setView("loc-provinces")}
+            onSelectTown={(id) => { setLocTownId(id); setView("loc-town-detail"); }}
+            onEditTown={() => {}}
+          />
+        )}
+        {view === "loc-town-detail" && (
+          <TownDetailPage
+            countryId={locCountryId}
+            provinceId={locProvinceId}
+            townId={locTownId}
+            onBackToCountries={() => setView("loc-countries")}
+            onBackToProvinces={() => setView("loc-provinces")}
+            onBackToTowns={() => setView("loc-towns")}
+            onEditZone={(zoneId) => { setLocZoneId(zoneId); setView("loc-zone-form"); }}
+            onAddZone={() => { setLocZoneId(null); setView("loc-zone-form"); }}
+          />
+        )}
+        {view === "loc-zone-form" && (
+          <ZoneFormPage
+            countryId={locCountryId}
+            provinceId={locProvinceId}
+            townId={locTownId}
+            zoneId={locZoneId}
+            onBackToCountries={() => setView("loc-countries")}
+            onBackToProvinces={() => setView("loc-provinces")}
+            onBackToTowns={() => setView("loc-towns")}
+            onBackToTownDetail={() => setView("loc-town-detail")}
+          />
+        )}
+
         {view === "components" && <ComponentsPage />}
         {view === "users" && <UsersPage />}
         {view === "company" && <PlaceholderPage title="Empresa" />}
