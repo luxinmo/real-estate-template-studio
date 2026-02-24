@@ -31,7 +31,7 @@ const tiposConSubtipos: Record<string, string[]> = {
 };
 const habitaciones = ["1", "2", "3", "4+"];
 
-const PropertiesPage = () => {
+const PropertiesPage = ({ onViewProperty }: { onViewProperty?: () => void }) => {
   const [search, setSearch] = useState("");
   const [selectedOp, setSelectedOp] = useState<string[]>([]);
   const [selectedDisp, setSelectedDisp] = useState<string[]>([]);
@@ -109,7 +109,7 @@ const PropertiesPage = () => {
         <div className="flex-1 min-w-0 max-w-[1200px]">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
             {demoProperties.map((p) => (
-              <div key={p.id} className="rounded-xl border border-border bg-card shadow-card overflow-hidden group hover:shadow-elevated transition-shadow">
+              <div key={p.id} onClick={onViewProperty} className="rounded-xl border border-border bg-card shadow-card overflow-hidden group hover:shadow-elevated transition-shadow cursor-pointer">
                 <div className="relative h-44 overflow-hidden">
                   <img src={p.image} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   <div className="absolute top-3 left-3 rounded-md bg-card/90 backdrop-blur-sm px-2.5 py-1">
