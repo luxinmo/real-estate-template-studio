@@ -4,8 +4,9 @@ import HeaderBar from "@/components/HeaderBar";
 import ContactsListPage from "@/components/ContactsListPage";
 import AddContactPage from "@/components/AddContactPage";
 import PropertiesPage from "@/components/PropertiesPage";
+import UsersPage from "@/components/UsersPage";
 
-type View = "contacts" | "add-contact" | "properties";
+type View = "contacts" | "add-contact" | "properties" | "users";
 
 const Index = () => {
   const [view, setView] = useState<View>("contacts");
@@ -22,6 +23,7 @@ const Index = () => {
           <AddContactPage onBack={() => setView("contacts")} />
         )}
         {view === "properties" && <PropertiesPage />}
+        {view === "users" && <UsersPage />}
       </div>
     </div>
   );
