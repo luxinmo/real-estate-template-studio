@@ -8,9 +8,7 @@ export default {
     container: {
       center: true,
       padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
+      screens: { "2xl": "1400px" },
     },
     extend: {
       fontFamily: {
@@ -50,13 +48,29 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        sidebar: {
+        "sidebar-custom": {
           bg: "hsl(var(--sidebar-bg))",
           fg: "hsl(var(--sidebar-fg))",
           "fg-active": "hsl(var(--sidebar-fg-active))",
           hover: "hsl(var(--sidebar-hover))",
           active: "hsl(var(--sidebar-active))",
+          "active-border": "hsl(var(--sidebar-active-border))",
           border: "hsl(var(--sidebar-border))",
+        },
+        label: {
+          bg: "hsl(var(--label-bg))",
+          fg: "hsl(var(--label-fg))",
+          border: "hsl(var(--label-border))",
+        },
+        sidebar: {
+          DEFAULT: "hsl(var(--sidebar-background))",
+          foreground: "hsl(var(--sidebar-foreground))",
+          primary: "hsl(var(--sidebar-primary))",
+          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
+          accent: "hsl(var(--sidebar-accent))",
+          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
+          border: "hsl(var(--sidebar-border))",
+          ring: "hsl(var(--sidebar-ring))",
         },
       },
       borderRadius: {

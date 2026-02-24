@@ -1,63 +1,47 @@
-import { LayoutGrid, Building2, FileText, Settings, Search, ChevronLeft, Menu } from "lucide-react";
-import { useState } from "react";
+import { LayoutGrid, Building2, FileText, Users, Settings } from "lucide-react";
 
 const menuItems = [
   { icon: LayoutGrid, label: "Overview", active: false },
   { icon: Building2, label: "Properties", active: false },
   { icon: FileText, label: "Templates", active: true },
+  { icon: Users, label: "Contacts", active: false },
   { icon: Settings, label: "Settings", active: false },
 ];
 
-interface AppSidebarProps {
-  collapsed: boolean;
-  onToggle: () => void;
-}
-
-const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
+const AppSidebar = () => {
   return (
-    <aside
-      className={`sidebar-base flex flex-col border-r border-sidebar-border transition-all duration-300 ${
-        collapsed ? "w-16" : "w-60"
-      }`}
-    >
-      {/* Logo */}
-      <div className="flex h-14 items-center justify-between px-4 border-b border-sidebar-border">
-        {!collapsed && (
-          <span className="text-sm font-semibold tracking-wide text-sidebar-fg-active">
-            RealEstateOS
-          </span>
-        )}
-        <button
-          onClick={onToggle}
-          className="flex h-7 w-7 items-center justify-center rounded-md text-sidebar-fg hover:text-sidebar-fg-active hover:sidebar-item-hover transition-colors"
-        >
-          {collapsed ? <Menu className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-        </button>
+    <aside className="flex w-56 flex-col border-r border-sidebar-custom-border bg-sidebar-custom-bg shrink-0">
+      {/* Brand */}
+      <div className="flex h-14 items-center gap-2.5 border-b border-sidebar-custom-border px-5">
+        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
+          <Building2 className="h-3.5 w-3.5 text-primary-foreground" />
+        </div>
+        <span className="text-[13px] font-semibold tracking-tight text-sidebar-custom-fg-active">
+          RealEstateOS
+        </span>
       </div>
 
-      {/* Nav */}
-      <nav className="flex-1 px-2 py-3 space-y-1">
+      {/* Navigation */}
+      <nav className="flex-1 px-3 py-4 space-y-0.5">
         {menuItems.map((item) => (
           <div
             key={item.label}
-            className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors cursor-default ${
+            className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-medium transition-all cursor-default ${
               item.active
-                ? "sidebar-item-active"
-                : "text-sidebar-fg opacity-60"
+                ? "bg-sidebar-custom-active text-sidebar-custom-fg-active border-l-2 border-sidebar-custom-active-border -ml-px"
+                : "text-sidebar-custom-fg hover:bg-sidebar-custom-hover"
             }`}
           >
-            <item.icon className="h-4 w-4 shrink-0" />
-            {!collapsed && <span>{item.label}</span>}
+            <item.icon className={`h-4 w-4 shrink-0 ${item.active ? "text-sidebar-custom-fg-active" : ""}`} strokeWidth={item.active ? 2 : 1.5} />
+            <span>{item.label}</span>
           </div>
         ))}
       </nav>
 
-      {/* Bottom */}
-      {!collapsed && (
-        <div className="border-t border-sidebar-border px-4 py-3">
-          <p className="text-[11px] text-sidebar-fg/40">v1.0 · Design Preview</p>
-        </div>
-      )}
+      {/* Footer */}
+      <div className="border-t border-sidebar-custom-border px-5 py-3">
+        <p className="text-[10px] font-medium text-sidebar-custom-fg/50 uppercase tracking-widest">Design Preview · v1.0</p>
+      </div>
     </aside>
   );
 };
