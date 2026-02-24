@@ -53,7 +53,7 @@ const CadastralSection = ({ data, onChange }: CadastralSectionProps) => {
             value={data.ownerId}
             onValueChange={(v) => set("ownerId", v)}
             placeholder="Search owner…"
-            searchPlaceholder="Type to search…"
+            
             createLabel="Create owner"
             createFields={[
               { key: "name", label: "Full Name", placeholder: "Full name" },

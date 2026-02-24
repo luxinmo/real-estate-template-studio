@@ -1,7 +1,6 @@
-import { useState, useRef, useEffect } from "react";
-import { Check, ChevronsUpDown, Plus, X } from "lucide-react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { Check, Plus, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,12 +22,8 @@ interface SearchableSelectProps {
   value: string;
   onValueChange: (value: string) => void;
   placeholder?: string;
-  searchPlaceholder?: string;
-  /** Fields shown in the inline create form */
   createFields?: CreateFields[];
-  /** Label for the create action, e.g. "Create owner" */
   createLabel?: string;
-  /** Called when user submits the create form. Return the new option to add it. */
   onCreate?: (values: Record<string, string>) => SearchableSelectOption | void;
   className?: string;
   disabled?: boolean;
@@ -38,25 +33,25 @@ const SearchableSelect = ({
   options,
   value,
   onValueChange,
-  placeholder = "Select…",
-  searchPlaceholder = "Search…",
+  placeholder = "Search…",
   createFields,
   createLabel = "Create new",
   onCreate,
   className,
   disabled,
 }: SearchableSelectProps) => {
-  const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [open, setOpen] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [createValues, setCreateValues] = useState<Record<string, string>>({});
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const selected = options.find((o) => o.id === value);
 
   const filtered = options.filter((o) =>
     o.label.toLowerCase().includes(search.toLowerCase())
   );
-
-  const selected = options.find((o) => o.id === value);
 
   const handleSelect = (id: string) => {
     onValueChange(id);
@@ -65,160 +60,163 @@ const SearchableSelect = ({
     setShowCreate(false);
   };
 
+  const handleClear = () => {
+    onValueChange("");
+    setSearch("");
+    setTimeout(() => inputRef.current?.focus(), 0);
+  };
+
   const handleCreate = () => {
     if (onCreate) {
       const result = onCreate(createValues);
-      if (result) {
-        handleSelect(result.id);
-      }
+      if (result) handleSelect(result.id);
     }
     setCreateValues({});
     setShowCreate(false);
   };
 
-  const handleOpenChange = (isOpen: boolean) => {
-    setOpen(isOpen);
-    if (!isOpen) {
-      setSearch("");
-      setShowCreate(false);
-      setCreateValues({});
-    }
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+    if (!open) setOpen(true);
+    setShowCreate(false);
   };
 
+  const handleFocus = () => {
+    if (!value) setOpen(true);
+  };
+
+  // Close on outside click
   useEffect(() => {
-    if (open && inputRef.current) {
-      setTimeout(() => inputRef.current?.focus(), 0);
-    }
-  }, [open]);
+    const handler = (e: MouseEvent) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+        setOpen(false);
+        setSearch("");
+        setShowCreate(false);
+        setCreateValues({});
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
   const noResults = filtered.length === 0 && search.length > 0;
   const canCreate = !!createFields && !!onCreate;
 
   return (
-    <Popover open={open} onOpenChange={handleOpenChange}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
+    <div ref={wrapperRef} className={cn("relative", className)}>
+      {/* Selected state: chip with delete */}
+      {value && selected ? (
+        <div className="flex h-10 w-full items-center rounded-md border border-input bg-background px-3">
+          <span className="flex-1 truncate text-sm">{selected.label}</span>
+          <button
+            type="button"
+            onClick={handleClear}
+            disabled={disabled}
+            className="ml-2 rounded-sm p-0.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      ) : (
+        /* Empty state: search input */
+        <Input
+          ref={inputRef}
+          value={search}
+          onChange={handleInputChange}
+          onFocus={handleFocus}
+          placeholder={placeholder}
           disabled={disabled}
-          className={cn(
-            "w-full justify-between font-normal h-10",
-            !value && "text-muted-foreground",
-            className
-          )}
-        >
-          <span className="truncate">
-            {selected ? selected.label : placeholder}
-          </span>
-          <ChevronsUpDown className="ml-2 h-3.5 w-3.5 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
-        {!showCreate ? (
-          <div>
-            {/* Search input */}
-            <div className="flex items-center border-b px-3 py-2">
-              <Input
-                ref={inputRef}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder={searchPlaceholder}
-                className="border-0 p-0 h-8 focus-visible:ring-0 focus-visible:ring-offset-0 text-sm"
-              />
-              {search && (
-                <button onClick={() => setSearch("")} className="ml-1 text-muted-foreground hover:text-foreground">
-                  <X className="h-3.5 w-3.5" />
-                </button>
+          className="h-10"
+        />
+      )}
+
+      {/* Dropdown */}
+      {open && !value && (
+        <div className="absolute z-50 mt-1 w-full rounded-md border border-border bg-popover shadow-md">
+          {!showCreate ? (
+            <div>
+              <div className="max-h-[200px] overflow-y-auto p-1">
+                {filtered.map((option) => (
+                  <button
+                    key={option.id}
+                    type="button"
+                    onClick={() => handleSelect(option.id)}
+                    className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+                  >
+                    <span className="truncate">{option.label}</span>
+                  </button>
+                ))}
+
+                {noResults && (
+                  <p className="py-3 text-center text-sm text-muted-foreground">
+                    No results for "{search}"
+                  </p>
+                )}
+
+                {filtered.length === 0 && search.length === 0 && (
+                  <p className="py-3 text-center text-sm text-muted-foreground">
+                    Start typing to search…
+                  </p>
+                )}
+              </div>
+
+              {canCreate && (
+                <div className="border-t p-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowCreate(true);
+                      if (search && createFields?.[0]) {
+                        setCreateValues({ [createFields[0].key]: search });
+                      }
+                    }}
+                    className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm text-primary hover:bg-accent transition-colors"
+                  >
+                    <Plus className="h-3.5 w-3.5" />
+                    <span>{createLabel}</span>
+                  </button>
+                </div>
               )}
             </div>
-
-            {/* Options list */}
-            <div className="max-h-[200px] overflow-y-auto p-1">
-              {filtered.map((option) => (
-                <button
-                  key={option.id}
-                  onClick={() => handleSelect(option.id)}
-                  className={cn(
-                    "flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm transition-colors",
-                    "hover:bg-accent hover:text-accent-foreground",
-                    option.id === value && "bg-accent text-accent-foreground"
-                  )}
-                >
-                  <Check
-                    className={cn(
-                      "h-3.5 w-3.5 shrink-0",
-                      option.id === value ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                  <span className="truncate">{option.label}</span>
-                </button>
-              ))}
-
-              {noResults && (
-                <p className="py-4 text-center text-sm text-muted-foreground">
-                  No results for "{search}"
-                </p>
-              )}
-            </div>
-
-            {/* Create new action */}
-            {canCreate && (
-              <div className="border-t p-1">
-                <button
-                  onClick={() => {
-                    setShowCreate(true);
-                    // Pre-fill name field with search query
-                    if (search && createFields?.[0]) {
-                      setCreateValues({ [createFields[0].key]: search });
+          ) : (
+            <div className="p-3 space-y-3">
+              <p className="text-sm font-medium text-foreground">{createLabel}</p>
+              {createFields?.map((field) => (
+                <div key={field.key} className="space-y-1">
+                  <Label className="text-xs text-muted-foreground">{field.label}</Label>
+                  <Input
+                    value={createValues[field.key] || ""}
+                    onChange={(e) =>
+                      setCreateValues((prev) => ({ ...prev, [field.key]: e.target.value }))
                     }
+                    placeholder={field.placeholder}
+                    type={field.type || "text"}
+                    className="h-9 text-sm"
+                  />
+                </div>
+              ))}
+              <div className="flex gap-2 pt-1">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex-1"
+                  type="button"
+                  onClick={() => {
+                    setShowCreate(false);
+                    setCreateValues({});
                   }}
-                  className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm text-primary hover:bg-accent transition-colors"
                 >
-                  <Plus className="h-3.5 w-3.5" />
-                  <span>{createLabel}</span>
-                </button>
+                  Cancel
+                </Button>
+                <Button size="sm" className="flex-1 gap-1.5" type="button" onClick={handleCreate}>
+                  <Plus className="h-3.5 w-3.5" /> Create
+                </Button>
               </div>
-            )}
-          </div>
-        ) : (
-          /* Inline create form */
-          <div className="p-3 space-y-3">
-            <p className="text-sm font-medium text-foreground">{createLabel}</p>
-            {createFields?.map((field) => (
-              <div key={field.key} className="space-y-1">
-                <Label className="text-xs text-muted-foreground">{field.label}</Label>
-                <Input
-                  value={createValues[field.key] || ""}
-                  onChange={(e) =>
-                    setCreateValues((prev) => ({ ...prev, [field.key]: e.target.value }))
-                  }
-                  placeholder={field.placeholder}
-                  type={field.type || "text"}
-                  className="h-9 text-sm"
-                />
-              </div>
-            ))}
-            <div className="flex gap-2 pt-1">
-              <Button
-                variant="outline"
-                size="sm"
-                className="flex-1"
-                onClick={() => {
-                  setShowCreate(false);
-                  setCreateValues({});
-                }}
-              >
-                Cancel
-              </Button>
-              <Button size="sm" className="flex-1 gap-1.5" onClick={handleCreate}>
-                <Plus className="h-3.5 w-3.5" /> Create
-              </Button>
             </div>
-          </div>
-        )}
-      </PopoverContent>
-    </Popover>
+          )}
+        </div>
+      )}
+    </div>
   );
 };
 
