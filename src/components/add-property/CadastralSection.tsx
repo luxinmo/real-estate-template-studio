@@ -1,15 +1,12 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, UserPlus } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import SearchableSelect, { type SearchableSelectOption } from "@/components/ui/searchable-select";
 
-const demoOwners = [
-  { id: "1", name: "Carlos García López" },
-  { id: "2", name: "María Fernández Ruiz" },
-  { id: "3", name: "Arman Yeghiazaryan" },
+const initialOwners: SearchableSelectOption[] = [
+  { id: "1", label: "Carlos García López" },
+  { id: "2", label: "María Fernández Ruiz" },
+  { id: "3", label: "Arman Yeghiazaryan" },
 ];
 
 interface CadastralSectionProps {
@@ -23,18 +20,15 @@ interface CadastralSectionProps {
 
 const CadastralSection = ({ data, onChange }: CadastralSectionProps) => {
   const set = (field: string, value: any) => onChange({ ...data, [field]: value });
-  const [owners, setOwners] = useState(demoOwners);
-  const [newOwner, setNewOwner] = useState({ name: "", phone: "", email: "" });
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [owners, setOwners] = useState(initialOwners);
 
-  const createOwner = () => {
-    if (!newOwner.name.trim()) return;
-    const id = String(Date.now());
-    const owner = { id, name: newOwner.name };
-    setOwners([...owners, owner]);
-    onChange({ ...data, ownerId: id });
-    setNewOwner({ name: "", phone: "", email: "" });
-    setDialogOpen(false);
+  const handleCreateOwner = (values: Record<string, string>) => {
+    const newOwner: SearchableSelectOption = {
+      id: String(Date.now()),
+      label: values.name,
+    };
+    setOwners((prev) => [...prev, newOwner]);
+    return newOwner;
   };
 
   return (
@@ -54,46 +48,20 @@ const CadastralSection = ({ data, onChange }: CadastralSectionProps) => {
         {/* Owner selector */}
         <div className="space-y-1.5 sm:col-span-2 lg:col-span-3">
           <Label className="text-xs text-muted-foreground">Owner</Label>
-          <div className="flex gap-2">
-            <Select value={data.ownerId} onValueChange={(v) => set("ownerId", v)}>
-              <SelectTrigger className="flex-1"><SelectValue placeholder="Search owner..." /></SelectTrigger>
-              <SelectContent>
-                {owners.map((o) => (
-                  <SelectItem key={o.id} value={o.id}>{o.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-              <DialogTrigger asChild>
-                <Button variant="outline" size="icon" className="shrink-0">
-                  <UserPlus className="h-4 w-4" />
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-sm">
-                <DialogHeader>
-                  <DialogTitle>Quick Add Owner</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-3 pt-2">
-                  <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">Full Name</Label>
-                    <Input value={newOwner.name} onChange={(e) => setNewOwner({ ...newOwner, name: e.target.value })} placeholder="Full name" />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">Phone</Label>
-                    <Input value={newOwner.phone} onChange={(e) => setNewOwner({ ...newOwner, phone: e.target.value })} placeholder="+34 600 000 000" />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">Email</Label>
-                    <Input value={newOwner.email} onChange={(e) => setNewOwner({ ...newOwner, email: e.target.value })} placeholder="email@example.com" type="email" />
-                  </div>
-                  <Button onClick={createOwner} className="w-full gap-2">
-                    <Plus className="h-4 w-4" /> Create & Assign
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
-          </div>
+          <SearchableSelect
+            options={owners}
+            value={data.ownerId}
+            onValueChange={(v) => set("ownerId", v)}
+            placeholder="Search owner…"
+            searchPlaceholder="Type to search…"
+            createLabel="Create owner"
+            createFields={[
+              { key: "name", label: "Full Name", placeholder: "Full name" },
+              { key: "phone", label: "Phone", placeholder: "+34 600 000 000" },
+              { key: "email", label: "Email", placeholder: "email@example.com", type: "email" },
+            ]}
+            onCreate={handleCreateOwner}
+          />
         </div>
       </div>
     </section>

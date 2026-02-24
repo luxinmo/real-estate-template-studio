@@ -1,10 +1,11 @@
-import { Building2, LayoutGrid, Home, Users, Building, UserCircle, Briefcase, Settings, X } from "lucide-react";
+import { Building2, LayoutGrid, Home, Users, Building, UserCircle, Briefcase, Settings, X, Component } from "lucide-react";
 
 const topItems = [
   { icon: LayoutGrid, label: "Dashboard", view: "dashboard" },
   { icon: Home, label: "Propiedades", view: "properties" },
   { icon: Users, label: "Contactos", view: "contacts" },
   { icon: Building, label: "Agencias", view: "agencies" },
+  { icon: Component, label: "Componentes", view: "components" },
 ];
 
 const bottomItems = [

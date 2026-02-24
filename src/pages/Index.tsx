@@ -8,8 +8,9 @@ import PropertiesPage from "@/components/PropertiesPage";
 import PropertyDetailPage from "@/components/PropertyDetailPage";
 import AddPropertyPage from "@/components/AddPropertyPage";
 import UsersPage from "@/components/UsersPage";
+import ComponentsPage from "@/components/ComponentsPage";
 
-type View = "dashboard" | "properties" | "property-detail" | "add-property" | "contacts" | "add-contact" | "contact-detail" | "agencies" | "users" | "company" | "settings";
+type View = "dashboard" | "properties" | "property-detail" | "add-property" | "contacts" | "add-contact" | "contact-detail" | "agencies" | "users" | "company" | "settings" | "components";
 
 const PlaceholderPage = ({ title }: { title: string }) => (
   <div className="flex-1 overflow-auto">
@@ -66,6 +67,7 @@ const Index = () => {
           />
         )}
         {view === "agencies" && <PlaceholderPage title="Agencias" />}
+        {view === "components" && <ComponentsPage />}
         {view === "users" && <UsersPage />}
         {view === "company" && <PlaceholderPage title="Empresa" />}
         {view === "settings" && <PlaceholderPage title="Ajustes" />}
