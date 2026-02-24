@@ -6,9 +6,10 @@ import AddContactPage from "@/components/AddContactPage";
 import ContactDetailPage from "@/components/ContactDetailPage";
 import PropertiesPage from "@/components/PropertiesPage";
 import PropertyDetailPage from "@/components/PropertyDetailPage";
+import AddPropertyPage from "@/components/AddPropertyPage";
 import UsersPage from "@/components/UsersPage";
 
-type View = "dashboard" | "properties" | "property-detail" | "contacts" | "add-contact" | "contact-detail" | "agencies" | "users" | "company" | "settings";
+type View = "dashboard" | "properties" | "property-detail" | "add-property" | "contacts" | "add-contact" | "contact-detail" | "agencies" | "users" | "company" | "settings";
 
 const PlaceholderPage = ({ title }: { title: string }) => (
   <div className="flex-1 overflow-auto">
@@ -29,7 +30,7 @@ const Index = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedContactId, setSelectedContactId] = useState<string>("1");
 
-  const sidebarView = ["add-contact", "contact-detail"].includes(view) ? "contacts" : (view === "property-detail" ? "properties" : view);
+  const sidebarView = ["add-contact", "contact-detail"].includes(view) ? "contacts" : (["property-detail", "add-property"].includes(view) ? "properties" : view);
 
   const handleViewContact = (id: string) => {
     setSelectedContactId(id);
@@ -47,8 +48,9 @@ const Index = () => {
       <div className="flex flex-1 flex-col min-w-0">
         <HeaderBar onMenuToggle={() => setSidebarOpen(true)} />
         {view === "dashboard" && <PlaceholderPage title="Dashboard" />}
-        {view === "properties" && <PropertiesPage onViewProperty={() => setView("property-detail")} />}
+        {view === "properties" && <PropertiesPage onViewProperty={() => setView("property-detail")} onAddProperty={() => setView("add-property")} />}
         {view === "property-detail" && <PropertyDetailPage onBack={() => setView("properties")} />}
+        {view === "add-property" && <AddPropertyPage onBack={() => setView("properties")} />}
         {view === "contacts" && (
           <ContactsListPage
             onAddContact={() => setView("add-contact")}

@@ -31,7 +31,7 @@ const tiposConSubtipos: Record<string, string[]> = {
 };
 const habitaciones = ["1", "2", "3", "4+"];
 
-const PropertiesPage = ({ onViewProperty }: { onViewProperty?: () => void }) => {
+const PropertiesPage = ({ onViewProperty, onAddProperty }: { onViewProperty?: () => void; onAddProperty?: () => void }) => {
   const [search, setSearch] = useState("");
   const [selectedOp, setSelectedOp] = useState<string[]>([]);
   const [selectedDisp, setSelectedDisp] = useState<string[]>([]);
@@ -70,7 +70,7 @@ const PropertiesPage = ({ onViewProperty }: { onViewProperty?: () => void }) => 
           <h1 className="text-2xl font-semibold text-foreground tracking-tight">Propiedades</h1>
           <p className="text-sm text-muted-foreground mt-1">Catálogo de propiedades inmobiliarias</p>
         </div>
-        <Button className="gap-2 shrink-0">
+        <Button className="gap-2 shrink-0" onClick={onAddProperty}>
           <Plus className="h-4 w-4" />
           Nueva propiedad
         </Button>
