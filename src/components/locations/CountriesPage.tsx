@@ -36,19 +36,12 @@ const CountriesPage = ({ onSelectCountry }: CountriesPageProps) => {
   );
 
   const handleSidebarClick = (id: string) => {
-    setSelectedId(id);
-    setFocusId(id);
+    onSelectCountry(id);
   };
 
-  // Map click: if already highlighted → enter, otherwise highlight
   const handlePolygonClick = useCallback((id: string) => {
-    if (id === selectedId) {
-      onSelectCountry(id);
-    } else {
-      setSelectedId(id);
-      setFocusId(id);
-    }
-  }, [selectedId, onSelectCountry]);
+    onSelectCountry(id);
+  }, [onSelectCountry]);
 
   return (
     <div className="flex-1 flex min-h-0 overflow-hidden">
@@ -86,7 +79,7 @@ const CountriesPage = ({ onSelectCountry }: CountriesPageProps) => {
             ))}
           </div>
           <p className="text-[10px] text-muted-foreground text-center mt-4 px-2">
-            Click to select · Click polygon on map to enter
+            Click a country to enter
           </p>
         </SidebarBody>
       </LocationSidebar>
