@@ -15,7 +15,6 @@ const demoOwners = [
 interface CadastralSectionProps {
   data: {
     cadastralRef: string;
-    floors: string;
     registrationNumber: string;
     ownerId: string;
   };
@@ -46,10 +45,6 @@ const CadastralSection = ({ data, onChange }: CadastralSectionProps) => {
         <div className="space-y-1.5">
           <Label className="text-xs text-muted-foreground">Cadastral Reference</Label>
           <Input value={data.cadastralRef} onChange={(e) => set("cadastralRef", e.target.value)} placeholder="1234567AB1234C0001XY" className="font-mono text-xs" />
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">Floors</Label>
-          <Input value={data.floors} onChange={(e) => set("floors", e.target.value)} placeholder="4" type="number" />
         </div>
         <div className="space-y-1.5">
           <Label className="text-xs text-muted-foreground">Registration Number</Label>

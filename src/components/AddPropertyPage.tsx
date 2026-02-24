@@ -35,7 +35,7 @@ const AddPropertyPage = ({ onBack }: AddPropertyPageProps) => {
     reference: generateRef(),
     status: "Active",
     availability: "Available",
-    style: "",
+    style: [] as string[],
     duration: "",
     operations: [] as { type: string; price: string; reference: string; hidePrice: boolean }[],
   });
@@ -52,7 +52,7 @@ const AddPropertyPage = ({ onBack }: AddPropertyPageProps) => {
     staircase: "",
     floor: "",
     door: "",
-    roadType: "",
+    
     publishAddress: true,
     publishGeo: false,
     branch: "",
@@ -61,7 +61,6 @@ const AddPropertyPage = ({ onBack }: AddPropertyPageProps) => {
   // Section 3: Cadastral
   const [cadastral, setCadastral] = useState({
     cadastralRef: "",
-    floors: "",
     registrationNumber: "",
     ownerId: "",
   });
@@ -73,6 +72,8 @@ const AddPropertyPage = ({ onBack }: AddPropertyPageProps) => {
     plot: "",
     bedrooms: 2,
     bathrooms: 1,
+    numberOfFloors: "",
+    floorNumber: "",
   });
 
   // Section 5: Description
@@ -181,7 +182,7 @@ const AddPropertyPage = ({ onBack }: AddPropertyPageProps) => {
           <div id="section-0"><GeneralDataSection data={general} onChange={setGeneral} /></div>
           <div id="section-1"><LocationSection data={location} onChange={setLocation} /></div>
           <div id="section-2"><CadastralSection data={cadastral} onChange={setCadastral} /></div>
-          <div id="section-3"><AreasDivisionsSection data={areas} onChange={setAreas} /></div>
+          <div id="section-3"><AreasDivisionsSection data={areas} onChange={setAreas} propertyType={general.propertyType} subtype={general.subtype} /></div>
           <div id="section-4"><DescriptionSection data={descriptions} onChange={setDescriptions} /></div>
           <div id="section-5"><FeaturesSection data={features} onChange={setFeatures} /></div>
           <div id="section-6"><PhotosSection data={photos} onChange={setPhotos} /></div>

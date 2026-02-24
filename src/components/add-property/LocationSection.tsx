@@ -4,7 +4,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { MapPin } from "lucide-react";
 
-const roadTypes = ["Street", "Avenue", "Boulevard", "Road", "Square", "Passage", "Highway"];
 const branches = ["Main Office", "Altea Office", "Madrid Office", "Barcelona Office"];
 
 interface LocationSectionProps {
@@ -19,7 +18,7 @@ interface LocationSectionProps {
     staircase: string;
     floor: string;
     door: string;
-    roadType: string;
+    
     publishAddress: boolean;
     publishGeo: boolean;
     branch: string;
@@ -58,15 +57,6 @@ const LocationSection = ({ data, onChange }: LocationSectionProps) => {
             <Input value={data.address} onChange={(e) => set("address", e.target.value)} placeholder="Start typing an address..." className="pl-10" />
           </div>
           <p className="text-[11px] text-muted-foreground">Google Maps autocomplete can be configured via API key</p>
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">Road Type</Label>
-          <Select value={data.roadType} onValueChange={(v) => set("roadType", v)}>
-            <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
-            <SelectContent>
-              {roadTypes.map((r) => <SelectItem key={r} value={r}>{r}</SelectItem>)}
-            </SelectContent>
-          </Select>
         </div>
         <div className="space-y-1.5">
           <Label className="text-xs text-muted-foreground">Zip Code</Label>

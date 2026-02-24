@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { X } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const propertyTypes: Record<string, string[]> = {
   Apartment: ["Flat", "Penthouse", "Duplex", "Studio", "Loft", "Ground floor"],
@@ -15,7 +16,7 @@ const propertyTypes: Record<string, string[]> = {
 
 const statuses = ["Active", "Inactive", "Draft"];
 const availabilities = ["Available", "Reserved", "Sold", "Rented"];
-const styles = ["Modern", "Classic", "Mediterranean", "Minimalist", "Rustic", "Colonial", "Contemporary"];
+const styles = ["Modern", "Classic", "Mediterranean", "Minimalist", "Rustic", "Colonial", "Contemporary", "Art Deco", "Industrial", "Scandinavian", "Traditional", "Brutalist"];
 const durations = ["Permanent", "Seasonal", "Temporary"];
 
 const operationTypes = ["For Sale", "For Rent", "Short Term"];
@@ -34,7 +35,7 @@ interface GeneralDataSectionProps {
     reference: string;
     status: string;
     availability: string;
-    style: string;
+    style: string[];
     duration: string;
     operations: OperationData[];
   };
@@ -133,17 +134,50 @@ const GeneralDataSection = ({ data, onChange }: GeneralDataSectionProps) => {
           </Select>
         </div>
 
-        {/* Architectural Style */}
+        {/* Architectural Style - Multiselect */}
         <div className="space-y-1.5">
           <Label className="text-xs text-muted-foreground">Architectural Style</Label>
-          <Select value={data.style} onValueChange={(v) => onChange({ ...data, style: v })}>
-            <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
-            <SelectContent>
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                type="button"
+                className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              >
+                <span className={data.style.length === 0 ? "text-muted-foreground" : "text-foreground"}>
+                  {data.style.length === 0 ? "Select styles" : `${data.style.length} selected`}
+                </span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-56 p-2" align="start">
               {styles.map((s) => (
-                <SelectItem key={s} value={s}>{s}</SelectItem>
+                <label key={s} className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-accent cursor-pointer text-sm">
+                  <Checkbox
+                    checked={data.style.includes(s)}
+                    onCheckedChange={(checked) => {
+                      const next = checked
+                        ? [...data.style, s]
+                        : data.style.filter((v) => v !== s);
+                      onChange({ ...data, style: next });
+                    }}
+                  />
+                  {s}
+                </label>
               ))}
-            </SelectContent>
-          </Select>
+            </PopoverContent>
+          </Popover>
+          {data.style.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 pt-1">
+              {data.style.map((s) => (
+                <span key={s} className="inline-flex items-center gap-1 rounded-md bg-accent text-accent-foreground px-2 py-0.5 text-xs font-medium">
+                  {s}
+                  <button type="button" onClick={() => onChange({ ...data, style: data.style.filter((v) => v !== s) })} className="hover:text-destructive">
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Duration */}

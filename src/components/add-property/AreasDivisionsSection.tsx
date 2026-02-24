@@ -10,12 +10,19 @@ interface AreasDivisionsSectionProps {
     plot: string;
     bedrooms: number;
     bathrooms: number;
+    numberOfFloors: string;
+    floorNumber: string;
   };
   onChange: (data: any) => void;
+  propertyType: string;
+  subtype: string;
 }
 
-const AreasDivisionsSection = ({ data, onChange }: AreasDivisionsSectionProps) => {
+const apartmentTypes = ["Apartment", "Flat", "Penthouse", "Duplex", "Studio", "Loft", "Ground floor"];
+
+const AreasDivisionsSection = ({ data, onChange, propertyType, subtype }: AreasDivisionsSectionProps) => {
   const set = (field: string, value: any) => onChange({ ...data, [field]: value });
+  const showFloorNumber = apartmentTypes.includes(propertyType) || apartmentTypes.includes(subtype);
 
   const Counter = ({ label, value, field }: { label: string; value: number; field: string }) => (
     <div className="space-y-1.5">
@@ -63,9 +70,24 @@ const AreasDivisionsSection = ({ data, onChange }: AreasDivisionsSectionProps) =
         </div>
       </div>
 
-      <div className="mt-5 pt-5 border-t border-border flex flex-wrap gap-8">
-        <Counter label="Bedrooms" value={data.bedrooms} field="bedrooms" />
-        <Counter label="Bathrooms" value={data.bathrooms} field="bathrooms" />
+      <div className="mt-5 pt-5 border-t border-border">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-4 mb-5">
+          <div className="space-y-1.5">
+            <Label className="text-xs text-muted-foreground">Number of Floors</Label>
+            <Input value={data.numberOfFloors} onChange={(e) => set("numberOfFloors", e.target.value)} placeholder="2" type="number" />
+          </div>
+          {showFloorNumber && (
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground">Floor Number</Label>
+              <Input value={data.floorNumber} onChange={(e) => set("floorNumber", e.target.value)} placeholder="4" type="number" />
+              <p className="text-[11px] text-muted-foreground">Only applicable for apartments and flats</p>
+            </div>
+          )}
+        </div>
+        <div className="flex flex-wrap gap-8">
+          <Counter label="Bedrooms" value={data.bedrooms} field="bedrooms" />
+          <Counter label="Bathrooms" value={data.bathrooms} field="bathrooms" />
+        </div>
       </div>
     </section>
   );
