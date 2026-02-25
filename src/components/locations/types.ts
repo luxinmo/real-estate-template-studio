@@ -1,26 +1,29 @@
-export type LocationLevel = "country" | "province" | "town" | "zone";
+export type LocationLevel = "country" | "province" | "region" | "municipality" | "borough";
 
-export const LEVEL_ORDER: LocationLevel[] = ["country", "province", "town", "zone"];
+export const LEVEL_ORDER: LocationLevel[] = ["country", "province", "region", "municipality", "borough"];
 
 export const LEVEL_LABELS: Record<LocationLevel, string> = {
   country: "Country",
   province: "Province",
-  town: "Town",
-  zone: "Zone",
+  region: "Region",
+  municipality: "Municipality",
+  borough: "Borough",
 };
 
 export const CHILD_LEVEL: Record<LocationLevel, LocationLevel | null> = {
   country: "province",
-  province: "town",
-  town: "zone",
-  zone: null,
+  province: "region",
+  region: "municipality",
+  municipality: "borough",
+  borough: null,
 };
 
 export const PARENT_LEVEL: Record<LocationLevel, LocationLevel | null> = {
   country: null,
   province: "country",
-  town: "province",
-  zone: "town",
+  region: "province",
+  municipality: "region",
+  borough: "municipality",
 };
 
 export interface LocationNode {
@@ -53,6 +56,7 @@ export const LANGUAGES = [
 export const LEVEL_COLORS: Record<LocationLevel, string> = {
   country: "bg-blue-500/10 text-blue-700 border-blue-500/20",
   province: "bg-violet-500/10 text-violet-700 border-violet-500/20",
-  town: "bg-amber-500/10 text-amber-700 border-amber-500/20",
-  zone: "bg-emerald-500/10 text-emerald-700 border-emerald-500/20",
+  region: "bg-cyan-500/10 text-cyan-700 border-cyan-500/20",
+  municipality: "bg-amber-500/10 text-amber-700 border-amber-500/20",
+  borough: "bg-emerald-500/10 text-emerald-700 border-emerald-500/20",
 };

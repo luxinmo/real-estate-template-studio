@@ -36,46 +36,49 @@ const FlagSelector = ({ active, onChange, data }: {
   </div>
 );
 
-interface ZoneFormPageProps {
+interface BoroughFormPageProps {
   countryId: string;
   provinceId: string;
-  townId: string;
-  zoneId?: string | null;
+  regionId: string;
+  municipalityId: string;
+  boroughId?: string | null;
   onBackToCountries: () => void;
   onBackToProvinces: () => void;
-  onBackToTowns: () => void;
-  onBackToTownDetail: () => void;
+  onBackToRegions: () => void;
+  onBackToMunicipalities: () => void;
+  onBackToMunicipalityDetail: () => void;
 }
 
-const ZoneFormPage = ({
-  countryId, provinceId, townId, zoneId,
-  onBackToCountries, onBackToProvinces, onBackToTowns, onBackToTownDetail,
-}: ZoneFormPageProps) => {
-  const zone = zoneId ? mockLocations.find((n) => n.id === zoneId) : null;
+const BoroughFormPage = ({
+  countryId, provinceId, regionId, municipalityId, boroughId,
+  onBackToCountries, onBackToProvinces, onBackToRegions, onBackToMunicipalities, onBackToMunicipalityDetail,
+}: BoroughFormPageProps) => {
+  const borough = boroughId ? mockLocations.find((n) => n.id === boroughId) : null;
   const country = mockLocations.find((n) => n.id === countryId);
   const province = mockLocations.find((n) => n.id === provinceId);
-  const town = mockLocations.find((n) => n.id === townId);
-  const isEdit = !!zone;
+  const region = mockLocations.find((n) => n.id === regionId);
+  const municipality = mockLocations.find((n) => n.id === municipalityId);
+  const isEdit = !!borough;
 
-  const siblingZones = useMemo(
-    () => mockLocations.filter((n) => n.parentId === townId && n.level === "zone" && n.id !== zoneId),
-    [townId, zoneId],
+  const siblingBoroughs = useMemo(
+    () => mockLocations.filter((n) => n.parentId === municipalityId && n.level === "borough" && n.id !== boroughId),
+    [municipalityId, boroughId],
   );
 
-  const [name, setName] = useState(zone?.name ?? "");
-  const [safeName, setSafeName] = useState(zone?.safeName ?? "");
-  const [active, setActive] = useState(zone?.active ?? true);
-  const [order, setOrder] = useState(zone?.order ?? 1);
-  const [geojson, setGeojson] = useState(zone?.geojson ?? "");
+  const [name, setName] = useState(borough?.name ?? "");
+  const [safeName, setSafeName] = useState(borough?.safeName ?? "");
+  const [active, setActive] = useState(borough?.active ?? true);
+  const [order, setOrder] = useState(borough?.order ?? 1);
+  const [geojson, setGeojson] = useState(borough?.geojson ?? "");
   const [activeLang, setActiveLang] = useState("en");
   const [slugLang, setSlugLang] = useState("en");
-  const [names, setNames] = useState<Record<string, string>>(zone?.names ?? {});
-  const [slugs, setSlugs] = useState<Record<string, string>>(zone?.slugs ?? {});
+  const [names, setNames] = useState<Record<string, string>>(borough?.names ?? {});
+  const [slugs, setSlugs] = useState<Record<string, string>>(borough?.slugs ?? {});
   const [descriptions, setDescriptions] = useState<Record<string, string>>({});
   const [seoOpen, setSeoOpen] = useState(false);
   const [seoLang, setSeoLang] = useState("en");
-  const [seoTitles, setSeoTitles] = useState<Record<string, string>>(zone?.seoTitle ?? {});
-  const [seoDescs, setSeoDescs] = useState<Record<string, string>>(zone?.seoDescription ?? {});
+  const [seoTitles, setSeoTitles] = useState<Record<string, string>>(borough?.seoTitle ?? {});
+  const [seoDescs, setSeoDescs] = useState<Record<string, string>>(borough?.seoDescription ?? {});
   const [drawMode, setDrawMode] = useState(false);
   const [copied, setCopied] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
@@ -102,10 +105,10 @@ const ZoneFormPage = ({
   };
 
   const refPolygons: MapPolygon[] = useMemo(
-    () => siblingZones.filter((z) => z.geojson).map((z) => ({
-      id: z.id, name: z.name, geojson: z.geojson!, color: "#9ca3af", highlighted: false,
+    () => siblingBoroughs.filter((b) => b.geojson).map((b) => ({
+      id: b.id, name: b.name, geojson: b.geojson!, color: "#9ca3af", highlighted: false,
     })),
-    [siblingZones],
+    [siblingBoroughs],
   );
 
   return (
@@ -115,33 +118,31 @@ const ZoneFormPage = ({
           <LocationBreadcrumb segments={[
             { label: "Locations", onClick: onBackToCountries },
             { label: country?.name ?? "", onClick: onBackToProvinces },
-            { label: province?.name ?? "", onClick: onBackToTowns },
-            { label: town?.name ?? "", onClick: onBackToTownDetail },
-            { label: isEdit ? zone!.name : "New zone" },
+            { label: province?.name ?? "", onClick: onBackToRegions },
+            { label: region?.name ?? "", onClick: onBackToMunicipalities },
+            { label: municipality?.name ?? "", onClick: onBackToMunicipalityDetail },
+            { label: isEdit ? borough!.name : "New borough" },
           ]} />
           <div className="flex items-center gap-2 mt-1">
-            <Badge className={`text-[9px] uppercase tracking-wider font-semibold ${LEVEL_COLORS.zone}`}>Zone</Badge>
+            <Badge className={`text-[9px] uppercase tracking-wider font-semibold ${LEVEL_COLORS.borough}`}>Borough</Badge>
             <Badge variant="outline" className="text-[9px] gap-0.5">
-              <span className="text-muted-foreground">Town:</span> {town?.name}
+              <span className="text-muted-foreground">Municipality:</span> {municipality?.name}
             </Badge>
           </div>
         </SidebarHeader>
 
         <ScrollArea className="flex-1 min-h-0">
           <div className="px-3 py-3 space-y-4">
-            {/* Name */}
             <div className="space-y-1">
               <Label className="text-[11px]">Name *</Label>
               <Input value={name} onChange={(e) => setName(e.target.value)} className="h-8 text-[12px]" />
             </div>
 
-            {/* Safe name */}
             <div className="space-y-1">
               <Label className="text-[11px]">Safe name</Label>
               <Input value={safeName} onChange={(e) => setSafeName(e.target.value)} className="h-8 font-mono text-[11px]" />
             </div>
 
-            {/* Active + Order */}
             <div className="flex items-end gap-4">
               <div className="flex items-center gap-2">
                 <Switch checked={active} onCheckedChange={setActive} className="scale-[0.8]" />
@@ -155,7 +156,6 @@ const ZoneFormPage = ({
 
             <div className="border-t border-border" />
 
-            {/* Multilingual names */}
             <div className="space-y-1.5">
               <Label className="text-[11px]">Multilingual names</Label>
               <FlagSelector active={activeLang} onChange={setActiveLang} data={names} />
@@ -165,7 +165,6 @@ const ZoneFormPage = ({
                 className="h-7 text-[11px]" />
             </div>
 
-            {/* Multilingual slugs */}
             <div className="space-y-1.5">
               <Label className="text-[11px]">Multilingual slugs</Label>
               <FlagSelector active={slugLang} onChange={setSlugLang} data={slugs} />
@@ -176,13 +175,11 @@ const ZoneFormPage = ({
 
             <div className="border-t border-border" />
 
-            {/* Description */}
             <div className="space-y-1.5">
-              <Label className="text-[11px] font-semibold">Zone description</Label>
+              <Label className="text-[11px] font-semibold">Borough description</Label>
               <MultilingualContent values={descriptions} onChange={setDescriptions} minHeight={160} />
             </div>
 
-            {/* SEO */}
             <Collapsible open={seoOpen} onOpenChange={setSeoOpen}>
               <CollapsibleTrigger className="flex items-center gap-1.5 text-[12px] font-medium text-muted-foreground hover:text-foreground">
                 <span className={`transition-transform text-[10px] ${seoOpen ? "rotate-90" : ""}`}>▶</span>
@@ -205,7 +202,6 @@ const ZoneFormPage = ({
               </CollapsibleContent>
             </Collapsible>
 
-            {/* GeoJSON import */}
             <Collapsible open={importOpen} onOpenChange={setImportOpen}>
               <CollapsibleTrigger className="flex items-center gap-1.5 text-[12px] font-medium text-muted-foreground hover:text-foreground">
                 <span className={`transition-transform text-[10px] ${importOpen ? "rotate-90" : ""}`}>▶</span>
@@ -240,38 +236,34 @@ const ZoneFormPage = ({
           </div>
         </ScrollArea>
 
-        {/* Sticky save */}
         <div className="shrink-0 border-t border-border px-3 py-2.5 flex gap-2">
-          <Button variant="outline" size="sm" className="flex-1 h-8 text-[11px]" onClick={onBackToTownDetail}>Cancel</Button>
-          <Button size="sm" className="flex-1 h-8 text-[11px]" disabled={!name.trim()} onClick={onBackToTownDetail}>
-            {isEdit ? "Save changes" : "Create zone"}
+          <Button variant="outline" size="sm" className="flex-1 h-8 text-[11px]" onClick={onBackToMunicipalityDetail}>Cancel</Button>
+          <Button size="sm" className="flex-1 h-8 text-[11px]" disabled={!name.trim()} onClick={onBackToMunicipalityDetail}>
+            {isEdit ? "Save changes" : "Create borough"}
           </Button>
         </div>
       </LocationSidebar>
 
-      {/* Map */}
       <div className="flex-1 min-w-0 relative">
         <MapPanel
           referencePolygons={refPolygons}
           geometry={geojson || undefined}
-          boundaryGeojson={town?.geojson}
+          boundaryGeojson={municipality?.geojson}
           center={[40, -3]}
           zoom={6}
           drawMode={drawMode}
           onDrawComplete={handleDrawComplete}
           onCancelDraw={() => setDrawMode(false)}
         >
-          {/* No geometry overlay */}
           {!geojson && !drawMode && (
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/20 backdrop-blur-[1px] z-[999]">
               <p className="text-[13px] text-muted-foreground mb-3">No geometry defined</p>
               <Button size="sm" className="gap-1.5" onClick={() => setDrawMode(true)}>
-                Draw zone polygon
+                Draw borough polygon
               </Button>
             </div>
           )}
 
-          {/* Edit/delete buttons */}
           {geojson && !drawMode && (
             <div className="absolute top-14 left-3 z-[1000] flex gap-1.5">
               <Button size="sm" variant="secondary" className="h-7 text-[10px] shadow-md gap-1">
@@ -296,4 +288,4 @@ const ZoneFormPage = ({
   );
 };
 
-export default ZoneFormPage;
+export default BoroughFormPage;

@@ -13,13 +13,15 @@ import MapPanel, { MapPolygon } from "./shared/MapPanel";
 
 const PALETTE = ["#3b82f6", "#8b5cf6", "#f59e0b", "#10b981", "#ef4444", "#ec4899", "#06b6d4", "#84cc16"];
 
-interface ProvincesPageProps {
+interface RegionsPageProps {
   countryId: string;
-  onBack: () => void;
-  onSelectProvince: (id: string) => void;
+  provinceId: string;
+  onBackToCountries: () => void;
+  onBackToProvinces: () => void;
+  onSelectRegion: (id: string) => void;
 }
 
-const ProvincesPage = ({ countryId, onBack, onSelectProvince }: ProvincesPageProps) => {
+const RegionsPage = ({ countryId, provinceId, onBackToCountries, onBackToProvinces, onSelectRegion }: RegionsPageProps) => {
   const [locations, setLocations] = useState<LocationNode[]>(mockLocations);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [focusId, setFocusId] = useState<string | null>(null);
@@ -30,37 +32,35 @@ const ProvincesPage = ({ countryId, onBack, onSelectProvince }: ProvincesPagePro
   const [drawnGeo, setDrawnGeo] = useState("");
 
   const country = locations.find((n) => n.id === countryId);
-  const provinces = useMemo(
-    () => locations.filter((n) => n.parentId === countryId && n.level === "province").sort((a, b) => a.order - b.order),
-    [locations, countryId],
+  const province = locations.find((n) => n.id === provinceId);
+  const regions = useMemo(
+    () => locations.filter((n) => n.parentId === provinceId && n.level === "region").sort((a, b) => a.order - b.order),
+    [locations, provinceId],
   );
 
   const mapPolygons: MapPolygon[] = useMemo(
-    () => provinces.filter((p) => p.geojson).map((p, i) => ({
-      id: p.id,
-      name: `${p.name} · ${locations.filter((n) => n.parentId === p.id).length} regions`,
-      geojson: p.geojson!,
+    () => regions.filter((r) => r.geojson).map((r, i) => ({
+      id: r.id,
+      name: `${r.name} · ${locations.filter((n) => n.parentId === r.id).length} municipalities`,
+      geojson: r.geojson!,
       color: PALETTE[i % PALETTE.length],
-      highlighted: p.id === selectedId,
+      highlighted: r.id === selectedId,
     })),
-    [provinces, selectedId, locations],
+    [regions, selectedId, locations],
   );
 
-  // Sidebar: click = highlight + fly
   const handleSidebarClick = (id: string) => {
-    setSelectedId(id);
-    setFocusId(id);
-  };
-
-  // Map polygon: if already highlighted → enter, otherwise highlight
-  const handlePolygonClick = useCallback((id: string) => {
-    if (id === selectedId) {
-      onSelectProvince(id);
+    if (selectedId === id) {
+      onSelectRegion(id);
     } else {
       setSelectedId(id);
       setFocusId(id);
     }
-  }, [selectedId, onSelectProvince]);
+  };
+
+  const handlePolygonClick = useCallback((id: string) => {
+    onSelectRegion(id);
+  }, [onSelectRegion]);
 
   const handleDrawComplete = useCallback((geojson: string) => {
     setDrawnGeo(geojson); setDrawMode(false); setAdding(true);
@@ -70,8 +70,8 @@ const ProvincesPage = ({ countryId, onBack, onSelectProvince }: ProvincesPagePro
     if (!newName.trim()) return;
     const safeName = newName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
     setLocations((prev) => [...prev, {
-      id: `prov-${Date.now()}`, parentId: countryId, level: "province" as const, name: newName, safeName,
-      names: { en: newName }, slugs: { en: safeName }, active: newActive, order: provinces.length + 1,
+      id: `region-${Date.now()}`, parentId: provinceId, level: "region" as const, name: newName, safeName,
+      names: { en: newName }, slugs: { en: safeName }, active: newActive, order: regions.length + 1,
       geojson: drawnGeo, childrenCount: 0,
     }]);
     setAdding(false); setNewName(""); setDrawnGeo("");
@@ -82,14 +82,15 @@ const ProvincesPage = ({ countryId, onBack, onSelectProvince }: ProvincesPagePro
       <LocationSidebar>
         <SidebarHeader>
           <LocationBreadcrumb segments={[
-            { label: "Locations", onClick: onBack },
-            { label: country?.name ?? "" },
+            { label: "Locations", onClick: onBackToCountries },
+            { label: country?.name ?? "", onClick: onBackToProvinces },
+            { label: province?.name ?? "" },
           ]} />
           <div className="flex items-center justify-between mt-1">
-            <h2 className="text-[15px] font-semibold text-foreground">{country?.name}</h2>
+            <h2 className="text-[15px] font-semibold text-foreground">{province?.name}</h2>
             <Button size="sm" className="h-7 gap-1 text-[11px]"
               onClick={() => { setDrawMode(true); setAdding(false); }}>
-              <Plus className="h-3 w-3" /> Add province
+              <Plus className="h-3 w-3" /> Add region
             </Button>
           </div>
         </SidebarHeader>
@@ -98,7 +99,7 @@ const ProvincesPage = ({ countryId, onBack, onSelectProvince }: ProvincesPagePro
           {adding && (
             <div className="rounded-lg border border-border bg-muted/30 p-3 space-y-2.5 mb-2">
               <div className="space-y-1">
-                <Label className="text-[11px]">Province name *</Label>
+                <Label className="text-[11px]">Region name *</Label>
                 <Input value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="Name" className="h-8 text-[12px]" />
               </div>
               <div className="flex items-center gap-2">
@@ -114,35 +115,33 @@ const ProvincesPage = ({ countryId, onBack, onSelectProvince }: ProvincesPagePro
           )}
 
           <div className="space-y-0.5">
-            {provinces.map((p) => {
-              const townCount = locations.filter((n) => n.parentId === p.id).length;
-              const isSelected = selectedId === p.id;
+            {regions.map((r) => {
+              const childCount = locations.filter((n) => n.parentId === r.id).length;
+              const isSelected = selectedId === r.id;
               return (
-                <div key={p.id} className={`group flex w-full items-center gap-2 rounded-lg px-3 py-2 text-[13px] transition-all ${
+                <div key={r.id} className={`group flex w-full items-center gap-2 rounded-lg px-3 py-2 text-[13px] transition-all ${
                   isSelected
                     ? "bg-primary/8 text-foreground font-medium ring-1 ring-primary/20"
                     : "text-muted-foreground hover:bg-accent hover:text-foreground"
                 }`}>
                   <button
                     className="flex flex-1 items-center gap-2 min-w-0"
-                    onClick={() => handleSidebarClick(p.id)}
+                    onClick={() => handleSidebarClick(r.id)}
                   >
-                    <span className={`h-2 w-2 rounded-full shrink-0 ${p.active ? "bg-emerald-500" : "bg-muted-foreground/30"}`} />
-                    <span className="flex-1 text-left truncate">{p.name}</span>
-                    <Badge variant="secondary" className="text-[9px] shrink-0">{townCount}</Badge>
+                    <span className={`h-2 w-2 rounded-full shrink-0 ${r.active ? "bg-emerald-500" : "bg-muted-foreground/30"}`} />
+                    <span className="flex-1 text-left truncate">{r.name}</span>
+                    <Badge variant="secondary" className="text-[9px] shrink-0">{childCount}</Badge>
                   </button>
                   <Pencil className="h-3 w-3 opacity-0 group-hover:opacity-50 shrink-0 transition-opacity" />
-                  {isSelected && (
-                    <button onClick={() => onSelectProvince(p.id)} className="shrink-0 text-primary hover:text-primary/80 transition-colors" title="Enter province">
-                      <ChevronRight className="h-4 w-4" />
-                    </button>
-                  )}
+                  <button onClick={() => onSelectRegion(r.id)} className="shrink-0 text-muted-foreground hover:text-primary transition-colors" title="Enter region">
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
                 </div>
               );
             })}
           </div>
           <p className="text-[10px] text-muted-foreground text-center mt-4">
-            Click to highlight · Click polygon on map to enter
+            Click name to highlight · Click arrow or polygon to enter
           </p>
         </SidebarBody>
       </LocationSidebar>
@@ -150,6 +149,7 @@ const ProvincesPage = ({ countryId, onBack, onSelectProvince }: ProvincesPagePro
       <div className="flex-1 min-w-0">
         <MapPanel
           polygons={mapPolygons}
+          boundaryGeojson={province?.geojson}
           center={[40, -3]}
           zoom={6}
           focusedPolygonId={focusId}
@@ -160,7 +160,7 @@ const ProvincesPage = ({ countryId, onBack, onSelectProvince }: ProvincesPagePro
         >
           {drawMode && (
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-[1000] bg-card border border-border rounded-lg px-4 py-2 shadow-lg flex items-center gap-3">
-              <p className="text-[11px] text-muted-foreground">Click points to draw · double-click to finish</p>
+              <p className="text-[11px] text-muted-foreground">Draw inside province boundary · double-click to finish</p>
               <Button size="sm" variant="ghost" className="h-6 text-[11px]" onClick={() => setDrawMode(false)}>Cancel</Button>
             </div>
           )}
@@ -170,4 +170,4 @@ const ProvincesPage = ({ countryId, onBack, onSelectProvince }: ProvincesPagePro
   );
 };
 
-export default ProvincesPage;
+export default RegionsPage;

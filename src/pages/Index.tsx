@@ -2,7 +2,7 @@ import { useState } from "react";
 import AppSidebar from "@/components/AppSidebar";
 import HeaderBar from "@/components/HeaderBar";
 import { ContactsListPage, AddContactPage, ContactDetailPage } from "@/components/contacts";
-import { CountriesPage, ProvincesPage, TownsPage, TownDetailPage, ZoneFormPage } from "@/components/locations";
+import { CountriesPage, ProvincesPage, RegionsPage, MunicipalitiesPage, MunicipalityDetailPage, BoroughFormPage } from "@/components/locations";
 import PropertiesPage from "@/components/PropertiesPage";
 import PropertyDetailPage from "@/components/PropertyDetailPage";
 import AddPropertyPage from "@/components/AddPropertyPage";
@@ -13,7 +13,7 @@ type View =
   | "dashboard" | "properties" | "property-detail" | "add-property"
   | "contacts" | "add-contact" | "contact-detail"
   | "agencies" | "users" | "company" | "settings" | "components"
-  | "loc-countries" | "loc-provinces" | "loc-towns" | "loc-town-detail" | "loc-zone-form";
+  | "loc-countries" | "loc-provinces" | "loc-regions" | "loc-municipalities" | "loc-municipality-detail" | "loc-borough-form";
 
 const PlaceholderPage = ({ title }: { title: string }) => (
   <div className="flex-1 overflow-auto">
@@ -32,8 +32,9 @@ const Index = () => {
   // Location drill-down
   const [locCountryId, setLocCountryId] = useState("");
   const [locProvinceId, setLocProvinceId] = useState("");
-  const [locTownId, setLocTownId] = useState("");
-  const [locZoneId, setLocZoneId] = useState<string | null>(null);
+  const [locRegionId, setLocRegionId] = useState("");
+  const [locMunicipalityId, setLocMunicipalityId] = useState("");
+  const [locBoroughId, setLocBoroughId] = useState<string | null>(null);
 
   const sidebarView = (() => {
     if (["add-contact", "contact-detail"].includes(view)) return "contacts";
@@ -72,39 +73,54 @@ const Index = () => {
           <ProvincesPage
             countryId={locCountryId}
             onBack={() => setView("loc-countries")}
-            onSelectProvince={(id) => { setLocProvinceId(id); setView("loc-towns"); }}
+            onSelectProvince={(id) => { setLocProvinceId(id); setView("loc-regions"); }}
           />
         )}
-        {view === "loc-towns" && (
-          <TownsPage
+        {view === "loc-regions" && (
+          <RegionsPage
             countryId={locCountryId}
             provinceId={locProvinceId}
             onBackToCountries={() => setView("loc-countries")}
             onBackToProvinces={() => setView("loc-provinces")}
-            onSelectTown={(id) => { setLocTownId(id); setView("loc-town-detail"); }}
+            onSelectRegion={(id) => { setLocRegionId(id); setView("loc-municipalities"); }}
           />
         )}
-        {view === "loc-town-detail" && (
-          <TownDetailPage
+        {view === "loc-municipalities" && (
+          <MunicipalitiesPage
             countryId={locCountryId}
             provinceId={locProvinceId}
-            townId={locTownId}
+            regionId={locRegionId}
             onBackToCountries={() => setView("loc-countries")}
             onBackToProvinces={() => setView("loc-provinces")}
-            onBackToTowns={() => setView("loc-towns")}
-            onEditZone={(zoneId) => { setLocZoneId(zoneId); setView("loc-zone-form"); }}
+            onBackToRegions={() => setView("loc-regions")}
+            onSelectMunicipality={(id) => { setLocMunicipalityId(id); setView("loc-municipality-detail"); }}
           />
         )}
-        {view === "loc-zone-form" && (
-          <ZoneFormPage
+        {view === "loc-municipality-detail" && (
+          <MunicipalityDetailPage
             countryId={locCountryId}
             provinceId={locProvinceId}
-            townId={locTownId}
-            zoneId={locZoneId}
+            regionId={locRegionId}
+            municipalityId={locMunicipalityId}
             onBackToCountries={() => setView("loc-countries")}
             onBackToProvinces={() => setView("loc-provinces")}
-            onBackToTowns={() => setView("loc-towns")}
-            onBackToTownDetail={() => setView("loc-town-detail")}
+            onBackToRegions={() => setView("loc-regions")}
+            onBackToMunicipalities={() => setView("loc-municipalities")}
+            onEditBorough={(boroughId) => { setLocBoroughId(boroughId); setView("loc-borough-form"); }}
+          />
+        )}
+        {view === "loc-borough-form" && (
+          <BoroughFormPage
+            countryId={locCountryId}
+            provinceId={locProvinceId}
+            regionId={locRegionId}
+            municipalityId={locMunicipalityId}
+            boroughId={locBoroughId}
+            onBackToCountries={() => setView("loc-countries")}
+            onBackToProvinces={() => setView("loc-provinces")}
+            onBackToRegions={() => setView("loc-regions")}
+            onBackToMunicipalities={() => setView("loc-municipalities")}
+            onBackToMunicipalityDetail={() => setView("loc-municipality-detail")}
           />
         )}
 

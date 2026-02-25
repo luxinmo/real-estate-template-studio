@@ -12,9 +12,9 @@ interface LocationSelectorProps {
 }
 
 const LocationSelector = ({
-  value = { country: null, province: null, town: null, zone: null },
+  value = { country: null, province: null, region: null, municipality: null, borough: null },
   onChange,
-  maxLevel = "zone",
+  maxLevel = "borough",
   className = "",
 }: LocationSelectorProps) => {
   const maxIdx = LEVEL_ORDER.indexOf(maxLevel);
@@ -30,8 +30,9 @@ const LocationSelector = ({
     const map: Record<LocationLevel, typeof mockLocations> = {
       country: [],
       province: [],
-      town: [],
-      zone: [],
+      region: [],
+      municipality: [],
+      borough: [],
     };
     for (const lv of levels) {
       const parentId = parentForLevel(lv);
@@ -51,7 +52,6 @@ const LocationSelector = ({
   const handleChange = (level: LocationLevel, id: string | null) => {
     const idx = LEVEL_ORDER.indexOf(level);
     const next = { ...value, [level]: id };
-    // Clear children
     for (let i = idx + 1; i < LEVEL_ORDER.length; i++) {
       next[LEVEL_ORDER[i]] = null;
     }
@@ -59,7 +59,7 @@ const LocationSelector = ({
   };
 
   return (
-    <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 ${className}`}>
+    <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 ${className}`}>
       {levels.map((lv) => {
         const options = optionsForLevel[lv];
         const parentId = parentForLevel(lv);
