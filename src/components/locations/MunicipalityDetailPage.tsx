@@ -1,39 +1,20 @@
 import { useState, useMemo, useCallback } from "react";
-import { Plus, Pencil, Trash2, Check, Maximize2, Minimize2, PanelLeft } from "lucide-react";
+import { Plus, Pencil, Trash2, Maximize2, Minimize2, PanelLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { LocationNode, LANGUAGES } from "./types";
+import { LocationNode } from "./types";
 import { mockLocations } from "./mock-data";
-import LocationSidebar, { SidebarHeader } from "./shared/LocationSidebar";
+import { SidebarHeader } from "./shared/LocationSidebar";
 import LocationBreadcrumb from "./shared/LocationBreadcrumb";
-import MultilingualContent from "./shared/MultilingualContent";
+import LocationEditPanel from "./shared/LocationEditPanel";
 import MapPanel, { MapPolygon } from "./shared/MapPanel";
 
 const PALETTE = ["#3b82f6", "#8b5cf6", "#f59e0b", "#10b981", "#ef4444", "#ec4899", "#06b6d4", "#84cc16"];
-
-const FlagSelector = ({ active, onChange, data }: {
-  active: string; onChange: (code: string) => void; data: Record<string, string>;
-}) => (
-  <div className="flex flex-wrap gap-1">
-    {LANGUAGES.map((l) => (
-      <button key={l.code} type="button" onClick={() => onChange(l.code)}
-        className={`relative flex items-center gap-0.5 rounded-md px-2 py-1 text-[11px] font-medium transition-all ${
-          active === l.code ? "ring-2 ring-primary bg-primary/5 text-foreground" : "bg-muted text-muted-foreground hover:bg-accent"
-        }`}>
-        <span className="text-sm">{l.flag}</span>
-        <span className="uppercase">{l.code}</span>
-        {data[l.code] && <Check className="h-2 w-2 text-emerald-500 absolute -top-0.5 -right-0.5" />}
-      </button>
-    ))}
-  </div>
-);
 
 interface MunicipalityDetailPageProps {
   countryId: string;
@@ -64,11 +45,8 @@ const MunicipalityDetailPage = ({
   const [newActive, setNewActive] = useState(true);
   const [drawnGeo, setDrawnGeo] = useState("");
 
-  const [descriptions, setDescriptions] = useState<Record<string, string>>({});
-  const [seoOpen, setSeoOpen] = useState(false);
-  const [seoLang, setSeoLang] = useState("en");
-  const [seoTitles, setSeoTitles] = useState<Record<string, string>>({});
-  const [seoDescs, setSeoDescs] = useState<Record<string, string>>({});
+  // Edit mode for the municipality itself
+  const [editingMunicipality, setEditingMunicipality] = useState(false);
 
   const country = locations.find((n) => n.id === countryId);
   const province = locations.find((n) => n.id === provinceId);
@@ -80,7 +58,7 @@ const MunicipalityDetailPage = ({
   );
 
   const mapPolygons: MapPolygon[] = useMemo(
-    () => boroughs
+    () => editingMunicipality ? [] : boroughs
       .filter((b) => b.geojson && visibleBoroughs.has(b.id))
       .map((b, i) => ({
         id: b.id,
@@ -89,7 +67,7 @@ const MunicipalityDetailPage = ({
         color: PALETTE[i % PALETTE.length],
         highlighted: false,
       })),
-    [boroughs, visibleBoroughs],
+    [boroughs, visibleBoroughs, editingMunicipality],
   );
 
   const toggleBoroughVisibility = (id: string) => {
@@ -131,143 +109,150 @@ const MunicipalityDetailPage = ({
 
   return (
     <div className="flex-1 flex min-h-0 overflow-hidden relative">
+      {/* Left panel — dynamic width */}
       {!mapFullscreen && (
-        <LocationSidebar>
-          <SidebarHeader>
-            <LocationBreadcrumb segments={[
-              { label: "Locations", onClick: onBackToCountries },
-              { label: country?.name ?? "", onClick: onBackToProvinces },
-              { label: province?.name ?? "", onClick: onBackToRegions },
-              { label: region?.name ?? "", onClick: onBackToMunicipalities },
-              { label: municipality?.name ?? "" },
-            ]} />
-            <div className="flex items-center justify-between mt-1">
-              <h2 className="text-[15px] font-semibold text-foreground">{municipality?.name}</h2>
-              <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setMapFullscreen(true)} title="Expand map">
-                <Maximize2 className="h-3.5 w-3.5" />
-              </Button>
-            </div>
-          </SidebarHeader>
+        <div
+          className="shrink-0 border-r border-border flex flex-col bg-card overflow-hidden"
+          style={{ width: editingMunicipality ? '70%' : '320px', transition: 'width 300ms ease' }}
+        >
+          {editingMunicipality ? (
+            <LocationEditPanel
+              node={municipality}
+              level="municipality"
+              onClose={() => setEditingMunicipality(false)}
+              onSave={() => setEditingMunicipality(false)}
+            />
+          ) : (
+            <>
+              <SidebarHeader>
+                <LocationBreadcrumb segments={[
+                  { label: "Locations", onClick: onBackToCountries },
+                  { label: country?.name ?? "", onClick: onBackToProvinces },
+                  { label: province?.name ?? "", onClick: onBackToRegions },
+                  { label: region?.name ?? "", onClick: onBackToMunicipalities },
+                  { label: municipality?.name ?? "" },
+                ]} />
+                <div className="flex items-center justify-between mt-1">
+                  <h2 className="text-[15px] font-semibold text-foreground">{municipality?.name}</h2>
+                  <div className="flex items-center gap-1">
+                    <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setEditingMunicipality(true)} title="Edit municipality">
+                      <Pencil className="h-3 w-3" />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setMapFullscreen(true)} title="Expand map">
+                      <Maximize2 className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                </div>
+              </SidebarHeader>
 
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0">
-            <div className="px-3 pt-2 shrink-0">
-              <TabsList className="h-8 w-full">
-                <TabsTrigger value="boroughs" className="text-[11px] flex-1">Boroughs</TabsTrigger>
-                <TabsTrigger value="info" className="text-[11px] flex-1">Info</TabsTrigger>
-              </TabsList>
-            </div>
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0">
+                <div className="px-3 pt-2 shrink-0">
+                  <TabsList className="h-8 w-full">
+                    <TabsTrigger value="boroughs" className="text-[11px] flex-1">Boroughs</TabsTrigger>
+                    <TabsTrigger value="info" className="text-[11px] flex-1">Info</TabsTrigger>
+                  </TabsList>
+                </div>
 
-            <TabsContent value="boroughs" className="flex-1 min-h-0 mt-0 flex flex-col">
-              <ScrollArea className="flex-1 min-h-0 px-3 pt-2">
-                <div className="space-y-0.5 pb-3">
-                  {boroughs.map((b) => {
-                    const isVisible = visibleBoroughs.has(b.id);
-                    return (
-                      <div
-                        key={b.id}
-                        className={`flex items-center gap-2 rounded-lg px-2.5 py-1.5 transition-colors ${
-                          isVisible ? "bg-primary/5" : "hover:bg-accent"
-                        }`}
-                      >
-                        <Switch
-                          checked={isVisible}
-                          onCheckedChange={() => toggleBoroughVisibility(b.id)}
-                          className="scale-[0.7]"
-                        />
-                        <span className={`h-1.5 w-1.5 rounded-full ${b.active ? "bg-emerald-500" : "bg-muted-foreground/30"}`} />
-                        <span className="flex-1 text-[12px] font-medium text-foreground truncate">{b.name}</span>
-                        {b.geojson ? (
-                          <Badge className="text-[8px] bg-emerald-500/10 text-emerald-700 border-emerald-500/20">Geo</Badge>
-                        ) : (
-                          <Badge variant="secondary" className="text-[8px]">—</Badge>
-                        )}
-                        <Button variant="ghost" size="icon" className="h-5 w-5" onClick={() => onEditBorough(b.id)}>
-                          <Pencil className="h-2.5 w-2.5" />
-                        </Button>
-                        <Button variant="ghost" size="icon" className="h-5 w-5 text-destructive" onClick={() => handleDeleteBorough(b.id)}>
-                          <Trash2 className="h-2.5 w-2.5" />
-                        </Button>
-                      </div>
-                    );
-                  })}
+                <TabsContent value="boroughs" className="flex-1 min-h-0 mt-0 flex flex-col">
+                  <ScrollArea className="flex-1 min-h-0 px-3 pt-2">
+                    <div className="space-y-0.5 pb-3">
+                      {boroughs.map((b) => {
+                        const isVisible = visibleBoroughs.has(b.id);
+                        return (
+                          <div
+                            key={b.id}
+                            className={`flex items-center gap-2 rounded-lg px-2.5 py-1.5 transition-colors ${
+                              isVisible ? "bg-primary/5" : "hover:bg-accent"
+                            }`}
+                          >
+                            <Switch
+                              checked={isVisible}
+                              onCheckedChange={() => toggleBoroughVisibility(b.id)}
+                              className="scale-[0.7]"
+                            />
+                            <span className={`h-1.5 w-1.5 rounded-full ${b.active ? "bg-emerald-500" : "bg-muted-foreground/30"}`} />
+                            <span className="flex-1 text-[12px] font-medium text-foreground truncate">{b.name}</span>
+                            {b.geojson ? (
+                              <Badge className="text-[8px] bg-emerald-500/10 text-emerald-700 border-emerald-500/20">Geo</Badge>
+                            ) : (
+                              <Badge variant="secondary" className="text-[8px]">—</Badge>
+                            )}
+                            <Button variant="ghost" size="icon" className="h-5 w-5" onClick={() => onEditBorough(b.id)}>
+                              <Pencil className="h-2.5 w-2.5" />
+                            </Button>
+                            <Button variant="ghost" size="icon" className="h-5 w-5 text-destructive" onClick={() => handleDeleteBorough(b.id)}>
+                              <Trash2 className="h-2.5 w-2.5" />
+                            </Button>
+                          </div>
+                        );
+                      })}
 
-                  {boroughs.length === 0 && !adding && (
-                    <p className="text-[11px] text-muted-foreground text-center py-4">No boroughs</p>
-                  )}
+                      {boroughs.length === 0 && !adding && (
+                        <p className="text-[11px] text-muted-foreground text-center py-4">No boroughs</p>
+                      )}
 
-                  {adding && (
-                    <div className="rounded-lg border border-border bg-muted/30 p-2.5 space-y-2 mt-1">
-                      <div className="space-y-1">
-                        <Label className="text-[10px]">Borough name *</Label>
-                        <Input value={newName} onChange={(e) => setNewName(e.target.value)} className="h-7 text-[11px]" />
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Switch checked={newActive} onCheckedChange={setNewActive} className="scale-[0.75]" />
-                        <Label className="text-[10px]">Active</Label>
-                      </div>
-                      <div className="flex gap-1.5">
-                        <Button size="sm" className="h-6 text-[10px]" onClick={handleSaveBorough} disabled={!newName.trim()}>Save</Button>
-                        <Button size="sm" variant="ghost" className="h-6 text-[10px]"
-                          onClick={() => { setAdding(false); setNewName(""); }}>Cancel</Button>
-                      </div>
+                      {adding && (
+                        <div className="rounded-lg border border-border bg-muted/30 p-2.5 space-y-2 mt-1">
+                          <div className="space-y-1">
+                            <Label className="text-[10px]">Borough name *</Label>
+                            <Input value={newName} onChange={(e) => setNewName(e.target.value)} className="h-7 text-[11px]" />
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Switch checked={newActive} onCheckedChange={setNewActive} className="scale-[0.75]" />
+                            <Label className="text-[10px]">Active</Label>
+                          </div>
+                          <div className="flex gap-1.5">
+                            <Button size="sm" className="h-6 text-[10px]" onClick={handleSaveBorough} disabled={!newName.trim()}>Save</Button>
+                            <Button size="sm" variant="ghost" className="h-6 text-[10px]"
+                              onClick={() => { setAdding(false); setNewName(""); }}>Cancel</Button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </ScrollArea>
+
+                  {!adding && (
+                    <div className="px-3 py-2 border-t border-border shrink-0">
+                      <Button variant="outline" size="sm" className="w-full gap-1 text-[11px] h-7"
+                        onClick={() => setDrawMode(true)}>
+                        <Plus className="h-3 w-3" /> Add borough
+                      </Button>
                     </div>
                   )}
-                </div>
-              </ScrollArea>
+                </TabsContent>
 
-              {!adding && (
-                <div className="px-3 py-2 border-t border-border shrink-0">
-                  <Button variant="outline" size="sm" className="w-full gap-1 text-[11px] h-7"
-                    onClick={() => setDrawMode(true)}>
-                    <Plus className="h-3 w-3" /> Add borough
-                  </Button>
-                </div>
-              )}
-            </TabsContent>
-
-            <TabsContent value="info" className="flex-1 min-h-0 mt-0 overflow-auto">
-              <div className="p-3 space-y-4">
-                <div className="space-y-2">
-                  <Label className="text-[11px] font-semibold">Description content</Label>
-                  <MultilingualContent values={descriptions} onChange={setDescriptions} minHeight={200} />
-                </div>
-
-                <Collapsible open={seoOpen} onOpenChange={setSeoOpen}>
-                  <CollapsibleTrigger className="flex items-center gap-1.5 text-[12px] font-medium text-muted-foreground hover:text-foreground">
-                    <span className={`transition-transform text-[10px] ${seoOpen ? "rotate-90" : ""}`}>▶</span>
-                    SEO Settings
-                  </CollapsibleTrigger>
-                  <CollapsibleContent className="mt-2 space-y-3 pl-3 border-l-2 border-muted">
-                    <FlagSelector active={seoLang} onChange={setSeoLang} data={seoTitles} />
-                    <div className="space-y-1">
-                      <Label className="text-[10px]">Meta title</Label>
-                      <Input value={seoTitles[seoLang] ?? ""}
-                        onChange={(e) => setSeoTitles((p) => ({ ...p, [seoLang]: e.target.value }))}
-                        className="h-7 text-[11px]" />
+                <TabsContent value="info" className="flex-1 min-h-0 mt-0 overflow-auto">
+                  <div className="p-3 space-y-4">
+                    <Button variant="outline" size="sm" className="w-full gap-1 text-[11px] h-8"
+                      onClick={() => setEditingMunicipality(true)}>
+                      <Pencil className="h-3 w-3" /> Edit municipality details
+                    </Button>
+                    <div className="space-y-2 text-[11px] text-muted-foreground">
+                      <p><span className="font-medium text-foreground">Name:</span> {municipality?.name}</p>
+                      <p><span className="font-medium text-foreground">Safe name:</span> <span className="font-mono">{municipality?.safeName}</span></p>
+                      <p><span className="font-medium text-foreground">Active:</span> {municipality?.active ? "Yes" : "No"}</p>
+                      <p><span className="font-medium text-foreground">Order:</span> {municipality?.order}</p>
+                      <p><span className="font-medium text-foreground">Boroughs:</span> {boroughs.length}</p>
                     </div>
-                    <div className="space-y-1">
-                      <Label className="text-[10px]">Meta description</Label>
-                      <Textarea value={seoDescs[seoLang] ?? ""}
-                        onChange={(e) => setSeoDescs((p) => ({ ...p, [seoLang]: e.target.value }))}
-                        rows={2} className="text-[11px]" />
-                    </div>
-                  </CollapsibleContent>
-                </Collapsible>
-              </div>
-            </TabsContent>
-          </Tabs>
-        </LocationSidebar>
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </>
+          )}
+        </div>
       )}
 
-      <div className="flex-1 min-w-0 relative">
+      {/* MAP */}
+      <div className="flex-1 min-w-0" style={{ transition: 'width 300ms ease' }}>
         <MapPanel
-          polygons={mapPolygons}
-          boundaryGeojson={municipality?.geojson}
+          polygons={editingMunicipality ? [] : mapPolygons}
+          geometry={editingMunicipality ? municipality?.geojson ?? undefined : undefined}
+          boundaryGeojson={editingMunicipality ? region?.geojson : municipality?.geojson}
           center={[40, -3]}
           zoom={6}
-          focusedPolygonId={focusedBoroughId}
-          drawMode={drawMode}
-          onPolygonClick={handlePolygonClick}
+          focusedPolygonId={editingMunicipality ? null : focusedBoroughId}
+          drawMode={!editingMunicipality && drawMode}
+          onPolygonClick={editingMunicipality ? undefined : handlePolygonClick}
           onDrawComplete={handleDrawComplete}
           onCancelDraw={() => setDrawMode(false)}
         >
@@ -349,7 +334,7 @@ const MunicipalityDetailPage = ({
             </>
           )}
 
-          {!mapFullscreen && !drawMode && (
+          {!mapFullscreen && !editingMunicipality && !drawMode && (
             <>
               <Button
                 size="sm"
@@ -367,7 +352,7 @@ const MunicipalityDetailPage = ({
               </Button>
             </>
           )}
-          {drawMode && (
+          {!editingMunicipality && drawMode && (
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-[1000] bg-card border border-border rounded-lg px-4 py-2 shadow-lg flex items-center gap-3">
               <p className="text-[11px] text-muted-foreground">Click points · double-click to finish</p>
               <Button size="sm" variant="ghost" className="h-6 text-[11px]" onClick={() => setDrawMode(false)}>Cancel</Button>
