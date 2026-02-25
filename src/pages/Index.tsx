@@ -3,6 +3,7 @@ import AppSidebar from "@/components/AppSidebar";
 import HeaderBar from "@/components/HeaderBar";
 import { ContactsListPage, AddContactPage, ContactDetailPage } from "@/components/contacts";
 import { CountriesPage, ProvincesPage, RegionsPage, MunicipalitiesPage, MunicipalityDetailPage, BoroughFormPage } from "@/components/locations";
+import { FuentesPage, MapeoPage, HistorialPage, SchedulerPage, PendientesPage } from "@/components/importer";
 import PropertiesPage from "@/components/PropertiesPage";
 import PropertyDetailPage from "@/components/PropertyDetailPage";
 import AddPropertyPage from "@/components/AddPropertyPage";
@@ -13,7 +14,8 @@ type View =
   | "dashboard" | "properties" | "property-detail" | "add-property"
   | "contacts" | "add-contact" | "contact-detail"
   | "agencies" | "users" | "company" | "settings" | "components"
-  | "loc-countries" | "loc-provinces" | "loc-regions" | "loc-municipalities" | "loc-municipality-detail" | "loc-borough-form";
+  | "loc-countries" | "loc-provinces" | "loc-regions" | "loc-municipalities" | "loc-municipality-detail" | "loc-borough-form"
+  | "imp-fuentes" | "imp-mapeo" | "imp-historial" | "imp-scheduler" | "imp-pendientes";
 
 const PlaceholderPage = ({ title }: { title: string }) => (
   <div className="flex-1 overflow-auto">
@@ -36,10 +38,15 @@ const Index = () => {
   const [locMunicipalityId, setLocMunicipalityId] = useState("");
   const [locBoroughId, setLocBoroughId] = useState<string | null>(null);
 
+  // Importer
+  const [impSourceId, setImpSourceId] = useState("");
+
   const sidebarView = (() => {
     if (["add-contact", "contact-detail"].includes(view)) return "contacts";
     if (["property-detail", "add-property"].includes(view)) return "properties";
     if (view.startsWith("loc-")) return "locations";
+    if (view === "imp-mapeo") return "imp-fuentes";
+    if (view.startsWith("imp-")) return view;
     return view;
   })();
 
@@ -123,6 +130,20 @@ const Index = () => {
             onBackToMunicipalityDetail={() => setView("loc-municipality-detail")}
           />
         )}
+
+        {/* Importer */}
+        {view === "imp-fuentes" && (
+          <FuentesPage
+            onOpenMapeo={(id) => { setImpSourceId(id); setView("imp-mapeo"); }}
+            onOpenHistorial={() => setView("imp-historial")}
+          />
+        )}
+        {view === "imp-mapeo" && (
+          <MapeoPage sourceId={impSourceId} onBack={() => setView("imp-fuentes")} />
+        )}
+        {view === "imp-historial" && <HistorialPage />}
+        {view === "imp-scheduler" && <SchedulerPage />}
+        {view === "imp-pendientes" && <PendientesPage />}
 
         {view === "components" && <ComponentsPage />}
         {view === "users" && <UsersPage />}

@@ -1,4 +1,4 @@
-import { Building2, LayoutGrid, Home, Users, Building, UserCircle, Briefcase, Settings, X, Component, MapPin } from "lucide-react";
+import { Building2, LayoutGrid, Home, Users, Building, UserCircle, Briefcase, Settings, X, Component, MapPin, FileDown, FolderClock, Timer, AlertTriangle } from "lucide-react";
 
 const topItems = [
   { icon: LayoutGrid, label: "Dashboard", view: "dashboard" },
@@ -7,6 +7,13 @@ const topItems = [
   { icon: Building, label: "Agencias", view: "agencies" },
   { icon: MapPin, label: "Locations", view: "locations" },
   { icon: Component, label: "Componentes", view: "components" },
+];
+
+const importerItems = [
+  { icon: FileDown, label: "Fuentes", view: "imp-fuentes" },
+  { icon: FolderClock, label: "Historial", view: "imp-historial" },
+  { icon: Timer, label: "Programador", view: "imp-scheduler" },
+  { icon: AlertTriangle, label: "Pendientes", view: "imp-pendientes", badge: 19 },
 ];
 
 const bottomItems = [
@@ -86,6 +93,28 @@ const AppSidebar = ({ currentView, onNavigate, open, onClose }: AppSidebarProps)
         {/* Nav */}
         <nav className="flex-1 px-3 py-4 space-y-0.5">
           {topItems.map(renderItem)}
+          <div className="!my-3 mx-3 border-t border-sidebar-custom-border" />
+          <p className="px-3 mb-1 text-[10px] font-semibold uppercase tracking-widest text-sidebar-custom-fg/50">Importador</p>
+          {importerItems.map(item => {
+            const isActive = currentView === item.view;
+            return (
+              <button
+                key={item.label}
+                onClick={() => handleNav(item.view)}
+                className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-medium transition-all ${
+                  isActive
+                    ? "bg-sidebar-custom-active text-sidebar-custom-fg-active"
+                    : "text-sidebar-custom-fg hover:bg-sidebar-custom-hover"
+                }`}
+              >
+                <item.icon className="h-4 w-4 shrink-0" strokeWidth={isActive ? 2 : 1.5} />
+                <span className="flex-1 text-left">{item.label}</span>
+                {"badge" in item && item.badge ? (
+                  <span className="flex h-4.5 min-w-[18px] items-center justify-center rounded-full bg-amber-500 px-1.5 text-[10px] font-bold text-white">{item.badge}</span>
+                ) : null}
+              </button>
+            );
+          })}
           <div className="!my-3 mx-3 border-t border-sidebar-custom-border" />
           {bottomItems.map(renderItem)}
         </nav>
