@@ -315,21 +315,21 @@ const LuxuryLandingPage = () => {
       </section>
 
       {/* ─── FEATURED PROPERTIES ─── */}
-      <section className="py-12 md:py-16 bg-white">
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
+      <section className="py-10 md:py-16 bg-white">
+        <div className="max-w-[1400px] mx-auto px-3 sm:px-6 lg:px-10">
           <FadeIn>
-            <div className="text-center mb-10">
+            <div className="text-center mb-8 sm:mb-10">
               <p className="text-[10px] tracking-[0.35em] uppercase text-luxury-black/40 mb-2">Portfolio</p>
               <h2 className="text-2xl md:text-3xl font-light text-luxury-black font-serif tracking-tight">Featured Properties</h2>
               <div className="w-12 h-[1px] bg-neutral-300 mx-auto mt-4" />
             </div>
           </FadeIn>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
             {PROPERTIES.map((p, i) => (
               <FadeIn key={i} delay={i * 0.1}>
                 <div className="group cursor-pointer">
-                  <div className="relative overflow-hidden aspect-[3/4]">
+                  <div className="relative overflow-hidden aspect-[4/3] sm:aspect-[3/4]">
                     <img src={p.image} alt={p.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                     <div className="absolute inset-0 bg-luxury-black/0 group-hover:bg-luxury-black/30 transition-all duration-500 flex items-center justify-center">
                       <span className="text-[11px] tracking-[0.2em] uppercase text-white opacity-0 group-hover:opacity-100 transition-opacity duration-500 border border-white/50 px-5 py-2">View Details</span>
