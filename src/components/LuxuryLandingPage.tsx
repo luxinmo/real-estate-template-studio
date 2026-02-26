@@ -125,7 +125,7 @@ const LuxuryLandingPage = () => {
           {/* Left nav links */}
           <div className="hidden lg:flex items-center gap-8">
             {NAV_LEFT.map((l) => (
-              <a key={l} href="#" className={`text-[11px] tracking-[0.18em] uppercase font-normal transition-colors duration-300 ${scrolled ? "text-luxury-black/60 hover:text-luxury-black" : "text-white/70 hover:text-white"}`}>{l}</a>
+              <a key={l} href="#" className={`text-[12.5px] tracking-[0.14em] uppercase font-medium transition-colors duration-300 ${scrolled ? "text-luxury-black/70 hover:text-luxury-black" : "text-white/90 hover:text-white"}`}>{l}</a>
             ))}
           </div>
 
@@ -134,7 +134,7 @@ const LuxuryLandingPage = () => {
             <span className={`font-serif text-lg md:text-xl tracking-[0.3em] font-light transition-colors duration-300 ${scrolled ? "text-luxury-black" : "text-white"}`}>
               {BRAND_NAME}
             </span>
-            <span className={`text-[7px] tracking-[0.35em] uppercase font-light transition-colors duration-300 ${scrolled ? "text-luxury-black/40" : "text-white/40"}`}>
+            <span className={`text-[8px] tracking-[0.35em] uppercase font-light transition-colors duration-300 ${scrolled ? "text-luxury-black/50" : "text-white/50"}`}>
               Real Estate
             </span>
           </div>
@@ -142,7 +142,7 @@ const LuxuryLandingPage = () => {
           {/* Right nav links */}
           <div className="hidden lg:flex items-center gap-8">
             {NAV_RIGHT.map((l) => (
-              <a key={l} href="#" className={`text-[11px] tracking-[0.18em] uppercase font-normal transition-colors duration-300 ${scrolled ? "text-luxury-black/60 hover:text-luxury-black" : "text-white/70 hover:text-white"}`}>{l}</a>
+              <a key={l} href="#" className={`text-[12.5px] tracking-[0.14em] uppercase font-medium transition-colors duration-300 ${scrolled ? "text-luxury-black/70 hover:text-luxury-black" : "text-white/90 hover:text-white"}`}>{l}</a>
             ))}
           </div>
 
