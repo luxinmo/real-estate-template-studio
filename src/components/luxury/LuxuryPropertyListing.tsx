@@ -167,7 +167,7 @@ const PropertyCard = ({ property }: { property: typeof PROPERTIES[0] }) => {
   const [liked, setLiked] = useState(false);
 
   return (
-    <a href={`/property/${property.id}`} className="group grid grid-cols-1 md:grid-cols-12 gap-0 border-b border-neutral-100 pb-8 mb-8 last:border-0 last:pb-0 last:mb-0">
+    <a href={`/property/${property.id}`} className="group grid grid-cols-1 md:grid-cols-12 gap-0 bg-neutral-50 border border-neutral-200 rounded-sm overflow-hidden mb-6 hover:shadow-md transition-shadow duration-300">
       {/* Image */}
       <div className="md:col-span-5 relative overflow-hidden aspect-[16/10] md:aspect-auto md:h-full min-h-[220px]">
         <img src={property.image} alt={property.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 absolute inset-0" />
