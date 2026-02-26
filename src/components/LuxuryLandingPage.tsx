@@ -232,8 +232,8 @@ const LuxuryLandingPage = () => {
                 <p className="text-[11px] tracking-[0.12em] uppercase text-luxury-black/40 mt-1.5 font-light">Portfolio Value</p>
               </div>
               <div>
-                <p className="text-3xl md:text-4xl font-light text-luxury-black font-serif">2</p>
-                <p className="text-[11px] tracking-[0.12em] uppercase text-luxury-black/40 mt-1.5 font-light">Exclusive Locations</p>
+                <p className="text-3xl md:text-4xl font-light text-luxury-black font-serif">120+</p>
+                <p className="text-[11px] tracking-[0.12em] uppercase text-luxury-black/40 mt-1.5 font-light">Off-Market Properties</p>
               </div>
               <div>
                 <p className="text-3xl md:text-4xl font-light text-luxury-black font-serif">25+</p>
@@ -324,12 +324,12 @@ const LuxuryLandingPage = () => {
             <h2 className="text-2xl md:text-3xl font-light text-luxury-black font-serif tracking-tight mb-8">The Journal</h2>
           </FadeIn>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
             {/* Featured article — large left */}
             <FadeIn className="lg:col-span-7">
-              <a href="#" className="group block">
-                <div className="relative overflow-hidden aspect-[16/10] rounded-sm">
-                  <img src={BLOG_POSTS[0].image} alt={BLOG_POSTS[0].title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <a href="#" className="group block h-full">
+                <div className="relative overflow-hidden h-full min-h-[320px] lg:min-h-0 rounded-sm">
+                  <img src={BLOG_POSTS[0].image} alt={BLOG_POSTS[0].title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 absolute inset-0" />
                   <div className="absolute inset-0 bg-gradient-to-t from-luxury-black/70 via-luxury-black/10 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-5 md:p-7">
                     <span className="text-[10px] tracking-[0.15em] uppercase text-white/50 font-light">{BLOG_POSTS[0].date}</span>
@@ -340,24 +340,48 @@ const LuxuryLandingPage = () => {
               </a>
             </FadeIn>
 
-            {/* Side articles — stacked right */}
-            <div className="lg:col-span-5 flex flex-col gap-5 lg:gap-6">
+            {/* Side articles — stacked right, evenly distributed */}
+            <div className="lg:col-span-5 flex flex-col justify-between gap-5 lg:gap-0">
               {BLOG_POSTS.slice(1).map((post, i) => (
                 <FadeIn key={i} delay={i * 0.1}>
-                  <a href="#" className="group flex gap-5 items-start">
-                    <div className="w-[120px] h-[80px] shrink-0 overflow-hidden rounded-sm">
+                  <a href="#" className="group flex gap-4 items-start">
+                    <div className="w-[140px] h-[95px] shrink-0 overflow-hidden rounded-sm">
                       <img src={post.image} alt={post.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                     </div>
                     <div className="flex-1 min-w-0 pt-0.5">
-                      <span className="text-[10px] tracking-[0.15em] uppercase text-luxury-black/35 font-light">{post.date}</span>
-                      <h4 className="text-[14px] font-normal text-luxury-black leading-[1.4] mt-1 group-hover:text-luxury-black/70 transition-colors duration-300 line-clamp-2">{post.title}</h4>
-                      <p className="text-[12px] text-luxury-black/40 font-light mt-1.5 line-clamp-2 leading-relaxed">{post.excerpt}</p>
+                      <span className="text-[10px] tracking-[0.18em] uppercase text-luxury-black/35 font-light">{post.date}</span>
+                      <h4 className="text-[14px] font-medium text-luxury-black leading-[1.35] mt-1 group-hover:text-luxury-black/70 transition-colors duration-300 line-clamp-2">{post.title}</h4>
+                      <p className="text-[12px] text-luxury-black/40 font-light mt-1 line-clamp-2 leading-relaxed">{post.excerpt}</p>
                     </div>
                   </a>
                 </FadeIn>
               ))}
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ─── NEWSLETTER ─── */}
+      <section className="py-14 md:py-20 bg-neutral-50/60">
+        <div className="max-w-xl mx-auto px-6 text-center">
+          <FadeIn>
+            <p className="text-[10px] tracking-[0.35em] uppercase text-luxury-black/40 mb-3">Stay Informed</p>
+            <h2 className="text-2xl md:text-3xl font-light text-luxury-black font-serif tracking-tight">The Private List</h2>
+            <p className="text-[13px] text-luxury-black/45 font-light mt-3 mb-8 leading-relaxed">
+              Receive exclusive off-market listings, market insights and invitations to private viewings — delivered discreetly to your inbox.
+            </p>
+            <form className="flex flex-col sm:flex-row gap-3" onSubmit={(e) => e.preventDefault()}>
+              <input
+                type="email"
+                placeholder="Your email address"
+                className="flex-1 border border-neutral-300 bg-white px-4 py-3 text-[13px] text-luxury-black placeholder:text-luxury-black/30 focus:outline-none focus:border-luxury-black/40 transition-colors duration-300"
+              />
+              <button type="submit" className="bg-luxury-black text-white text-[11px] tracking-[0.15em] uppercase px-8 py-3 hover:bg-luxury-black/85 transition-all duration-300 whitespace-nowrap">
+                Subscribe
+              </button>
+            </form>
+            <p className="text-[10px] text-luxury-black/25 mt-4 font-light">We respect your privacy. Unsubscribe at any time.</p>
+          </FadeIn>
         </div>
       </section>
 
