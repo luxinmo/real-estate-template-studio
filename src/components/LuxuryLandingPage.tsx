@@ -10,8 +10,8 @@ const BRAND_NAME = "PRESTIGE ESTATES";
 const NAV_LEFT = ["Home", "Properties", "Rentals"];
 const NAV_RIGHT = ["About", "Guides & Blog", "Message Us"];
 
-const INTRO_TITLE = "Villa George — Contemporary Villa with Sea Views in Sierra Blanca, Marbella";
-const INTRO_TEXT = "Prestige Estates is a curated luxury real estate advisory dedicated to connecting discerning clients with the world's most extraordinary properties. From sun-drenched Mediterranean villas to iconic Manhattan penthouses, we offer a bespoke service built on trust, discretion, and an uncompromising eye for quality. Every home in our portfolio is handpicked, every client relationship is personal, and every transaction is handled with the care it deserves.";
+const INTRO_TITLE = "Luxury Real Estate Specialists in Ibiza & Costa Blanca";
+const INTRO_TEXT = "Prestige Estates is a curated luxury real estate advisory specialising in the most exclusive properties across Ibiza and the Costa Blanca. From breathtaking seafront villas and penthouses to prestigious golf-side estates and new-build residences, we offer a bespoke service built on trust, discretion, and an uncompromising eye for quality. Every home in our portfolio is handpicked, every client relationship is personal, and every transaction is handled with absolute confidentiality through our Private Office.";
 
 const PROPERTIES = [
   { image: prop1, name: "The Skyline Penthouse", location: "Manhattan, New York", price: "€12,500,000", beds: 5, baths: 4, sqm: 420 },
@@ -21,10 +21,10 @@ const PROPERTIES = [
 ];
 
 const SERVICES = [
-  { icon: Star, title: "Exclusive Listings", desc: "Access to off-market properties and pre-launch opportunities reserved for our clients." },
+  { icon: Star, title: "Exclusive Listings", desc: "Villas, penthouses, estates, new builds, frontline beach & golf — access to off-market opportunities reserved for our clients." },
+  { icon: Lock, title: "Private Office", desc: "Total confidentiality guaranteed. Discreet transactions managed through our Private Office for high-profile clients." },
   { icon: Handshake, title: "White-Glove Service", desc: "Dedicated advisors guiding you through every step with unmatched attention to detail." },
   { icon: Shield, title: "Expert Negotiation", desc: "Decades of experience securing the finest terms for discerning buyers and sellers." },
-  { icon: Lock, title: "Discreet & Private", desc: "Your privacy is paramount. Every transaction handled with absolute confidentiality." },
 ];
 
 const BLOG_POSTS = [
@@ -232,8 +232,8 @@ const LuxuryLandingPage = () => {
                 <p className="text-[11px] tracking-[0.12em] uppercase text-luxury-black/40 mt-1.5 font-light">Portfolio Value</p>
               </div>
               <div>
-                <p className="text-3xl md:text-4xl font-light text-luxury-black font-serif">12</p>
-                <p className="text-[11px] tracking-[0.12em] uppercase text-luxury-black/40 mt-1.5 font-light">Countries</p>
+                <p className="text-3xl md:text-4xl font-light text-luxury-black font-serif">2</p>
+                <p className="text-[11px] tracking-[0.12em] uppercase text-luxury-black/40 mt-1.5 font-light">Exclusive Locations</p>
               </div>
               <div>
                 <p className="text-3xl md:text-4xl font-light text-luxury-black font-serif">25+</p>
