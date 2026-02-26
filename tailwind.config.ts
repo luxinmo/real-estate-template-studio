@@ -13,6 +13,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
+        serif: ["'Playfair Display'", "Georgia", "serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -71,6 +72,12 @@ export default {
           "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
+        },
+        luxury: {
+          black: "#0A0A0A",
+          charcoal: "#1A1A1A",
+          gold: "#C9A84C",
+          cream: "#F5F0E8",
         },
       },
       borderRadius: {

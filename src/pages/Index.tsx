@@ -7,6 +7,7 @@ import { FuentesPage, MapeoPage, HistorialPage, SchedulerPage, PendientesPage } 
 import PropertiesPage from "@/components/PropertiesPage";
 import PropertyDetailPage from "@/components/PropertyDetailPage";
 import AddPropertyPage from "@/components/AddPropertyPage";
+import LuxuryLandingPage from "@/components/LuxuryLandingPage";
 import UsersPage from "@/components/UsersPage";
 import ComponentsPage from "@/components/ComponentsPage";
 
@@ -15,7 +16,8 @@ type View =
   | "contacts" | "add-contact" | "contact-detail"
   | "agencies" | "users" | "company" | "settings" | "components"
   | "loc-countries" | "loc-provinces" | "loc-regions" | "loc-municipalities" | "loc-municipality-detail" | "loc-borough-form"
-  | "imp-fuentes" | "imp-mapeo" | "imp-historial" | "imp-scheduler" | "imp-pendientes";
+  | "imp-fuentes" | "imp-mapeo" | "imp-historial" | "imp-scheduler" | "imp-pendientes"
+  | "luxury-landing";
 
 const PlaceholderPage = ({ title }: { title: string }) => (
   <div className="flex-1 overflow-auto">
@@ -146,6 +148,7 @@ const Index = () => {
         {view === "imp-pendientes" && <PendientesPage />}
 
         {view === "components" && <ComponentsPage />}
+        {view === "luxury-landing" && <LuxuryLandingPage />}
         {view === "users" && <UsersPage />}
         {view === "company" && <PlaceholderPage title="Empresa" />}
         {view === "settings" && <PlaceholderPage title="Ajustes" />}
