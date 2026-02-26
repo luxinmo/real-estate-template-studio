@@ -74,7 +74,7 @@ const LuxuryLandingPage = () => {
   const scrolled = useScrolled();
 
   return (
-    <div className="flex-1 overflow-auto bg-luxury-black text-luxury-cream font-sans" style={{ fontFamily: "'Inter', sans-serif" }}>
+    <div className="flex-1 overflow-auto bg-white text-luxury-black font-sans" style={{ fontFamily: "'Inter', sans-serif" }}>
 
       {/* ─── NAVBAR ─── */}
       <nav
@@ -153,11 +153,11 @@ const LuxuryLandingPage = () => {
       </section>
 
       {/* ─── FEATURED PROPERTIES ─── */}
-      <section className="py-24 md:py-32 px-6 md:px-10 max-w-7xl mx-auto">
+      <section className="py-24 md:py-32 px-6 md:px-10 max-w-7xl mx-auto bg-white">
         <FadeIn>
           <div className="text-center mb-16">
-            <p className="text-[11px] tracking-[0.35em] uppercase text-luxury-gold/80 mb-4">Portfolio</p>
-            <h2 className="text-3xl md:text-4xl font-bold" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <p className="text-[11px] tracking-[0.35em] uppercase text-luxury-gold mb-4">Portfolio</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-luxury-black" style={{ fontFamily: "'Playfair Display', serif" }}>
               Featured Properties
             </h2>
             <div className="w-16 h-[1px] bg-luxury-gold/40 mx-auto mt-6" />
@@ -174,21 +174,19 @@ const LuxuryLandingPage = () => {
                     alt={p.name}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                  {/* Hover overlay */}
                   <div className="absolute inset-0 bg-luxury-black/0 group-hover:bg-luxury-black/40 transition-all duration-500 flex items-center justify-center">
-                    <span className="text-[12px] tracking-[0.2em] uppercase text-luxury-cream opacity-0 group-hover:opacity-100 transition-opacity duration-500 border border-luxury-cream/50 px-6 py-2.5">
+                    <span className="text-[12px] tracking-[0.2em] uppercase text-white opacity-0 group-hover:opacity-100 transition-opacity duration-500 border border-white/50 px-6 py-2.5">
                       View Details
                     </span>
                   </div>
-                  {/* Gold border glow on hover */}
                   <div className="absolute inset-0 border-2 border-transparent group-hover:border-luxury-gold/40 transition-all duration-500 pointer-events-none" />
                 </div>
 
                 <div className="pt-5 space-y-2">
-                  <p className="text-[11px] tracking-[0.2em] uppercase text-luxury-gold/70">{p.location}</p>
-                  <h3 className="text-lg font-semibold" style={{ fontFamily: "'Playfair Display', serif" }}>{p.name}</h3>
-                  <p className="text-xl font-bold text-luxury-cream/90">{p.price}</p>
-                  <div className="flex items-center gap-5 pt-2 text-[12px] text-luxury-cream/50">
+                  <p className="text-[11px] tracking-[0.2em] uppercase text-luxury-gold">{p.location}</p>
+                  <h3 className="text-lg font-semibold text-luxury-black" style={{ fontFamily: "'Playfair Display', serif" }}>{p.name}</h3>
+                  <p className="text-xl font-bold text-luxury-black/80">{p.price}</p>
+                  <div className="flex items-center gap-5 pt-2 text-[12px] text-luxury-black/50">
                     <span className="flex items-center gap-1.5"><Bed className="w-3.5 h-3.5" /> {p.beds} Beds</span>
                     <span className="flex items-center gap-1.5"><Bath className="w-3.5 h-3.5" /> {p.baths} Baths</span>
                     <span className="flex items-center gap-1.5"><Maximize className="w-3.5 h-3.5" /> {p.sqm} m²</span>
@@ -201,7 +199,7 @@ const LuxuryLandingPage = () => {
 
         <FadeIn delay={0.3}>
           <div className="text-center mt-16">
-            <button className="border border-luxury-gold/50 text-luxury-gold text-[12px] tracking-[0.15em] uppercase px-10 py-3.5 hover:bg-luxury-gold hover:text-luxury-black transition-all duration-300">
+            <button className="border border-luxury-gold text-luxury-gold text-[12px] tracking-[0.15em] uppercase px-10 py-3.5 hover:bg-luxury-gold hover:text-white transition-all duration-300">
               View All Properties
             </button>
           </div>
@@ -209,12 +207,12 @@ const LuxuryLandingPage = () => {
       </section>
 
       {/* ─── SERVICES ─── */}
-      <section className="py-24 md:py-32 bg-luxury-charcoal">
+      <section className="py-24 md:py-32 bg-neutral-50">
         <div className="max-w-7xl mx-auto px-6 md:px-10">
           <FadeIn>
             <div className="text-center mb-16">
-              <p className="text-[11px] tracking-[0.35em] uppercase text-luxury-gold/80 mb-4">Why Choose Us</p>
-              <h2 className="text-3xl md:text-4xl font-bold" style={{ fontFamily: "'Playfair Display', serif" }}>
+              <p className="text-[11px] tracking-[0.35em] uppercase text-luxury-gold mb-4">Why Choose Us</p>
+              <h2 className="text-3xl md:text-4xl font-bold text-luxury-black" style={{ fontFamily: "'Playfair Display', serif" }}>
                 A Standard Apart
               </h2>
               <div className="w-16 h-[1px] bg-luxury-gold/40 mx-auto mt-6" />
@@ -224,12 +222,12 @@ const LuxuryLandingPage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {SERVICES.map((s, i) => (
               <FadeIn key={i} delay={i * 0.1}>
-                <div className="text-center group p-6 border border-luxury-cream/[0.06] hover:border-luxury-gold/30 transition-all duration-500">
+                <div className="text-center group p-6 border border-neutral-200 hover:border-luxury-gold/40 bg-white transition-all duration-500">
                   <div className="w-14 h-14 mx-auto mb-5 flex items-center justify-center border border-luxury-gold/30 rounded-full group-hover:bg-luxury-gold/10 transition-all duration-500">
                     <s.icon className="w-6 h-6 text-luxury-gold" strokeWidth={1.2} />
                   </div>
-                  <h3 className="text-sm font-semibold tracking-wide mb-3 text-luxury-cream">{s.title}</h3>
-                  <p className="text-[13px] leading-relaxed text-luxury-cream/50">{s.desc}</p>
+                  <h3 className="text-sm font-semibold tracking-wide mb-3 text-luxury-black">{s.title}</h3>
+                  <p className="text-[13px] leading-relaxed text-luxury-black/50">{s.desc}</p>
                 </div>
               </FadeIn>
             ))}
@@ -238,47 +236,43 @@ const LuxuryLandingPage = () => {
       </section>
 
       {/* ─── FOOTER ─── */}
-      <footer className="border-t border-luxury-cream/[0.08] bg-luxury-black">
+      <footer className="border-t border-neutral-200 bg-white">
         <div className="max-w-7xl mx-auto px-6 md:px-10 py-16 md:py-20">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8">
-            {/* Brand */}
             <div className="md:col-span-1">
               <span className="text-lg tracking-[0.2em] text-luxury-gold font-bold block mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
                 {BRAND_NAME}
               </span>
-              <p className="text-[13px] text-luxury-cream/40 leading-relaxed">
+              <p className="text-[13px] text-luxury-black/40 leading-relaxed">
                 Curating extraordinary homes for exceptional lives since 2010.
               </p>
             </div>
 
-            {/* Quick Links */}
             <div>
-              <h4 className="text-[11px] tracking-[0.2em] uppercase text-luxury-cream/60 mb-5 font-semibold">Quick Links</h4>
+              <h4 className="text-[11px] tracking-[0.2em] uppercase text-luxury-black/50 mb-5 font-semibold">Quick Links</h4>
               <ul className="space-y-3">
                 {["Properties", "Services", "About Us", "Contact", "Privacy Policy"].map((l) => (
                   <li key={l}>
-                    <a href="#" className="text-[13px] text-luxury-cream/40 hover:text-luxury-gold transition-colors duration-300">{l}</a>
+                    <a href="#" className="text-[13px] text-luxury-black/40 hover:text-luxury-gold transition-colors duration-300">{l}</a>
                   </li>
                 ))}
               </ul>
             </div>
 
-            {/* Contact */}
             <div>
-              <h4 className="text-[11px] tracking-[0.2em] uppercase text-luxury-cream/60 mb-5 font-semibold">Contact</h4>
-              <ul className="space-y-3 text-[13px] text-luxury-cream/40">
+              <h4 className="text-[11px] tracking-[0.2em] uppercase text-luxury-black/50 mb-5 font-semibold">Contact</h4>
+              <ul className="space-y-3 text-[13px] text-luxury-black/40">
                 <li>{CONTACT.email}</li>
                 <li>{CONTACT.phone}</li>
                 <li>{CONTACT.city}</li>
               </ul>
             </div>
 
-            {/* Social */}
             <div>
-              <h4 className="text-[11px] tracking-[0.2em] uppercase text-luxury-cream/60 mb-5 font-semibold">Follow</h4>
+              <h4 className="text-[11px] tracking-[0.2em] uppercase text-luxury-black/50 mb-5 font-semibold">Follow</h4>
               <div className="flex gap-4">
                 {[Instagram, Linkedin, MessageCircle].map((Icon, i) => (
-                  <a key={i} href="#" className="w-10 h-10 border border-luxury-cream/10 flex items-center justify-center hover:border-luxury-gold/50 hover:text-luxury-gold text-luxury-cream/40 transition-all duration-300">
+                  <a key={i} href="#" className="w-10 h-10 border border-neutral-200 flex items-center justify-center hover:border-luxury-gold hover:text-luxury-gold text-luxury-black/40 transition-all duration-300">
                     <Icon className="w-4 h-4" strokeWidth={1.5} />
                   </a>
                 ))}
@@ -286,8 +280,8 @@ const LuxuryLandingPage = () => {
             </div>
           </div>
 
-          <div className="border-t border-luxury-cream/[0.06] mt-14 pt-8 text-center">
-            <p className="text-[11px] text-luxury-cream/30 tracking-wider">
+          <div className="border-t border-neutral-200 mt-14 pt-8 text-center">
+            <p className="text-[11px] text-luxury-black/30 tracking-wider">
               © 2025 {BRAND_NAME}. All rights reserved.
             </p>
           </div>
