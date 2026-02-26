@@ -90,10 +90,21 @@ const FadeIn = ({ children, className = "", delay = 0 }: { children: React.React
 
 /* ═══════════════════════════════════════════════════════════ */
 
+const LANGUAGES = [
+  { code: "EN", label: "English" },
+  { code: "ES", label: "Español" },
+  { code: "DE", label: "Deutsch" },
+  { code: "FR", label: "Français" },
+  { code: "RU", label: "Русский" },
+];
+
 const LuxuryLandingPage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const scrolled = useContainerScrolled(containerRef);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
+  const [currentLang, setCurrentLang] = useState("EN");
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -102,10 +113,17 @@ const LuxuryLandingPage = () => {
     return () => clearInterval(timer);
   }, []);
 
+  // Close mobile menu on resize to desktop
+  useEffect(() => {
+    const handler = () => { if (window.innerWidth >= 1024) setMobileMenuOpen(false); };
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
+
   return (
     <div ref={containerRef} className="flex-1 overflow-auto bg-white text-luxury-black font-sans relative">
 
-      {/* ─── NAVBAR (transparent over hero, white on scroll) ─── */}
+      {/* ─── NAVBAR ─── */}
       <nav
         className={`sticky top-0 z-50 transition-all duration-500 ${
           scrolled
@@ -114,12 +132,29 @@ const LuxuryLandingPage = () => {
         }`}
         style={{ marginBottom: scrolled ? 0 : '-68px' }}
       >
-        <div className="max-w-[1400px] mx-auto flex items-center justify-between px-6 lg:px-10 h-[68px]">
-          {/* Globe icon */}
-          <div className="hidden lg:flex items-center">
-            <button className={`transition-colors duration-300 ${scrolled ? "text-luxury-black/50 hover:text-luxury-black" : "text-white/50 hover:text-white"}`}>
-              <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.2}><circle cx="12" cy="12" r="10" /><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
+        <div className="max-w-[1400px] mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-10 h-[60px] lg:h-[68px]">
+          {/* Globe / Language - desktop */}
+          <div className="hidden lg:flex items-center relative">
+            <button
+              onClick={() => setLangOpen(!langOpen)}
+              className={`flex items-center gap-1.5 transition-colors duration-300 ${scrolled ? "text-luxury-black/60 hover:text-luxury-black" : "text-white/70 hover:text-white"}`}
+            >
+              <svg className="w-[16px] h-[16px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.2}><circle cx="12" cy="12" r="10" /><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
+              <span className="text-[11px] tracking-[0.1em] font-medium">{currentLang}</span>
             </button>
+            {langOpen && (
+              <div className="absolute top-full left-0 mt-2 bg-white shadow-lg border border-neutral-100 py-1 min-w-[140px]">
+                {LANGUAGES.map((lang) => (
+                  <button
+                    key={lang.code}
+                    onClick={() => { setCurrentLang(lang.code); setLangOpen(false); }}
+                    className={`w-full text-left px-4 py-2 text-[12px] hover:bg-neutral-50 transition-colors ${currentLang === lang.code ? "text-luxury-black font-medium" : "text-luxury-black/60"}`}
+                  >
+                    {lang.label}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Left nav links */}
@@ -131,10 +166,10 @@ const LuxuryLandingPage = () => {
 
           {/* Center logo */}
           <div className="flex flex-col items-center">
-            <span className={`font-serif text-lg md:text-xl tracking-[0.3em] font-light transition-colors duration-300 ${scrolled ? "text-luxury-black" : "text-white"}`}>
+            <span className={`font-serif text-base sm:text-lg md:text-xl tracking-[0.25em] sm:tracking-[0.3em] font-light transition-colors duration-300 ${scrolled ? "text-luxury-black" : "text-white"}`}>
               {BRAND_NAME}
             </span>
-            <span className={`text-[8px] tracking-[0.35em] uppercase font-light transition-colors duration-300 ${scrolled ? "text-luxury-black/50" : "text-white/50"}`}>
+            <span className={`text-[7px] sm:text-[8px] tracking-[0.35em] uppercase font-light transition-colors duration-300 ${scrolled ? "text-luxury-black/50" : "text-white/50"}`}>
               Real Estate
             </span>
           </div>
@@ -146,15 +181,50 @@ const LuxuryLandingPage = () => {
             ))}
           </div>
 
-          {/* Mobile menu */}
-          <button className={`lg:hidden transition-colors duration-300 ${scrolled ? "text-luxury-black/70" : "text-white/70"}`}>
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" /></svg>
+          {/* Mobile hamburger */}
+          <button
+            className={`lg:hidden transition-colors duration-300 ${scrolled ? "text-luxury-black/80" : "text-white/90"}`}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? (
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" /></svg>
+            ) : (
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" /></svg>
+            )}
           </button>
         </div>
+
+        {/* ─── MOBILE MENU OVERLAY ─── */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden bg-white border-t border-neutral-100 shadow-lg animate-in slide-in-from-top-2 duration-200">
+            <div className="px-6 py-6 flex flex-col gap-1">
+              {[...NAV_LEFT, ...NAV_RIGHT].map((l) => (
+                <a key={l} href="#" className="text-[13px] tracking-[0.12em] uppercase font-medium text-luxury-black/70 hover:text-luxury-black py-3 border-b border-neutral-50 transition-colors">
+                  {l}
+                </a>
+              ))}
+              {/* Language selector in mobile */}
+              <div className="mt-4 pt-4 border-t border-neutral-100">
+                <p className="text-[10px] tracking-[0.2em] uppercase text-luxury-black/40 mb-3">Language</p>
+                <div className="flex flex-wrap gap-2">
+                  {LANGUAGES.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => { setCurrentLang(lang.code); }}
+                      className={`px-3 py-1.5 text-[11px] tracking-[0.1em] border transition-colors ${currentLang === lang.code ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-200 text-luxury-black/60 hover:border-luxury-black/30"}`}
+                    >
+                      {lang.code}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* ─── HERO SLIDESHOW ─── */}
-      <section className="relative h-[85vh] min-h-[550px] flex items-center justify-center overflow-hidden">
+      <section className="relative h-[55vh] sm:h-[70vh] lg:h-[85vh] min-h-[400px] sm:min-h-[550px] flex items-center justify-center overflow-hidden">
         {HERO_SLIDES.map((slide, i) => (
           <div key={i} className="absolute inset-0 transition-opacity duration-[1.5s] ease-in-out" style={{ opacity: currentSlide === i ? 1 : 0 }}>
             <img src={slide.image} alt={slide.headline} className="w-full h-full object-cover" style={{ transform: currentSlide === i ? "scale(1.05)" : "scale(1)", transition: "transform 6s ease-out" }} />
@@ -164,37 +234,37 @@ const LuxuryLandingPage = () => {
 
         <div className="relative z-10 text-center max-w-4xl px-6">
           <FadeIn>
-            <p className="text-[11px] md:text-[12px] tracking-[0.35em] uppercase text-white/60 mb-6">The World's Finest Properties</p>
+            <p className="text-[10px] sm:text-[11px] md:text-[12px] tracking-[0.35em] uppercase text-white/60 mb-4 sm:mb-6">The World's Finest Properties</p>
           </FadeIn>
           <FadeIn delay={0.15}>
-            <h1 className="text-3xl sm:text-5xl md:text-7xl font-light leading-[1.1] mb-6 text-white drop-shadow-lg font-serif tracking-tight">
+            <h1 className="text-2xl sm:text-4xl md:text-7xl font-light leading-[1.1] mb-4 sm:mb-6 text-white drop-shadow-lg font-serif tracking-tight">
               {HERO_SLIDES[currentSlide].headline}
             </h1>
           </FadeIn>
           <FadeIn delay={0.3}>
-            <p className="text-sm md:text-lg text-white/60 max-w-xl mx-auto mb-10 leading-relaxed drop-shadow font-light">
+            <p className="text-xs sm:text-sm md:text-lg text-white/60 max-w-xl mx-auto mb-6 sm:mb-10 leading-relaxed drop-shadow font-light">
               {HERO_SLIDES[currentSlide].sub}
             </p>
           </FadeIn>
           <FadeIn delay={0.45}>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button className="bg-white text-luxury-black text-[11px] tracking-[0.15em] uppercase font-medium px-8 py-3.5 hover:bg-white/90 transition-all duration-300 flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <button className="w-full sm:w-auto bg-white text-luxury-black text-[11px] tracking-[0.15em] uppercase font-medium px-8 py-3.5 hover:bg-white/90 transition-all duration-300 flex items-center justify-center gap-2">
                 Explore Properties <ArrowRight className="w-4 h-4" />
               </button>
-              <button className="border border-white/40 text-white text-[11px] tracking-[0.15em] uppercase px-8 py-3.5 hover:bg-white hover:text-luxury-black transition-all duration-300 backdrop-blur-sm">
+              <button className="w-full sm:w-auto border border-white/40 text-white text-[11px] tracking-[0.15em] uppercase px-8 py-3.5 hover:bg-white hover:text-luxury-black transition-all duration-300 backdrop-blur-sm">
                 Book a Private Tour
               </button>
             </div>
           </FadeIn>
         </div>
 
-        <div className="absolute bottom-16 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+        <div className="absolute bottom-12 sm:bottom-16 left-1/2 -translate-x-1/2 flex gap-2 z-10">
           {HERO_SLIDES.map((_, i) => (
             <button key={i} onClick={() => setCurrentSlide(i)} className={`h-[2px] rounded-full transition-all duration-500 ${currentSlide === i ? "w-8 bg-white" : "w-4 bg-white/30 hover:bg-white/50"}`} />
           ))}
         </div>
 
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 text-white/30 animate-bounce">
+        <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 text-white/30 animate-bounce">
           <ChevronDown className="w-4 h-4" />
         </div>
       </section>
