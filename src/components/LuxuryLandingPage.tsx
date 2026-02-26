@@ -54,6 +54,18 @@ function useScrolled(threshold = 60) {
   return scrolled;
 }
 
+function useContainerScrolled(ref: React.RefObject<HTMLElement | null>, threshold = 60) {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const handler = () => setScrolled(el.scrollTop > threshold);
+    el.addEventListener("scroll", handler, { passive: true });
+    return () => el.removeEventListener("scroll", handler);
+  }, [ref, threshold]);
+  return scrolled;
+}
+
 function useFadeIn() {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
@@ -79,7 +91,8 @@ const FadeIn = ({ children, className = "", delay = 0 }: { children: React.React
 /* ═══════════════════════════════════════════════════════════ */
 
 const LuxuryLandingPage = () => {
-  const scrolled = useScrolled();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const scrolled = useContainerScrolled(containerRef);
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
@@ -90,15 +103,16 @@ const LuxuryLandingPage = () => {
   }, []);
 
   return (
-    <div className="flex-1 overflow-auto bg-white text-luxury-black font-sans">
+    <div ref={containerRef} className="flex-1 overflow-auto bg-white text-luxury-black font-sans relative">
 
-      {/* ─── NAVBAR ─── */}
+      {/* ─── NAVBAR (transparent over hero, white on scroll) ─── */}
       <nav
         className={`sticky top-0 z-50 transition-all duration-500 ${
           scrolled
-            ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-neutral-100"
-            : "bg-luxury-black"
+            ? "bg-white/95 backdrop-blur-md shadow-sm"
+            : "bg-transparent"
         }`}
+        style={{ marginBottom: scrolled ? 0 : '-68px' }}
       >
         <div className="max-w-[1400px] mx-auto flex items-center justify-between px-6 lg:px-10 h-[68px]">
           {/* Globe icon */}
