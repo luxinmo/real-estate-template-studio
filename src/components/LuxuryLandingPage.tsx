@@ -7,7 +7,8 @@ import prop3 from "@/assets/luxury-property-3.jpg";
 
 /* ─── Placeholder content ─── */
 const BRAND_NAME = "PRESTIGE ESTATES";
-const NAV_LINKS = ["Properties", "Services", "About", "Contact"];
+const NAV_LEFT = ["Home", "Properties", "Rentals"];
+const NAV_RIGHT = ["About", "Guides & Blog", "Message Us"];
 
 const INTRO_TITLE = "Villa George — Contemporary Villa with Sea Views in Sierra Blanca, Marbella";
 const INTRO_TEXT = "Prestige Estates is a curated luxury real estate advisory dedicated to connecting discerning clients with the world's most extraordinary properties. From sun-drenched Mediterranean villas to iconic Manhattan penthouses, we offer a bespoke service built on trust, discretion, and an uncompromising eye for quality. Every home in our portfolio is handpicked, every client relationship is personal, and every transaction is handled with the care it deserves.";
@@ -91,20 +92,41 @@ const LuxuryLandingPage = () => {
     <div className="flex-1 overflow-auto bg-white text-luxury-black font-sans">
 
       {/* ─── NAVBAR ─── */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? "bg-luxury-black/95 backdrop-blur-md shadow-lg" : "bg-transparent"}`}>
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-6 md:px-10 h-20">
-          <span className="font-serif text-xl md:text-2xl tracking-[0.2em] text-luxury-gold font-bold">
-            {BRAND_NAME}
-          </span>
-          <div className="hidden md:flex items-center gap-10">
-            {NAV_LINKS.map((l) => (
-              <a key={l} href="#" className="text-[13px] tracking-[0.15em] uppercase text-luxury-cream/70 hover:text-luxury-gold transition-colors duration-300">{l}</a>
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-neutral-100" : "bg-transparent"}`}>
+        <div className="max-w-[1400px] mx-auto flex items-center justify-between px-6 md:px-10 h-[72px]">
+          {/* Globe icon */}
+          <div className="hidden md:flex items-center">
+            <button className={`transition-colors duration-300 ${scrolled ? "text-luxury-black/60 hover:text-luxury-black" : "text-white/60 hover:text-white"}`}>
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.2}><circle cx="12" cy="12" r="10" /><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
+            </button>
+          </div>
+
+          {/* Left nav links */}
+          <div className="hidden md:flex items-center gap-8">
+            {NAV_LEFT.map((l) => (
+              <a key={l} href="#" className={`text-[11px] tracking-[0.18em] uppercase font-medium transition-colors duration-300 ${scrolled ? "text-luxury-black/70 hover:text-luxury-black" : "text-white/80 hover:text-white"}`}>{l}</a>
             ))}
           </div>
-          <button className="hidden md:inline-flex border border-luxury-gold/60 text-luxury-gold text-[12px] tracking-[0.15em] uppercase px-6 py-2.5 hover:bg-luxury-gold hover:text-luxury-black transition-all duration-300">
-            Schedule a Visit
-          </button>
-          <button className="md:hidden text-luxury-cream/70">
+
+          {/* Center logo */}
+          <div className="flex flex-col items-center">
+            <span className={`font-serif text-xl md:text-2xl tracking-[0.3em] font-light transition-colors duration-300 ${scrolled ? "text-luxury-black" : "text-white"}`}>
+              {BRAND_NAME}
+            </span>
+            <span className={`text-[8px] tracking-[0.35em] uppercase font-light transition-colors duration-300 ${scrolled ? "text-luxury-black/50" : "text-white/50"}`}>
+              Real Estate
+            </span>
+          </div>
+
+          {/* Right nav links */}
+          <div className="hidden md:flex items-center gap-8">
+            {NAV_RIGHT.map((l) => (
+              <a key={l} href="#" className={`text-[11px] tracking-[0.18em] uppercase font-medium transition-colors duration-300 ${scrolled ? "text-luxury-black/70 hover:text-luxury-black" : "text-white/80 hover:text-white"}`}>{l}</a>
+            ))}
+          </div>
+
+          {/* Mobile menu */}
+          <button className={`md:hidden transition-colors duration-300 ${scrolled ? "text-luxury-black/70" : "text-white/70"}`}>
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" /></svg>
           </button>
         </div>
