@@ -325,11 +325,11 @@ const LuxuryLandingPage = () => {
           </FadeIn>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
-            {/* Featured article — large left */}
+            {/* Featured article — large left, full height */}
             <FadeIn className="lg:col-span-7">
               <a href="#" className="group block h-full">
-                <div className="relative overflow-hidden h-full min-h-[320px] lg:min-h-0 rounded-sm">
-                  <img src={BLOG_POSTS[0].image} alt={BLOG_POSTS[0].title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 absolute inset-0" />
+                <div className="relative overflow-hidden rounded-sm h-full min-h-[350px]">
+                  <img src={BLOG_POSTS[0].image} alt={BLOG_POSTS[0].title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                   <div className="absolute inset-0 bg-gradient-to-t from-luxury-black/70 via-luxury-black/10 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-5 md:p-7">
                     <span className="text-[10px] tracking-[0.15em] uppercase text-white/50 font-light">{BLOG_POSTS[0].date}</span>
@@ -340,8 +340,8 @@ const LuxuryLandingPage = () => {
               </a>
             </FadeIn>
 
-            {/* Side articles — stacked right, evenly distributed */}
-            <div className="lg:col-span-5 flex flex-col justify-between gap-5 lg:gap-0">
+            {/* Side articles — stacked right, stretch to match left height */}
+            <div className="lg:col-span-5 flex flex-col justify-between">
               {BLOG_POSTS.slice(1).map((post, i) => (
                 <FadeIn key={i} delay={i * 0.1}>
                   <a href="#" className="group flex gap-4 items-start">
