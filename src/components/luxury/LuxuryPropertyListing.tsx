@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, SlidersHorizontal, X, ChevronDown, Bed, Bath, Maximize, MapPin, Heart, Mail } from "lucide-react";
+import { Search, SlidersHorizontal, X, ChevronDown, ChevronRight, Bed, Bath, Maximize, MapPin, Heart, Mail } from "lucide-react";
 import heroImg from "@/assets/luxury-hero.jpg";
 import prop1 from "@/assets/luxury-property-1.jpg";
 import prop2 from "@/assets/luxury-property-2.jpg";
@@ -10,6 +10,8 @@ import detail3 from "@/assets/property-detail-3.jpg";
 
 const BRAND_NAME = "PRESTIGE ESTATES";
 
+const NAV_LEFT = ["Home", "Properties", "Rentals"];
+const NAV_RIGHT = ["About", "Guides & Blog", "Message Us"];
 const FILTER_CHIPS = ["Type", "Price", "Beds", "Amenities", "New Builds"];
 
 const PROPERTIES = [
@@ -247,41 +249,73 @@ const LuxuryPropertyListing = () => {
   return (
     <div className="flex-1 overflow-auto bg-white text-luxury-black font-sans">
 
-      {/* ─── NAV ─── */}
-      <nav className="sticky top-0 z-30 bg-white border-b border-neutral-200">
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
-          {/* Top row */}
-          <div className="flex items-center justify-between h-[56px]">
-            <div className="flex items-center gap-6">
-              <button className="text-luxury-black/60 hover:text-luxury-black transition-colors lg:hidden">
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" /></svg>
-              </button>
-              <a href="/" className="font-serif text-base tracking-[0.25em] text-luxury-black font-light">{BRAND_NAME}</a>
-            </div>
+      {/* ─── NAVBAR (white, same as landing scrolled state) ─── */}
+      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm">
+        <div className="max-w-[1400px] mx-auto flex items-center justify-between px-6 lg:px-10 h-[68px]">
+          {/* Globe icon */}
+          <div className="hidden lg:flex items-center">
+            <button className="text-luxury-black/50 hover:text-luxury-black transition-colors duration-300">
+              <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.2}><circle cx="12" cy="12" r="10" /><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
+            </button>
+          </div>
 
-            {/* Search bar center */}
-            <div className="hidden md:flex items-center flex-1 max-w-md mx-8">
-              <div className="relative w-full">
+          {/* Left nav links */}
+          <div className="hidden lg:flex items-center gap-8">
+            {NAV_LEFT.map((l) => (
+              <a key={l} href={l === "Home" ? "/" : l === "Properties" ? "/properties" : "#"} className="text-[11px] tracking-[0.18em] uppercase font-normal text-luxury-black/60 hover:text-luxury-black transition-colors duration-300">{l}</a>
+            ))}
+          </div>
+
+          {/* Center logo */}
+          <a href="/" className="flex flex-col items-center">
+            <span className="font-serif text-lg md:text-xl tracking-[0.3em] font-light text-luxury-black">{BRAND_NAME}</span>
+            <span className="text-[7px] tracking-[0.35em] uppercase font-light text-luxury-black/40">Real Estate</span>
+          </a>
+
+          {/* Right nav links */}
+          <div className="hidden lg:flex items-center gap-8">
+            {NAV_RIGHT.map((l) => (
+              <a key={l} href="#" className="text-[11px] tracking-[0.18em] uppercase font-normal text-luxury-black/60 hover:text-luxury-black transition-colors duration-300">{l}</a>
+            ))}
+          </div>
+
+          {/* Mobile menu */}
+          <button className="lg:hidden text-luxury-black/70">
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" /></svg>
+          </button>
+        </div>
+      </nav>
+
+      {/* ─── BREADCRUMBS + SEARCH BAR ─── */}
+      <div className="sticky top-[68px] z-40 bg-white border-b border-neutral-200">
+        <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
+          {/* Breadcrumb */}
+          <div className="flex items-center gap-1.5 pt-3 pb-2 text-[11px] text-luxury-black/45 font-light">
+            <a href="/" className="hover:text-luxury-black transition-colors">Home</a>
+            <ChevronRight className="w-3 h-3" />
+            <a href="/properties" className="hover:text-luxury-black transition-colors">Properties</a>
+            <ChevronRight className="w-3 h-3" />
+            <span className="text-luxury-black/70">Ibiza & Costa Blanca</span>
+          </div>
+
+          {/* Search + filter chips row */}
+          <div className="flex items-center gap-3 pb-3 overflow-x-auto">
+            {/* Search */}
+            <div className="hidden md:flex items-center shrink-0">
+              <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-luxury-black/30" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="City, Region, Country"
-                  className="w-full border border-neutral-200 rounded-full pl-10 pr-4 py-2 text-[13px] text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/30 transition-colors"
+                  className="w-[220px] border border-neutral-200 rounded-full pl-10 pr-4 py-1.5 text-[12px] text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/30 transition-colors"
                 />
               </div>
             </div>
 
-            <div className="hidden lg:flex items-center gap-6">
-              {["About", "Contact"].map((l) => (
-                <a key={l} href="#" className="text-[12px] text-luxury-black/60 hover:text-luxury-black transition-colors">{l}</a>
-              ))}
-            </div>
-          </div>
+            <div className="w-px h-5 bg-neutral-200 hidden md:block shrink-0" />
 
-          {/* Filter chips row */}
-          <div className="flex items-center gap-2 pb-3 overflow-x-auto">
             <button
               onClick={() => setFiltersOpen(true)}
               className="flex items-center gap-1.5 bg-luxury-black text-white text-[12px] px-4 py-1.5 rounded-full hover:bg-luxury-black/85 transition-all duration-200 shrink-0"
@@ -298,7 +332,7 @@ const LuxuryPropertyListing = () => {
             </button>
           </div>
         </div>
-      </nav>
+      </div>
 
       {/* ─── FILTER SIDEBAR ─── */}
       <FilterSidebar open={filtersOpen} onClose={() => setFiltersOpen(false)} />
