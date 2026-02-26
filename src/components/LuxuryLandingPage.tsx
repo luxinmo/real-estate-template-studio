@@ -200,36 +200,62 @@ const LuxuryLandingPage = () => {
       </section>
 
       {/* ─── INTRO / PRESENTATION ─── */}
-      <section className="py-16 md:py-24 bg-white">
+      <section className="py-12 md:py-16 bg-white">
         <div className="max-w-3xl mx-auto px-6 md:px-10 text-center">
           <FadeIn>
-            <h1 className="text-xl sm:text-2xl md:text-[2rem] font-light leading-[1.4] tracking-tight text-luxury-black font-serif">
+            <h1 className="text-xl sm:text-2xl md:text-[1.85rem] font-light leading-[1.4] tracking-tight text-luxury-black font-serif">
               {INTRO_TITLE}
             </h1>
           </FadeIn>
-          <FadeIn delay={0.15}>
-            <div className="w-10 h-[1px] bg-neutral-300 mx-auto my-7" />
+          <FadeIn delay={0.1}>
+            <div className="w-10 h-[1px] bg-neutral-300 mx-auto my-5" />
           </FadeIn>
-          <FadeIn delay={0.25}>
-            <p className="text-[14px] md:text-[15px] leading-[1.9] text-luxury-black/50 font-light">
+          <FadeIn delay={0.2}>
+            <p className="text-[13px] md:text-[14px] leading-[1.85] text-luxury-black/50 font-light">
               {INTRO_TEXT}
             </p>
           </FadeIn>
         </div>
       </section>
 
+      {/* ─── STATS / NUMBERS ─── */}
+      <section className="py-10 md:py-14 bg-neutral-50/60">
+        <div className="max-w-[1100px] mx-auto px-6 lg:px-10">
+          <FadeIn>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 text-center">
+              <div>
+                <p className="text-3xl md:text-4xl font-light text-luxury-black font-serif">347</p>
+                <p className="text-[11px] tracking-[0.12em] uppercase text-luxury-black/40 mt-1.5 font-light">Properties for Sale</p>
+              </div>
+              <div>
+                <p className="text-3xl md:text-4xl font-light text-luxury-black font-serif">€2.1B</p>
+                <p className="text-[11px] tracking-[0.12em] uppercase text-luxury-black/40 mt-1.5 font-light">Portfolio Value</p>
+              </div>
+              <div>
+                <p className="text-3xl md:text-4xl font-light text-luxury-black font-serif">12</p>
+                <p className="text-[11px] tracking-[0.12em] uppercase text-luxury-black/40 mt-1.5 font-light">Countries</p>
+              </div>
+              <div>
+                <p className="text-3xl md:text-4xl font-light text-luxury-black font-serif">25+</p>
+                <p className="text-[11px] tracking-[0.12em] uppercase text-luxury-black/40 mt-1.5 font-light">Years of Experience</p>
+              </div>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
       {/* ─── FEATURED PROPERTIES ─── */}
-      <section className="py-16 md:py-24 bg-white">
+      <section className="py-12 md:py-16 bg-white">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
           <FadeIn>
-            <div className="text-center mb-12">
-              <p className="text-[10px] tracking-[0.35em] uppercase text-luxury-black/40 mb-3">Portfolio</p>
+            <div className="text-center mb-10">
+              <p className="text-[10px] tracking-[0.35em] uppercase text-luxury-black/40 mb-2">Portfolio</p>
               <h2 className="text-2xl md:text-3xl font-light text-luxury-black font-serif tracking-tight">Featured Properties</h2>
-              <div className="w-12 h-[1px] bg-neutral-300 mx-auto mt-5" />
+              <div className="w-12 h-[1px] bg-neutral-300 mx-auto mt-4" />
             </div>
           </FadeIn>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {PROPERTIES.map((p, i) => (
               <FadeIn key={i} delay={i * 0.1}>
                 <div className="group cursor-pointer">
@@ -239,11 +265,11 @@ const LuxuryLandingPage = () => {
                       <span className="text-[11px] tracking-[0.2em] uppercase text-white opacity-0 group-hover:opacity-100 transition-opacity duration-500 border border-white/50 px-5 py-2">View Details</span>
                     </div>
                   </div>
-                  <div className="pt-4 space-y-1.5">
+                  <div className="pt-3.5 space-y-1">
                     <p className="text-[10px] tracking-[0.18em] uppercase text-luxury-black/40">{p.location}</p>
-                    <h3 className="text-[15px] font-light text-luxury-black font-serif">{p.name}</h3>
-                    <p className="text-base font-normal text-luxury-black/75">{p.price}</p>
-                    <div className="flex items-center gap-4 pt-1.5 text-[11px] text-luxury-black/40 font-light">
+                    <h3 className="text-[14px] font-light text-luxury-black font-serif">{p.name}</h3>
+                    <p className="text-[15px] font-normal text-luxury-black/75">{p.price}</p>
+                    <div className="flex items-center gap-4 pt-1 text-[11px] text-luxury-black/40 font-light">
                       <span className="flex items-center gap-1"><Bed className="w-3.5 h-3.5" /> {p.beds}</span>
                       <span className="flex items-center gap-1"><Bath className="w-3.5 h-3.5" /> {p.baths}</span>
                       <span className="flex items-center gap-1"><Maximize className="w-3.5 h-3.5" /> {p.sqm} m²</span>
@@ -255,7 +281,7 @@ const LuxuryLandingPage = () => {
           </div>
 
           <FadeIn delay={0.3}>
-            <div className="text-center mt-12">
+            <div className="text-center mt-10">
               <button className="border border-luxury-black/20 text-luxury-black/70 text-[11px] tracking-[0.15em] uppercase px-9 py-3 hover:bg-luxury-black hover:text-white transition-all duration-300">
                 View All Properties
               </button>
@@ -265,10 +291,10 @@ const LuxuryLandingPage = () => {
       </section>
 
       {/* ─── SERVICES ─── */}
-      <section className="py-16 md:py-24 bg-neutral-50/80">
+      <section className="py-12 md:py-16 bg-neutral-50/80">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
           <FadeIn>
-            <div className="text-center mb-12">
+            <div className="text-center mb-8">
               <p className="text-[10px] tracking-[0.35em] uppercase text-luxury-black/40 mb-3">Why Choose Us</p>
               <h2 className="text-2xl md:text-3xl font-light text-luxury-black font-serif tracking-tight">A Standard Apart</h2>
               <div className="w-12 h-[1px] bg-neutral-300 mx-auto mt-5" />
@@ -292,10 +318,10 @@ const LuxuryLandingPage = () => {
       </section>
 
       {/* ─── THE JOURNAL / BLOG ─── */}
-      <section className="py-16 md:py-24 bg-white">
+      <section className="py-12 md:py-16 bg-white">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
           <FadeIn>
-            <h2 className="text-2xl md:text-3xl font-light text-luxury-black font-serif tracking-tight mb-10">The Journal</h2>
+            <h2 className="text-2xl md:text-3xl font-light text-luxury-black font-serif tracking-tight mb-8">The Journal</h2>
           </FadeIn>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
