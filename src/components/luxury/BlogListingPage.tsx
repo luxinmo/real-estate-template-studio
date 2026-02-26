@@ -5,7 +5,7 @@ import heroImg from "@/assets/luxury-hero.jpg";
 import prop1 from "@/assets/luxury-property-1.jpg";
 import prop2 from "@/assets/luxury-property-2.jpg";
 import prop3 from "@/assets/luxury-property-3.jpg";
-import blogFeatured from "@/assets/blog-featured.jpg";
+import propertyDetail1 from "@/assets/property-detail-1.jpg";
 
 /* ─── TRANSLATABLE STRINGS ─── */
 const BRAND_NAME = "PRESTIGE ESTATES"; // 🌐
@@ -44,7 +44,7 @@ const CATEGORIES = [
 const BLOG_POSTS = [
   {
     id: "1",
-    image: blogFeatured,
+    image: propertyDetail1,
     date: "26 Feb 2026", // 🌐
     category: "lifestyle",
     title: "An Insider's Guide to Coastal Living in the Mediterranean", // 🌐
