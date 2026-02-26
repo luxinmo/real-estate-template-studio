@@ -109,7 +109,7 @@ const LuxuryPropertyDetail = () => {
             <div className="flex items-start justify-between gap-4 mb-3">
               <div>
                 <p className="text-2xl md:text-3xl font-light text-luxury-black font-serif tracking-tight">{PROPERTY.price}</p>
-                <span className="text-[10px] tracking-[0.15em] uppercase text-luxury-black/35 mt-1 block">Ref: {PROPERTY.ref}</span>
+                <span className="text-[10px] tracking-[0.15em] uppercase text-luxury-black/50 mt-1 block">Ref: {PROPERTY.ref}</span>
               </div>
               <div className="flex gap-2">
                 <button onClick={() => setLiked(!liked)} className={`w-10 h-10 border flex items-center justify-center transition-all duration-300 ${liked ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-300 text-luxury-black/40 hover:border-luxury-black/40"}`}>
@@ -122,7 +122,7 @@ const LuxuryPropertyDetail = () => {
             </div>
 
             <h1 className="text-lg md:text-xl font-light text-luxury-black leading-snug mb-2">{PROPERTY.title}</h1>
-            <p className="flex items-center gap-1.5 text-[13px] text-luxury-black/50 font-light mb-6">
+            <p className="flex items-center gap-1.5 text-[13px] text-luxury-black/70 font-light mb-6">
               <MapPin className="w-3.5 h-3.5" /> {PROPERTY.location}
             </p>
 
@@ -135,10 +135,10 @@ const LuxuryPropertyDetail = () => {
                 { icon: Fence, label: "Plot", value: `${PROPERTY.plot} m²` },
                 { icon: Car, label: "Garage", value: PROPERTY.garage },
               ].map((s, i) => (
-                <div key={i} className="flex items-center gap-2 text-[13px] text-luxury-black/60">
-                  <s.icon className="w-4 h-4 text-luxury-black/35" strokeWidth={1.3} />
+                <div key={i} className="flex items-center gap-2 text-[13px] text-luxury-black/80">
+                  <s.icon className="w-4 h-4 text-luxury-black/50" strokeWidth={1.3} />
                   <span className="font-light">{s.value}</span>
-                  <span className="text-luxury-black/30 text-[11px]">{s.label}</span>
+                  <span className="text-luxury-black/50 text-[11px]">{s.label}</span>
                 </div>
               ))}
             </div>
@@ -147,9 +147,9 @@ const LuxuryPropertyDetail = () => {
           {/* Right: Agent card */}
           <div className="lg:col-span-1">
             <div className="border border-neutral-200 p-6">
-              <p className="text-[10px] tracking-[0.2em] uppercase text-luxury-black/40 mb-3">Your Advisor</p>
+              <p className="text-[10px] tracking-[0.2em] uppercase text-luxury-black/55 mb-3">Your Advisor</p>
               <h3 className="text-[15px] font-medium text-luxury-black mb-0.5">{PROPERTY.agent.name}</h3>
-              <p className="text-[12px] text-luxury-black/40 font-light mb-5">{PROPERTY.agent.role}</p>
+              <p className="text-[12px] text-luxury-black/55 font-light mb-5">{PROPERTY.agent.role}</p>
 
               <a href={`tel:${PROPERTY.agent.phone}`} className="flex items-center justify-center gap-2 bg-luxury-black text-white text-[11px] tracking-[0.15em] uppercase py-3 w-full mb-2 hover:bg-luxury-black/85 transition-all duration-300">
                 <Phone className="w-3.5 h-3.5" /> Call Now
@@ -158,7 +158,7 @@ const LuxuryPropertyDetail = () => {
                 <Mail className="w-3.5 h-3.5" /> Send Message
               </a>
 
-              <div className="mt-5 pt-4 border-t border-neutral-200 flex items-center justify-between text-[11px] text-luxury-black/40 font-light">
+              <div className="mt-5 pt-4 border-t border-neutral-200 flex items-center justify-between text-[11px] text-luxury-black/60 font-light">
                 <span>Energy: <strong className="text-luxury-black/70">{PROPERTY.energyClass}</strong></span>
                 <span>Year: <strong className="text-luxury-black/70">{PROPERTY.year}</strong></span>
                 <span className="text-green-600 font-medium">{PROPERTY.status}</span>
@@ -173,7 +173,7 @@ const LuxuryPropertyDetail = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <h2 className="text-xl font-light text-luxury-black font-serif tracking-tight mb-4">About This Property</h2>
-            <div className="text-[13px] leading-[1.9] text-luxury-black/55 font-light whitespace-pre-line">
+            <div className="text-[13px] leading-[1.9] text-luxury-black/75 font-light whitespace-pre-line">
               {PROPERTY.description}
             </div>
           </div>
@@ -187,8 +187,8 @@ const LuxuryPropertyDetail = () => {
             <h2 className="text-xl font-light text-luxury-black font-serif tracking-tight mb-5">Features & Amenities</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-6 gap-y-3">
               {PROPERTY.features.map((f, i) => (
-                <div key={i} className="flex items-center gap-2 text-[13px] text-luxury-black/60 font-light">
-                  <Check className="w-3.5 h-3.5 text-luxury-black/30" strokeWidth={1.5} />
+                <div key={i} className="flex items-center gap-2 text-[13px] text-luxury-black/75 font-light">
+                  <Check className="w-3.5 h-3.5 text-luxury-black/50" strokeWidth={1.5} />
                   {f}
                 </div>
               ))}
@@ -202,7 +202,7 @@ const LuxuryPropertyDetail = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <h2 className="text-xl font-light text-luxury-black font-serif tracking-tight mb-4">Explore the Area</h2>
-            <p className="text-[13px] text-luxury-black/45 font-light mb-4">{PROPERTY.location}</p>
+            <p className="text-[13px] text-luxury-black/65 font-light mb-4">{PROPERTY.location}</p>
             <div className="bg-neutral-100 h-[250px] flex items-center justify-center text-luxury-black/25 text-[13px]">
               <MapPin className="w-6 h-6 mr-2" /> Interactive Map
             </div>
@@ -222,8 +222,8 @@ const LuxuryPropertyDetail = () => {
               <div className="pt-3 space-y-1">
                 <p className="text-[15px] font-normal text-luxury-black/80">{p.price}</p>
                 <h3 className="text-[14px] font-light text-luxury-black">{p.name}</h3>
-                <p className="text-[11px] text-luxury-black/40 font-light flex items-center gap-1"><MapPin className="w-3 h-3" /> {p.location}</p>
-                <div className="flex items-center gap-4 pt-1 text-[11px] text-luxury-black/40 font-light">
+                <p className="text-[11px] text-luxury-black/55 font-light flex items-center gap-1"><MapPin className="w-3 h-3" /> {p.location}</p>
+                <div className="flex items-center gap-4 pt-1 text-[11px] text-luxury-black/55 font-light">
                   <span className="flex items-center gap-1"><Bed className="w-3.5 h-3.5" /> {p.beds}</span>
                   <span className="flex items-center gap-1"><Bath className="w-3.5 h-3.5" /> {p.baths}</span>
                   <span className="flex items-center gap-1"><Maximize className="w-3.5 h-3.5" /> {p.sqm} m²</span>
@@ -237,9 +237,9 @@ const LuxuryPropertyDetail = () => {
       {/* ─── NEWSLETTER ─── */}
       <section className="py-14 bg-neutral-50/60">
         <div className="max-w-xl mx-auto px-6 text-center">
-          <p className="text-[10px] tracking-[0.35em] uppercase text-luxury-black/40 mb-3">Stay Informed</p>
+          <p className="text-[10px] tracking-[0.35em] uppercase text-luxury-black/55 mb-3">Stay Informed</p>
           <h2 className="text-2xl font-light text-luxury-black font-serif tracking-tight">The Private List</h2>
-          <p className="text-[13px] text-luxury-black/45 font-light mt-3 mb-8 leading-relaxed">
+          <p className="text-[13px] text-luxury-black/65 font-light mt-3 mb-8 leading-relaxed">
             Receive exclusive off-market listings and invitations to private viewings — delivered discreetly to your inbox.
           </p>
           <form className="flex flex-col sm:flex-row gap-3" onSubmit={(e) => e.preventDefault()}>
