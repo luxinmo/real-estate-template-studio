@@ -415,7 +415,7 @@ const LuxuryPropertyListing = () => {
 
       {/* ─── NAVBAR (white, same as landing scrolled state) ─── */}
       <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm">
-        <div className="max-w-[1400px] mx-auto flex items-center justify-between px-6 lg:px-10 h-[68px]">
+        <div className="max-w-[1400px] mx-auto flex items-center justify-between px-6 lg:px-10 h-[68px] relative">
           {/* Globe icon */}
           <div className="hidden lg:flex items-center">
             <button className="text-luxury-black/50 hover:text-luxury-black transition-colors duration-300">
@@ -431,7 +431,7 @@ const LuxuryPropertyListing = () => {
           </div>
 
           {/* Center logo */}
-          <a href="/" className="flex flex-col items-center">
+          <a href="/" className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center">
             <span className="font-serif text-lg md:text-xl tracking-[0.3em] font-light text-luxury-black">{BRAND_NAME}</span>
             <span className="text-[7px] tracking-[0.35em] uppercase font-light text-luxury-black/40">Real Estate</span>
           </a>
@@ -473,7 +473,7 @@ const LuxuryPropertyListing = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="City, Region, Country"
-                  className="w-[220px] border border-neutral-200 rounded-full pl-10 pr-4 py-1.5 text-[12px] text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/30 transition-colors"
+                  className="w-[220px] h-10 border border-neutral-200 rounded-full pl-10 pr-4 text-[12px] text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/30 transition-colors"
                 />
               </div>
             </div>
