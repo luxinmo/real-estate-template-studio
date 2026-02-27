@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { Plus, Search, X } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PropertyCard from "@/components/properties/PropertyCard";
-import PropertyFilters from "@/components/properties/PropertyFilters";
+import PropertySearchFilters, { FilterState, defaultFilters } from "@/components/properties/PropertySearchFilters";
 import property1 from "@/assets/property-1.jpg";
 import property2 from "@/assets/property-2.jpg";
 import property3 from "@/assets/property-3.jpg";
@@ -34,35 +33,7 @@ const demoProperties = [
 ];
 
 const PropertiesPage = ({ onViewProperty, onAddProperty }: { onViewProperty?: () => void; onAddProperty?: () => void }) => {
-  const [search, setSearch] = useState("");
-  const [selectedOp, setSelectedOp] = useState<string[]>([]);
-  const [selectedDisp, setSelectedDisp] = useState<string[]>([]);
-  const [selectedTipos, setSelectedTipos] = useState<string[]>([]);
-  const [selectedHab, setSelectedHab] = useState<string[]>([]);
-  const [precioDesde, setPrecioDesde] = useState("");
-  const [precioHasta, setPrecioHasta] = useState("");
-
-  const toggleFilter = (arr: string[], val: string, setter: (v: string[]) => void) => {
-    setter(arr.includes(val) ? arr.filter(v => v !== val) : [...arr, val]);
-  };
-
-  const allActiveFilters = [
-    ...selectedOp.map(v => ({ label: v, group: "op" as const, value: v })),
-    ...selectedDisp.map(v => ({ label: v, group: "disp" as const, value: v })),
-    ...selectedTipos.map(v => ({ label: v, group: "tipo" as const, value: v })),
-    ...selectedHab.map(v => ({ label: `${v} hab.`, group: "hab" as const, value: v })),
-  ];
-
-  const removeFilter = (group: string, value: string) => {
-    if (group === "op") setSelectedOp(prev => prev.filter(v => v !== value));
-    if (group === "disp") setSelectedDisp(prev => prev.filter(v => v !== value));
-    if (group === "tipo") setSelectedTipos(prev => prev.filter(v => v !== value));
-    if (group === "hab") setSelectedHab(prev => prev.filter(v => v !== value));
-  };
-
-  const clearAll = () => {
-    setSelectedOp([]); setSelectedDisp([]); setSelectedTipos([]); setSelectedHab([]); setPrecioDesde(""); setPrecioHasta("");
-  };
+  const [filters, setFilters] = useState<FilterState>(defaultFilters);
 
   return (
     <div className="flex-1 overflow-auto">
@@ -78,49 +49,20 @@ const PropertiesPage = ({ onViewProperty, onAddProperty }: { onViewProperty?: ()
         </Button>
       </div>
 
-      {/* Search */}
+      {/* Search Filters Bar */}
       <div className="px-8 pb-4">
-        <div className="relative max-w-2xl">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar por referencia, dirección, título, propietario..." className="pl-10 h-10" />
-        </div>
+        <PropertySearchFilters filters={filters} onChange={setFilters} />
       </div>
 
-      {/* Active filter chips */}
-      {allActiveFilters.length > 0 && (
-        <div className="px-8 pb-4 flex flex-wrap items-center gap-2">
-          {allActiveFilters.map(f => (
-            <span key={f.group + f.value} className="inline-flex items-center gap-1.5 rounded-full border border-border bg-accent/50 px-2.5 py-1 text-xs font-medium text-foreground">
-              {f.label}
-              <button onClick={() => removeFilter(f.group, f.value)} className="hover:text-destructive transition-colors">
-                <X className="h-3 w-3" />
-              </button>
-            </span>
-          ))}
-          <button onClick={clearAll} className="text-xs font-medium text-primary hover:underline ml-1">Limpiar todos</button>
+      {/* Property List */}
+      <div className="px-8 pb-10">
+        <div className="flex items-center justify-between mb-4">
+          <p className="text-[12px] text-muted-foreground">{demoProperties.length} propiedades encontradas</p>
         </div>
-      )}
-
-      <div className="px-8 pb-10 flex gap-6">
-        {/* Property List */}
-        <div className="flex-1 min-w-0 space-y-4">
+        <div className="space-y-4">
           {demoProperties.map((p) => (
             <PropertyCard key={p.id} property={p} onClick={onViewProperty} />
           ))}
-        </div>
-
-        {/* Sidebar Filters */}
-        <div className="w-64 shrink-0 hidden lg:block">
-          <PropertyFilters
-            selectedOp={selectedOp} selectedDisp={selectedDisp} selectedTipos={selectedTipos} selectedHab={selectedHab}
-            precioDesde={precioDesde} precioHasta={precioHasta}
-            onToggleOp={v => toggleFilter(selectedOp, v, setSelectedOp)}
-            onToggleDisp={v => toggleFilter(selectedDisp, v, setSelectedDisp)}
-            onToggleTipo={v => toggleFilter(selectedTipos, v, setSelectedTipos)}
-            onToggleHab={v => toggleFilter(selectedHab, v, setSelectedHab)}
-            onPrecioDesde={setPrecioDesde} onPrecioHasta={setPrecioHasta}
-            onClearAll={clearAll}
-          />
         </div>
       </div>
     </div>
