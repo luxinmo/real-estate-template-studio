@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Search, SlidersHorizontal, X, ChevronDown, ChevronRight, Bed, Bath, Maximize, MapPin, Heart, Mail, Eye } from "lucide-react";
+import { Search, SlidersHorizontal, X, ChevronDown, ChevronRight, Bed, Bath, Maximize, MapPin, Mail } from "lucide-react";
 import heroImg from "@/assets/luxury-hero.jpg";
 import LocationSearchDropdown from "./LocationSearchDropdown";
 import prop1 from "@/assets/luxury-property-1.jpg";
@@ -43,7 +43,15 @@ const defaultFilters: FilterState = {
 };
 
 /* ─── Constants ─── */
-const TYPE_OPTIONS = ["Villa", "Penthouse", "Apartment", "Finca", "New Build", "Land"];
+const TYPE_OPTIONS_WITH_SUBTYPES: { label: string; subtypes?: string[] }[] = [
+  { label: "Villa", subtypes: ["Modern Villa", "Traditional Villa", "Luxury Villa"] },
+  { label: "Penthouse", subtypes: ["Duplex Penthouse", "Sky Penthouse"] },
+  { label: "Apartment", subtypes: ["Ground Floor", "Duplex", "Studio", "Loft"] },
+  { label: "Finca" },
+  { label: "New Build" },
+  { label: "Land", subtypes: ["Urban", "Rustic"] },
+];
+const TYPE_OPTIONS = TYPE_OPTIONS_WITH_SUBTYPES.map(t => t.label);
 
 const BED_OPTIONS = ["Any", "1+", "2+", "3+", "4+", "5+"];
 const BATH_OPTIONS = ["Any", "1+", "2+", "3+", "4+"];
@@ -268,7 +276,7 @@ const FilterSidebar = ({ open, onClose, filters, onChange }: { open: boolean; on
   return (
     <>
       <div className="fixed inset-0 bg-luxury-black/30 z-40" onClick={onClose} />
-      <aside className="fixed top-0 right-0 h-full w-[340px] bg-white z-50 overflow-y-auto border-l border-neutral-200 shadow-lg animate-in slide-in-from-right duration-300">
+      <aside className="fixed top-0 left-0 h-full w-[340px] bg-white z-50 overflow-y-auto border-r border-neutral-200 shadow-lg animate-in slide-in-from-left duration-300">
         <div className="flex items-center justify-between p-5 border-b border-neutral-200">
           <h2 className="text-[15px] font-medium text-luxury-black">Filters</h2>
           <button onClick={onClose} className="text-luxury-black/50 hover:text-luxury-black transition-colors">
@@ -277,15 +285,22 @@ const FilterSidebar = ({ open, onClose, filters, onChange }: { open: boolean; on
         </div>
 
         <div className="p-5 space-y-7">
-          {/* Property type */}
+          {/* Property type with subtypes */}
           <div>
             <h3 className="text-[13px] font-medium text-luxury-black mb-3">Property type</h3>
             <div className="space-y-2.5">
-              {TYPE_OPTIONS.map((t) => (
-                <label key={t} className="flex items-center gap-2.5 cursor-pointer group">
-                  <input type="checkbox" checked={filters.types.includes(t)} onChange={() => toggleType(t)} className="w-4 h-4 border-neutral-300 rounded-sm accent-luxury-black" />
-                  <span className="text-[13px] text-luxury-black/70 group-hover:text-luxury-black transition-colors">{t}</span>
-                </label>
+              {TYPE_OPTIONS_WITH_SUBTYPES.map((t) => (
+                <div key={t.label}>
+                  <label className="flex items-center justify-between cursor-pointer group">
+                    <div className="flex items-center gap-2.5">
+                      <input type="checkbox" checked={filters.types.includes(t.label)} onChange={() => toggleType(t.label)} className="w-4 h-4 border-neutral-300 rounded-sm accent-luxury-black" />
+                      <span className="text-[13px] text-luxury-black/70 group-hover:text-luxury-black transition-colors">{t.label}</span>
+                    </div>
+                    {t.subtypes && (
+                      <span className="text-[11px] text-luxury-black/35 flex items-center gap-1">All subtypes <ChevronDown className="w-3 h-3" /></span>
+                    )}
+                  </label>
+                </div>
               ))}
             </div>
           </div>
@@ -420,19 +435,16 @@ const PROPERTIES = [
 
 /* ─── Property Card (horizontal) ─── */
 const PropertyCard = ({ property }: { property: typeof PROPERTIES[0] }) => {
-  const [liked, setLiked] = useState(false);
-
   return (
     <a href={`/property/${property.id}`} className="group grid grid-cols-1 md:grid-cols-12 gap-0 bg-neutral-50 border border-neutral-200 rounded-sm overflow-hidden mb-6 hover:shadow-md transition-shadow duration-300">
       {/* Image */}
       <div className="md:col-span-5 relative overflow-hidden aspect-[16/10] md:aspect-auto md:h-full min-h-[220px]">
         <img src={property.image} alt={property.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 absolute inset-0" />
-        <button
-          onClick={(e) => { e.preventDefault(); setLiked(!liked); }}
-          className={`absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 ${liked ? "bg-luxury-black text-white" : "bg-white/90 text-luxury-black/40 hover:text-luxury-black"}`}
-        >
-          <Heart className="w-4 h-4" fill={liked ? "currentColor" : "none"} />
-        </button>
+        {property.tag === "NEW BUILD" && (
+          <span className="absolute top-3 left-3 bg-luxury-black text-white text-[10px] tracking-[0.12em] uppercase font-medium px-2.5 py-1">
+            New Build
+          </span>
+        )}
         {property.gallery.length > 1 && (
           <span className="absolute bottom-3 right-3 bg-luxury-black/60 text-white text-[10px] px-2 py-1 font-light">
             1/{property.gallery.length}
@@ -624,7 +636,7 @@ const LuxuryPropertyListing = () => {
             <p className="text-[13px] text-luxury-black/55 font-light mt-2 max-w-3xl leading-relaxed">
               Discover the finest selection of luxury villas, penthouses, fincas and new-build properties across Ibiza and the Costa Blanca. From beachfront estates with panoramic sea views to exclusive golf-side residences, explore hand-picked homes curated for the most discerning buyers.
             </p>
-            <p className="text-[12px] text-luxury-black/45 font-light mt-2">{PROPERTIES.length} listings</p>
+            <p className="text-[12px] text-luxury-black/45 font-light mt-2">{PROPERTIES.length} properties found</p>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-[12px] text-luxury-black/45 font-light">Sort:</span>
