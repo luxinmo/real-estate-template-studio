@@ -4,6 +4,12 @@ import SearchableSelect, {
   type SearchableSelectOption,
 } from "@/components/ui/searchable-select";
 import { Label } from "@/components/ui/label";
+import {
+  VariantATwoLines,
+  VariantBFullPath,
+  VariantCGrouped,
+  VariantDBadge,
+} from "@/components/demos/LocationSearchDemos";
 
 const initialOwners: SearchableSelectOption[] = [
   { id: "1", label: "Carlos García López" },
@@ -37,7 +43,52 @@ const ComponentsPage = () => {
       </div>
 
       <div className="px-4 sm:px-8 pb-10 space-y-8 max-w-3xl">
-        {/* SearchableSelect demo */}
+        {/* ── Location Search Variants ── */}
+        <ComponentBlock label="Component: Location Search — Variant A: Two Lines">
+          <div className="p-6 space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Name in <strong>bold</strong> on first line, full path in gray below. Clearest hierarchy view — recommended.
+            </p>
+            <div className="min-h-[320px]">
+              <VariantATwoLines />
+            </div>
+          </div>
+        </ComponentBlock>
+
+        <ComponentBlock label="Component: Location Search — Variant B: Full Path">
+          <div className="p-6 space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Full comma-separated path in a single line. Simple but can truncate with long names.
+            </p>
+            <div className="min-h-[320px]">
+              <VariantBFullPath />
+            </div>
+          </div>
+        </ComponentBlock>
+
+        <ComponentBlock label="Component: Location Search — Variant C: Grouped by Parent">
+          <div className="p-6 space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Zones grouped under their parent municipality header. Best when searching returns many children of the same parent — try searching "altea".
+            </p>
+            <div className="min-h-[380px]">
+              <VariantCGrouped />
+            </div>
+          </div>
+        </ComponentBlock>
+
+        <ComponentBlock label="Component: Location Search — Variant D: Inline Badge">
+          <div className="p-6 space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Name with a small "en [Parent]" badge. Compact and contextual.
+            </p>
+            <div className="min-h-[320px]">
+              <VariantDBadge />
+            </div>
+          </div>
+        </ComponentBlock>
+
+        {/* ── SearchableSelect demo ── */}
         <ComponentBlock label="Component: Searchable Select with Create">
           <div className="p-6 space-y-5">
             <p className="text-sm text-muted-foreground">
