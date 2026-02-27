@@ -12,7 +12,6 @@ const LEVEL_DISPLAY: Record<string, string> = {
 
 type LocationItem = { id: string; name: string; path: string; type: string };
 
-/** Build a breadcrumb path for a location */
 const buildPath = (locationId: string): string => {
   const parts: string[] = [];
   let current = mockLocations.find((l) => l.id === locationId);
@@ -30,6 +29,7 @@ interface LocationSearchDropdownProps {
 }
 
 const RECENT_KEY = "luxury_recent_searches";
+const MAX_VISIBLE_CHIPS = 2;
 
 const LocationSearchDropdown = ({ selected, onSelectedChange, className = "" }: LocationSearchDropdownProps) => {
   const [open, setOpen] = useState(false);
@@ -77,7 +77,6 @@ const LocationSearchDropdown = ({ selected, onSelectedChange, className = "" }: 
       onSelectedChange([...selected, item]);
       setQuery("");
       inputRef.current?.focus();
-
       const updated = [item, ...recentSearches.filter((r) => r.id !== item.id)].slice(0, 5);
       setRecentSearches(updated);
       localStorage.setItem(RECENT_KEY, JSON.stringify(updated));
@@ -92,13 +91,36 @@ const LocationSearchDropdown = ({ selected, onSelectedChange, className = "" }: 
     [onSelectedChange, selected]
   );
 
-  const showDropdown = open && (query.trim() || recentSearches.length > 0);
+  const visibleChips = selected.slice(0, MAX_VISIBLE_CHIPS);
+  const extraCount = selected.length - MAX_VISIBLE_CHIPS;
+
+  const showDropdown = open;
 
   return (
     <div ref={containerRef} className={`relative ${className}`}>
-      {/* Clean input without chips */}
-      <div className="relative">
-        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-luxury-black/30" />
+      {/* Input with inline chips */}
+      <div
+        className="flex items-center gap-1.5 min-h-[40px] border border-neutral-200 rounded-full px-3 cursor-text focus-within:border-luxury-black/30 transition-colors"
+        onClick={() => { inputRef.current?.focus(); setOpen(true); }}
+      >
+        <MapPin className="w-4 h-4 text-luxury-black/30 shrink-0" />
+        {visibleChips.map((item) => (
+          <span
+            key={item.id}
+            className="inline-flex items-center gap-1 bg-neutral-100 text-luxury-black text-[11px] font-medium rounded-full pl-2 pr-1.5 py-0.5 whitespace-nowrap shrink-0"
+          >
+            {item.name}
+            <button
+              onClick={(e) => { e.stopPropagation(); removeLocation(item.id); }}
+              className="text-luxury-black/40 hover:text-luxury-black/70 transition-colors"
+            >
+              <X className="w-3 h-3" />
+            </button>
+          </span>
+        ))}
+        {extraCount > 0 && (
+          <span className="text-[11px] font-medium text-luxury-black/50 shrink-0">+{extraCount}</span>
+        )}
         <input
           ref={inputRef}
           type="text"
@@ -106,10 +128,10 @@ const LocationSearchDropdown = ({ selected, onSelectedChange, className = "" }: 
           onChange={(e) => { setQuery(e.target.value); setOpen(true); }}
           onFocus={() => setOpen(true)}
           placeholder={selected.length > 0 ? "Add location..." : "City, Region, Country"}
-          className="w-full h-10 border border-neutral-200 rounded-full pl-10 pr-9 text-[12px] text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/30 transition-colors"
+          className="flex-1 min-w-[60px] h-7 bg-transparent text-[12px] text-luxury-black placeholder:text-luxury-black/35 focus:outline-none"
         />
         {query && (
-          <button onClick={() => { setQuery(""); inputRef.current?.focus(); }} className="absolute right-3 top-1/2 -translate-y-1/2 text-luxury-black/30 hover:text-luxury-black/60 transition-colors">
+          <button onClick={(e) => { e.stopPropagation(); setQuery(""); inputRef.current?.focus(); }} className="text-luxury-black/30 hover:text-luxury-black/60 transition-colors shrink-0">
             <X className="w-3.5 h-3.5" />
           </button>
         )}
@@ -118,6 +140,30 @@ const LocationSearchDropdown = ({ selected, onSelectedChange, className = "" }: 
       {/* Dropdown */}
       {showDropdown && (
         <div className="absolute top-full left-0 right-0 mt-1.5 bg-white rounded-xl border border-neutral-200 shadow-lg z-50 overflow-hidden min-w-[320px]">
+          {/* Selected locations section */}
+          {selected.length > 0 && (
+            <div className="border-b border-neutral-100">
+              <div className="px-4 pt-2.5 pb-1.5">
+                <span className="text-[11px] font-semibold text-luxury-black/50 uppercase tracking-wider">Selected</span>
+              </div>
+              {selected.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex items-center gap-3 w-full px-4 py-2 text-left hover:bg-neutral-50 transition-colors"
+                >
+                  <MapPin className="w-4 h-4 text-luxury-black/50 shrink-0" />
+                  <span className="text-[13px] text-luxury-black truncate flex-1">{item.path}</span>
+                  <button
+                    onClick={() => removeLocation(item.id)}
+                    className="text-luxury-black/30 hover:text-luxury-black/60 transition-colors shrink-0"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
           <button className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-neutral-50 transition-colors border-b border-neutral-100">
             <Navigation className="w-4 h-4 text-luxury-black/50" />
             <span className="text-[13px] text-luxury-black">Search near me</span>

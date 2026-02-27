@@ -591,9 +591,6 @@ const LuxuryPropertyListing = () => {
             >
               New Builds
             </button>
-            <button className="flex items-center gap-1.5 border border-neutral-300 text-[12px] text-luxury-black/50 px-4 py-1.5 rounded-full hover:border-luxury-black/30 transition-all duration-200 shrink-0">
-              <Search className="w-3 h-3" /> Save search
-            </button>
           </div>
         </div>
       </div>
