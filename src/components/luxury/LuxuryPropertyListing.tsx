@@ -409,7 +409,7 @@ const PropertyCard = ({ property }: { property: typeof PROPERTIES[0] }) => {
 
 const LuxuryPropertyListing = () => {
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedLocations, setSelectedLocations] = useState<{ id: string; name: string; path: string; type: string }[]>([]);
 
   return (
     <div className="flex-1 overflow-auto bg-white text-luxury-black font-sans">
@@ -465,9 +465,9 @@ const LuxuryPropertyListing = () => {
             {/* Search */}
             <div className="hidden md:flex items-center shrink-0">
               <LocationSearchDropdown
-                value={searchQuery}
-                onChange={setSearchQuery}
-                className="w-[320px]"
+                selected={selectedLocations}
+                onSelectedChange={setSelectedLocations}
+                className="w-[420px]"
               />
             </div>
 
