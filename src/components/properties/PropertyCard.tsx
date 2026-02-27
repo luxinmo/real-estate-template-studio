@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { MapPin, Bed, Bath, Maximize, Star, Tag, Globe, Calendar, TrendingDown, Handshake, Users, ChevronDown, Check, ExternalLink } from "lucide-react";
+import { MapPin, Bed, Bath, Maximize, Star, Tag, Globe, Calendar, TrendingDown, Handshake, Users, ChevronDown, Check, ExternalLink, Crown, Sparkles, EyeOff, Ban, Lock } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 
 /* ─── Status ─── */
 const statusStyles: Record<string, { dot: string; text: string; bg: string }> = {
@@ -11,12 +12,15 @@ const statusStyles: Record<string, { dot: string; text: string; bg: string }> = 
   Vendido: { dot: "bg-red-500", text: "text-red-700", bg: "bg-red-50" },
   Alquilado: { dot: "bg-blue-500", text: "text-blue-700", bg: "bg-blue-50" },
   "Bajo oferta": { dot: "bg-violet-500", text: "text-violet-700", bg: "bg-violet-50" },
+  "Off-market": { dot: "bg-gray-500", text: "text-gray-700", bg: "bg-gray-100" },
 };
 
 /* ─── Portal type ─── */
 interface Portal {
   name: string;
   active: boolean;
+  restricted?: boolean;
+  restrictionReason?: string;
 }
 
 export interface PropertyData {
@@ -25,6 +29,7 @@ export interface PropertyData {
   title: string;
   price: string;
   previousPrice?: string;
+  priceOnRequest?: boolean;
   location: string;
   beds: number;
   baths: number;
@@ -40,26 +45,34 @@ export interface PropertyData {
   tags?: string[];
   portals?: Portal[];
   webActive?: boolean;
-  collaboration?: boolean;       // available for collaboration
-  isCollaborator?: boolean;       // belongs to a collaborator
+  webFeatured?: boolean;
+  collaboration?: boolean;
+  isCollaborator?: boolean;
   collaboratorName?: string;
+  isExclusive?: boolean;
   createdAt?: string;
   updatedAt?: string;
+  selected?: boolean;
 }
 
 interface PropertyCardProps {
   property: PropertyData;
   onClick?: () => void;
+  selected?: boolean;
+  onSelect?: (id: number) => void;
 }
 
 /* ─── Portals Popover ─── */
-const PortalsPopover = ({ portals, webActive, onToggleWeb, onTogglePortal }: {
+const PortalsPopover = ({ portals, webActive, webFeatured, onToggleWeb, onToggleFeatured, onTogglePortal }: {
   portals: Portal[];
   webActive: boolean;
+  webFeatured: boolean;
   onToggleWeb: () => void;
+  onToggleFeatured: () => void;
   onTogglePortal: (name: string) => void;
 }) => {
-  const activeCount = portals.filter(p => p.active).length + (webActive ? 1 : 0);
+  const activeCount = portals.filter(p => p.active && !p.restricted).length + (webActive ? 1 : 0);
+  const restrictedCount = portals.filter(p => p.restricted).length;
 
   return (
     <Popover>
@@ -70,11 +83,14 @@ const PortalsPopover = ({ portals, webActive, onToggleWeb, onTogglePortal }: {
         >
           <Globe className="h-3.5 w-3.5" />
           <span>{activeCount} activo{activeCount !== 1 ? "s" : ""}</span>
+          {restrictedCount > 0 && (
+            <span className="text-red-500">({restrictedCount} bloq.)</span>
+          )}
           <ChevronDown className="h-3 w-3" />
         </button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-64 p-0"
+        className="w-72 p-0"
         align="end"
         onClick={(e) => e.stopPropagation()}
       >
@@ -91,16 +107,48 @@ const PortalsPopover = ({ portals, webActive, onToggleWeb, onTogglePortal }: {
           <Switch checked={webActive} onCheckedChange={onToggleWeb} className="scale-75" />
         </div>
 
+        {/* Featured toggle */}
+        {webActive && (
+          <div className="px-3.5 py-2 flex items-center justify-between border-b border-border bg-amber-50/50">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+              <span className="text-[13px] font-medium text-foreground">Destacado en web</span>
+            </div>
+            <Switch checked={webFeatured} onCheckedChange={onToggleFeatured} className="scale-75" />
+          </div>
+        )}
+
         {/* Portal list */}
-        <div className="py-1 max-h-48 overflow-y-auto">
+        <div className="py-1 max-h-52 overflow-y-auto">
           {portals.map((portal) => (
             <button
               key={portal.name}
-              onClick={() => onTogglePortal(portal.name)}
-              className="flex items-center justify-between w-full px-3.5 py-2 hover:bg-accent transition-colors"
+              onClick={() => !portal.restricted && onTogglePortal(portal.name)}
+              disabled={portal.restricted}
+              className={`flex items-center justify-between w-full px-3.5 py-2 transition-colors ${portal.restricted ? "opacity-50 cursor-not-allowed bg-red-50/50" : "hover:bg-accent"}`}
             >
-              <span className={`text-[13px] ${portal.active ? "text-foreground" : "text-muted-foreground"}`}>{portal.name}</span>
-              {portal.active && <Check className="h-3.5 w-3.5 text-emerald-500" />}
+              <div className="flex items-center gap-2">
+                <span className={`text-[13px] ${portal.active && !portal.restricted ? "text-foreground" : "text-muted-foreground"}`}>
+                  {portal.name}
+                </span>
+                {portal.restricted && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Ban className="h-3 w-3 text-red-500" />
+                      </TooltipTrigger>
+                      <TooltipContent side="left" className="text-xs max-w-48">
+                        {portal.restrictionReason ?? "Publicación no permitida"}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
+              </div>
+              {portal.restricted ? (
+                <Lock className="h-3.5 w-3.5 text-red-400" />
+              ) : portal.active ? (
+                <Check className="h-3.5 w-3.5 text-emerald-500" />
+              ) : null}
             </button>
           ))}
         </div>
@@ -110,13 +158,13 @@ const PortalsPopover = ({ portals, webActive, onToggleWeb, onTogglePortal }: {
 };
 
 /* ─── Main Card ─── */
-const PropertyCard = ({ property, onClick }: PropertyCardProps) => {
+const PropertyCard = ({ property, onClick, selected, onSelect }: PropertyCardProps) => {
   const p = property;
   const rating = p.rating ?? 4;
   const status = statusStyles[p.status] ?? statusStyles.Disponible;
 
-  // Local state for toggles (demo)
   const [webActive, setWebActive] = useState(p.webActive ?? true);
+  const [webFeatured, setWebFeatured] = useState(p.webFeatured ?? false);
   const [portals, setPortals] = useState<Portal[]>(
     p.portals ?? [
       { name: "Idealista", active: true },
@@ -133,13 +181,13 @@ const PropertyCard = ({ property, onClick }: PropertyCardProps) => {
   };
 
   const hasPriceDrop = !!p.previousPrice;
+  const isOffMarket = p.status === "Off-market";
 
   return (
     <div
       onClick={onClick}
-      className="rounded-xl border border-border bg-card hover:shadow-elevated transition-all duration-200 cursor-pointer overflow-hidden group"
+      className={`rounded-xl border bg-card hover:shadow-elevated transition-all duration-200 cursor-pointer overflow-hidden group ${selected ? "border-primary ring-2 ring-primary/20" : "border-border"}`}
     >
-      {/* ─── Main content row ─── */}
       <div className="flex">
         {/* Image */}
         <div className="w-60 shrink-0 relative overflow-hidden">
@@ -148,29 +196,41 @@ const PropertyCard = ({ property, onClick }: PropertyCardProps) => {
             alt={p.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 absolute inset-0"
           />
-          {/* Type badge */}
-          <span className="absolute top-2.5 left-2.5 bg-card/90 backdrop-blur-sm text-[10px] font-bold uppercase tracking-wider text-foreground px-2 py-0.5 rounded">
-            {p.type}
-          </span>
           {/* Photo count */}
           <span className="absolute bottom-2.5 right-2.5 bg-foreground/60 backdrop-blur-sm text-background text-[10px] px-2 py-0.5 rounded">
             1/12
           </span>
-          {/* Collaborator ribbon */}
-          {p.isCollaborator && (
-            <span className="absolute top-2.5 right-2.5 bg-indigo-500/90 backdrop-blur-sm text-white text-[9px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded flex items-center gap-1">
-              <Users className="h-3 w-3" />
-              Colaborador
+          {/* Off-market overlay */}
+          {isOffMarket && (
+            <div className="absolute inset-0 bg-foreground/40 backdrop-blur-[1px] flex items-center justify-center">
+              <span className="bg-foreground/80 text-background text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded flex items-center gap-1.5">
+                <EyeOff className="h-3.5 w-3.5" />
+                Off-market
+              </span>
+            </div>
+          )}
+          {/* Exclusive badge */}
+          {p.isExclusive && (
+            <span className="absolute top-2.5 left-2.5 bg-amber-500/90 backdrop-blur-sm text-white text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded flex items-center gap-1">
+              <Crown className="h-3 w-3" />
+              Exclusiva
             </span>
           )}
         </div>
 
         {/* Details */}
         <div className="flex-1 min-w-0 px-5 py-3.5 flex flex-col">
-          {/* Top row: ref + stars + status + collaboration */}
+          {/* Top row */}
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-3">
-              <Checkbox className="h-4 w-4" onClick={(e) => e.stopPropagation()} />
+              <Checkbox
+                className="h-4 w-4"
+                checked={selected}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSelect?.(p.id);
+                }}
+              />
               <span className="text-xs text-muted-foreground font-mono">{p.reference ?? `REF-${p.id.toString().padStart(4, "0")}`}</span>
               <div className="flex items-center gap-0.5">
                 {Array.from({ length: 5 }).map((_, i) => (
@@ -187,13 +247,19 @@ const PropertyCard = ({ property, onClick }: PropertyCardProps) => {
                 </span>
               )}
               {p.isCollaborator && p.collaboratorName && (
-                <span className="text-[11px] text-indigo-600 font-medium">
-                  vía {p.collaboratorName}
+                <span className="inline-flex items-center gap-1 rounded-full bg-indigo-50 border border-indigo-200 px-2 py-0.5 text-[10px] font-medium text-indigo-600">
+                  <Users className="h-3 w-3" />
+                  {p.collaboratorName}
+                </span>
+              )}
+              {webFeatured && webActive && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 border border-amber-200 px-2 py-0.5 text-[10px] font-medium text-amber-700">
+                  <Sparkles className="h-3 w-3" />
+                  Destacado
                 </span>
               )}
             </div>
-            <div className="flex items-center gap-3">
-              {/* Status */}
+            <div className="flex items-center gap-2">
               <span className={`inline-flex items-center gap-1.5 text-xs font-medium rounded-full px-2.5 py-1 ${status.bg} ${status.text}`}>
                 <span className={`h-1.5 w-1.5 rounded-full ${status.dot}`} />
                 {p.status}
@@ -203,8 +269,12 @@ const PropertyCard = ({ property, onClick }: PropertyCardProps) => {
 
           {/* Price row */}
           <div className="flex items-baseline gap-2.5 mb-1">
-            <span className="text-xl font-bold text-foreground tracking-tight">{p.price}</span>
-            {hasPriceDrop && (
+            {p.priceOnRequest ? (
+              <span className="text-xl font-bold text-foreground tracking-tight">Consultar precio</span>
+            ) : (
+              <span className="text-xl font-bold text-foreground tracking-tight">{p.price}</span>
+            )}
+            {hasPriceDrop && !p.priceOnRequest && (
               <span className="inline-flex items-center gap-1 text-[12px] text-red-500 font-medium">
                 <TrendingDown className="h-3.5 w-3.5" />
                 <span className="line-through text-muted-foreground/60">{p.previousPrice}</span>
@@ -260,7 +330,7 @@ const PropertyCard = ({ property, onClick }: PropertyCardProps) => {
         </div>
       </div>
 
-      {/* ─── Footer ─── */}
+      {/* Footer */}
       <div className="flex items-center justify-between px-5 py-2 border-t border-border bg-muted/20 text-[11px] text-muted-foreground">
         <div className="flex items-center gap-4">
           <span className="flex items-center gap-1">
@@ -278,7 +348,9 @@ const PropertyCard = ({ property, onClick }: PropertyCardProps) => {
           <PortalsPopover
             portals={portals}
             webActive={webActive}
+            webFeatured={webFeatured}
             onToggleWeb={() => setWebActive(!webActive)}
+            onToggleFeatured={() => setWebFeatured(!webFeatured)}
             onTogglePortal={togglePortal}
           />
         </div>
