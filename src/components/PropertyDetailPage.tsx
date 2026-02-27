@@ -6,6 +6,10 @@ import PropertyTabs from "@/components/property-detail/PropertyTabs";
 import PropertyDescription from "@/components/property-detail/PropertyDescription";
 import PropertyFeatures from "@/components/property-detail/PropertyFeatures";
 import PropertyMap from "@/components/property-detail/PropertyMap";
+import PropertyVideo from "@/components/property-detail/PropertyVideo";
+import PropertyContactForm from "@/components/property-detail/PropertyContactForm";
+import MortgageCalculator from "@/components/property-detail/MortgageCalculator";
+import NearbyPlaces from "@/components/property-detail/NearbyPlaces";
 import PropertySidebar from "@/components/property-detail/PropertySidebar";
 
 import img1 from "@/assets/property-detail-1.jpg";
@@ -61,8 +65,12 @@ const PropertyDetailPage = ({ onBack }: PropertyDetailPageProps) => {
         {/* Left column */}
         <div className="flex-1 min-w-0 space-y-5">
           <PropertyDescription />
+          <PropertyVideo />
           <PropertyFeatures />
+          <MortgageCalculator />
           <PropertyMap />
+          <NearbyPlaces />
+          <PropertyContactForm />
         </div>
 
         {/* Right column - sidebar */}
