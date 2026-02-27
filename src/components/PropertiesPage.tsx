@@ -9,26 +9,28 @@ import property3 from "@/assets/property-3.jpg";
 
 const demoProperties = [
   {
-    id: 1, image: property1, title: "Villa Mediterránea con Piscina", price: "1.100.000 €", location: "Moravit-Cap Blanc, Moraira",
+    id: 1, image: property1, title: "Villa Mediterránea con Piscina", price: "1.100.000 €", previousPrice: "1.250.000 €", location: "Moravit-Cap Blanc, Moraira",
     beds: 3, baths: 2, sqft: "190", status: "Disponible", type: "Villa", operacion: "Venta",
     reference: "6254", rating: 5, builtArea: "288", plotArea: "1.051",
     description: "Introducing a beautiful detached house, nestled in the peaceful Moravit-Cap Blanc area of Moraira, combining modern and Mediterranean architectural styles.",
-    tags: ["B.B+"], portals: ["Kyero", "Idealista", "Fotocasa"],
+    tags: ["B.B+"], collaboration: true, webActive: true,
     createdAt: "23.12.2025", updatedAt: "27.02.2026",
   },
   {
     id: 2, image: property2, title: "Penthouse con Vistas al Skyline", price: "1.890.000 €", location: "Manhattan, NY",
-    beds: 3, baths: 2, sqft: "2.100", status: "Reservado", type: "Apartamento", operacion: "Venta",
+    beds: 3, baths: 2, sqft: "2.100", status: "Bajo oferta", type: "Apartamento", operacion: "Venta",
     reference: "4821", rating: 4, builtArea: "2.100",
     description: "Espectacular penthouse con vistas panorámicas al skyline de Manhattan. Acabados de lujo, terraza privada y acceso directo al rooftop.",
-    tags: ["A+"], createdAt: "10.01.2026", updatedAt: "25.02.2026",
+    tags: ["A+"], isCollaborator: true, collaboratorName: "Luxinmo", webActive: false,
+    createdAt: "10.01.2026", updatedAt: "25.02.2026",
   },
   {
-    id: 3, image: property3, title: "Mansión Frente al Mar", price: "5.750.000 €", location: "Malibu, CA",
+    id: 3, image: property3, title: "Mansión Frente al Mar", price: "5.750.000 €", previousPrice: "6.200.000 €", location: "Malibu, CA",
     beds: 6, baths: 5, sqft: "5.800", status: "Disponible", type: "Mansión", operacion: "Alquiler",
     reference: "7103", rating: 5, builtArea: "5.800", plotArea: "3.200",
     description: "Mansión exclusiva en primera línea de playa con acceso privado al mar, piscina infinity, spa y jardines tropicales.",
-    tags: ["A.A"], createdAt: "05.11.2025", updatedAt: "20.02.2026",
+    tags: ["A.A"], collaboration: true, webActive: true,
+    createdAt: "05.11.2025", updatedAt: "20.02.2026",
   },
 ];
 
