@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Search, SlidersHorizontal, X, ChevronDown, ChevronRight, Bed, Bath, Maximize, MapPin, Heart, Mail, Eye, Mountain, Waves as WavesIcon, Trees, Flower2, Car, Home, Dumbbell, Wine, Tv, ThermometerSun, Lock, Fence } from "lucide-react";
+import { Search, SlidersHorizontal, X, ChevronDown, ChevronRight, Bed, Bath, Maximize, MapPin, Heart, Mail, Eye } from "lucide-react";
 import heroImg from "@/assets/luxury-hero.jpg";
 import LocationSearchDropdown from "./LocationSearchDropdown";
 import prop1 from "@/assets/luxury-property-1.jpg";
@@ -10,11 +10,61 @@ import detail2 from "@/assets/property-detail-2.jpg";
 import detail3 from "@/assets/property-detail-3.jpg";
 
 const BRAND_NAME = "PRESTIGE ESTATES";
-
 const NAV_LEFT = ["Home", "Properties", "Rentals"];
 const NAV_RIGHT = ["About", "Guides & Blog", "Message Us"];
 
-/* ─── Filter Dropdown Hook ─── */
+/* ─── Types ─── */
+interface FilterState {
+  locations: { id: string; name: string; path: string; type: string }[];
+  types: string[];
+  priceMin: string;
+  priceMax: string;
+  hidePriceOnRequest: boolean;
+  areaMin: string;
+  areaMax: string;
+  beds: string;
+  baths: string;
+  amenities: string[];
+  newBuilds: boolean;
+}
+
+const defaultFilters: FilterState = {
+  locations: [],
+  types: [],
+  priceMin: "",
+  priceMax: "",
+  hidePriceOnRequest: false,
+  areaMin: "",
+  areaMax: "",
+  beds: "Any",
+  baths: "Any",
+  amenities: [],
+  newBuilds: false,
+};
+
+/* ─── Constants ─── */
+const TYPE_OPTIONS = ["Villa", "Penthouse", "Apartment", "Finca", "New Build", "Land"];
+
+const BED_OPTIONS = ["Any", "1+", "2+", "3+", "4+", "5+"];
+const BATH_OPTIONS = ["Any", "1+", "2+", "3+", "4+"];
+
+const AMENITY_SIDEBAR = ["Sea Views", "Pool", "Garden", "Garage", "Terrace", "Smart Home", "Gym", "Wine Cellar"];
+
+const AMENITY_GROUPS = [
+  { title: "View", items: ["Panoramic View", "Sea Views", "Mountain View", "Golf View"] },
+  { title: "Outdoor", items: ["Garden", "Pool", "Terrace", "Garage", "Balcony", "Private Beach"] },
+  { title: "Indoor", items: ["Air Conditioning", "Fireplace", "Gym", "Wine Cellar", "Cinema", "Elevator", "Jacuzzi", "Sauna", "Smart Home"] },
+];
+
+const PRICE_PRESETS = [
+  { label: "€500K", value: "500000" },
+  { label: "€1M", value: "1000000" },
+  { label: "€2M", value: "2000000" },
+  { label: "€5M", value: "5000000" },
+  { label: "€10M", value: "10000000" },
+];
+
+/* ─── Dropdown Hook ─── */
 function useDropdown() {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -26,26 +76,9 @@ function useDropdown() {
   return { open, setOpen, ref };
 }
 
-/* ─── Filter Dropdown Components ─── */
-const TYPE_OPTIONS = [
-  { label: "Villa", sub: "All types" },
-  { label: "Penthouse", sub: "All types" },
-  { label: "Apartment", sub: "All types" },
-  { label: "Finca", sub: null },
-  { label: "Land", sub: null },
-  { label: "New Build", sub: null },
-];
-
-const AMENITY_GROUPS = [
-  { title: "View", items: ["Panoramic View", "Sea View", "Mountain View", "Golf View"] },
-  { title: "Outdoor", items: ["Garden", "Pool", "Terrace", "Garage", "Balcony", "Private Beach"] },
-  { title: "Indoor", items: ["Air Conditioning", "Fireplace", "Gym", "Wine Cellar", "Cinema", "Elevator", "Jacuzzi", "Sauna", "Smart Home"] },
-];
-
-const TypeDropdown = () => {
+/* ─── Dropdown Components ─── */
+const TypeDropdown = ({ selected, onToggle }: { selected: string[]; onToggle: (v: string) => void }) => {
   const { open, setOpen, ref } = useDropdown();
-  const [selected, setSelected] = useState<string[]>([]);
-  const toggle = (v: string) => setSelected((p) => p.includes(v) ? p.filter((x) => x !== v) : [...p, v]);
   return (
     <div ref={ref} className="relative shrink-0">
       <button onClick={() => setOpen(!open)} className={`flex items-center gap-1 border text-[12px] px-4 py-1.5 rounded-full transition-all duration-200 shrink-0 ${selected.length > 0 ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-200 text-luxury-black/65 hover:border-luxury-black/30"}`}>
@@ -54,12 +87,9 @@ const TypeDropdown = () => {
       {open && (
         <div className="absolute top-full left-0 mt-2 bg-white border border-neutral-200 rounded-sm shadow-lg w-[300px] py-2 z-50">
           {TYPE_OPTIONS.map((t) => (
-            <label key={t.label} className="flex items-center justify-between px-4 py-2.5 cursor-pointer hover:bg-neutral-50 transition-colors">
-              <div className="flex items-center gap-3">
-                <input type="checkbox" checked={selected.includes(t.label)} onChange={() => toggle(t.label)} className="w-4 h-4 border-neutral-300 rounded-sm accent-luxury-black" />
-                <span className="text-[14px] text-luxury-black/80">{t.label}</span>
-              </div>
-              {t.sub && <span className="text-[12px] text-luxury-black/35 flex items-center gap-1">{t.sub} <ChevronDown className="w-3 h-3" /></span>}
+            <label key={t} className="flex items-center gap-3 px-4 py-2.5 cursor-pointer hover:bg-neutral-50 transition-colors">
+              <input type="checkbox" checked={selected.includes(t)} onChange={() => onToggle(t)} className="w-4 h-4 border-neutral-300 rounded-sm accent-luxury-black" />
+              <span className="text-[14px] text-luxury-black/80">{t}</span>
             </label>
           ))}
         </div>
@@ -68,33 +98,45 @@ const TypeDropdown = () => {
   );
 };
 
-const PriceDropdown = () => {
+const PriceDropdown = ({ priceMin, priceMax, hidePOR, onMinChange, onMaxChange, onHidePORChange }: {
+  priceMin: string; priceMax: string; hidePOR: boolean;
+  onMinChange: (v: string) => void; onMaxChange: (v: string) => void; onHidePORChange: (v: boolean) => void;
+}) => {
   const { open, setOpen, ref } = useDropdown();
+  const hasValue = priceMin || priceMax;
   return (
     <div ref={ref} className="relative shrink-0">
-      <button onClick={() => setOpen(!open)} className="flex items-center gap-1 border border-neutral-200 text-[12px] text-luxury-black/65 px-4 py-1.5 rounded-full hover:border-luxury-black/30 transition-all duration-200">
-        Price <ChevronDown className="w-3 h-3" />
+      <button onClick={() => setOpen(!open)} className={`flex items-center gap-1 border text-[12px] px-4 py-1.5 rounded-full transition-all duration-200 ${hasValue ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-200 text-luxury-black/65 hover:border-luxury-black/30"}`}>
+        Price {hasValue && "●"} <ChevronDown className="w-3 h-3" />
       </button>
       {open && (
-        <div className="absolute top-full left-0 mt-2 bg-white border border-neutral-200 rounded-sm shadow-lg w-[340px] p-5 z-50">
-          <div className="mb-4">
-            <div className="w-full h-1 bg-luxury-black rounded-full relative">
-              <div className="absolute -left-1 -top-1.5 w-4 h-4 bg-white border-2 border-luxury-black rounded-full cursor-pointer" />
-              <div className="absolute -right-1 -top-1.5 w-4 h-4 bg-white border-2 border-luxury-black rounded-full cursor-pointer" />
-            </div>
-          </div>
+        <div className="absolute top-full left-0 mt-2 bg-white border border-neutral-200 rounded-sm shadow-lg w-[380px] p-5 z-50">
           <div className="flex gap-3 mb-3">
-            <div className="flex-1 relative">
-              <input type="text" placeholder="€ No Min" className="w-full border border-neutral-200 px-3 py-2.5 text-[13px] text-luxury-black focus:outline-none focus:border-luxury-black/30" />
-              <button className="absolute right-2 top-1/2 -translate-y-1/2 text-luxury-black/25 hover:text-luxury-black/50"><X className="w-3.5 h-3.5" /></button>
+            <div className="flex-1">
+              <label className="text-[10px] uppercase tracking-wider text-luxury-black/40 mb-1.5 block">Min price</label>
+              <input type="text" value={priceMin} onChange={(e) => onMinChange(e.target.value)} placeholder="€ No Min" className="w-full border border-neutral-200 px-3 py-2.5 text-[13px] text-luxury-black focus:outline-none focus:border-luxury-black/30" />
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                {PRICE_PRESETS.slice(0, 3).map(p => (
+                  <button key={p.value} onClick={() => onMinChange(p.value)} className={`text-[10px] px-2 py-0.5 rounded-full border transition-colors ${priceMin === p.value ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-200 text-luxury-black/50 hover:border-luxury-black/30"}`}>
+                    {p.label}
+                  </button>
+                ))}
+              </div>
             </div>
-            <div className="flex-1 relative">
-              <input type="text" placeholder="€ No Max" className="w-full border border-neutral-200 px-3 py-2.5 text-[13px] text-luxury-black focus:outline-none focus:border-luxury-black/30" />
-              <button className="absolute right-2 top-1/2 -translate-y-1/2 text-luxury-black/25 hover:text-luxury-black/50"><X className="w-3.5 h-3.5" /></button>
+            <div className="flex-1">
+              <label className="text-[10px] uppercase tracking-wider text-luxury-black/40 mb-1.5 block">Max price</label>
+              <input type="text" value={priceMax} onChange={(e) => onMaxChange(e.target.value)} placeholder="€ No Max" className="w-full border border-neutral-200 px-3 py-2.5 text-[13px] text-luxury-black focus:outline-none focus:border-luxury-black/30" />
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                {PRICE_PRESETS.slice(2).map(p => (
+                  <button key={p.value} onClick={() => onMaxChange(p.value)} className={`text-[10px] px-2 py-0.5 rounded-full border transition-colors ${priceMax === p.value ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-200 text-luxury-black/50 hover:border-luxury-black/30"}`}>
+                    {p.label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
-          <label className="flex items-center gap-2.5 cursor-pointer">
-            <input type="checkbox" className="w-4 h-4 border-neutral-300 rounded-sm accent-luxury-black" />
+          <label className="flex items-center gap-2.5 cursor-pointer mt-2">
+            <input type="checkbox" checked={hidePOR} onChange={() => onHidePORChange(!hidePOR)} className="w-4 h-4 border-neutral-300 rounded-sm accent-luxury-black" />
             <span className="text-[13px] text-luxury-black/70">Hide "Price on Request" listings</span>
           </label>
         </div>
@@ -103,9 +145,8 @@ const PriceDropdown = () => {
   );
 };
 
-const BedsDropdown = () => {
+const BedsDropdown = ({ selected, onChange }: { selected: string; onChange: (v: string) => void }) => {
   const { open, setOpen, ref } = useDropdown();
-  const [selected, setSelected] = useState("Any");
   return (
     <div ref={ref} className="relative shrink-0">
       <button onClick={() => setOpen(!open)} className={`flex items-center gap-1 border text-[12px] px-4 py-1.5 rounded-full transition-all duration-200 ${selected !== "Any" ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-200 text-luxury-black/65 hover:border-luxury-black/30"}`}>
@@ -114,36 +155,30 @@ const BedsDropdown = () => {
       {open && (
         <div className="absolute top-full left-0 mt-2 bg-white border border-neutral-200 rounded-sm shadow-lg w-[320px] p-5 z-50">
           <div className="flex gap-1">
-            {["Any", "1+", "2+", "3+", "4+", "5+"].map((b) => (
-              <button key={b} onClick={() => setSelected(b)} className={`flex-1 py-2 text-[13px] border transition-all duration-200 ${selected === b ? "bg-luxury-black text-white border-luxury-black" : "border-neutral-200 text-luxury-black/60 hover:border-luxury-black/30"}`}>
+            {BED_OPTIONS.map((b) => (
+              <button key={b} onClick={() => onChange(b)} className={`flex-1 py-2 text-[13px] border transition-all duration-200 ${selected === b ? "bg-luxury-black text-white border-luxury-black" : "border-neutral-200 text-luxury-black/60 hover:border-luxury-black/30"}`}>
                 {b}
               </button>
             ))}
           </div>
-          <label className="flex items-center gap-2.5 mt-3 cursor-pointer">
-            <input type="checkbox" className="w-4 h-4 border-neutral-300 rounded-sm accent-luxury-black" />
-            <span className="text-[13px] text-luxury-black/70">Use exact match</span>
-          </label>
         </div>
       )}
     </div>
   );
 };
 
-const AmenitiesDropdown = () => {
+const AmenitiesDropdown = ({ selected, onToggle }: { selected: string[]; onToggle: (v: string) => void }) => {
   const { open, setOpen, ref } = useDropdown();
-  const [selected, setSelected] = useState<string[]>([]);
-  const toggle = (v: string) => setSelected((p) => p.includes(v) ? p.filter((x) => x !== v) : [...p, v]);
   return (
     <div ref={ref} className="relative shrink-0">
       <button onClick={() => setOpen(!open)} className={`flex items-center gap-1 border text-[12px] px-4 py-1.5 rounded-full transition-all duration-200 ${selected.length > 0 ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-200 text-luxury-black/65 hover:border-luxury-black/30"}`}>
         Amenities {selected.length > 0 && <span className="bg-white text-luxury-black text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-medium">{selected.length}</span>} <ChevronDown className="w-3 h-3" />
       </button>
       {open && (
-        <div className="absolute top-full left-0 mt-2 bg-white border border-neutral-200 rounded-sm shadow-lg w-[480px] max-h-[420px] overflow-y-auto p-5 z-50">
+        <div className="absolute top-full right-0 mt-2 bg-white border border-neutral-200 rounded-sm shadow-lg w-[480px] max-h-[420px] overflow-y-auto p-5 z-50">
           <div className="flex items-center justify-between mb-4">
             <span className="text-[11px] text-luxury-black/40 uppercase tracking-wide">Select amenities</span>
-            {selected.length > 0 && <button onClick={() => setSelected([])} className="text-[12px] text-luxury-black/50 hover:text-luxury-black">Clear all</button>}
+            {selected.length > 0 && <button onClick={() => selected.forEach(s => onToggle(s))} className="text-[12px] text-luxury-black/50 hover:text-luxury-black">Clear</button>}
           </div>
           {AMENITY_GROUPS.map((group) => (
             <div key={group.title} className="mb-5 last:mb-0">
@@ -152,7 +187,7 @@ const AmenitiesDropdown = () => {
                 {group.items.map((item) => (
                   <button
                     key={item}
-                    onClick={() => toggle(item)}
+                    onClick={() => onToggle(item)}
                     className={`flex items-center gap-1.5 border rounded-full px-3.5 py-1.5 text-[12px] transition-all duration-200 ${selected.includes(item) ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-200 text-luxury-black/60 hover:border-luxury-black/40"}`}
                   >
                     {item}
@@ -167,18 +202,171 @@ const AmenitiesDropdown = () => {
   );
 };
 
-const NewBuildsChip = () => {
-  const [active, setActive] = useState(false);
+/* ─── Helper: format price ─── */
+const formatPrice = (val: string) => {
+  const n = parseInt(val);
+  if (isNaN(n)) return val;
+  if (n >= 1000000) return `€${(n / 1000000).toFixed(n % 1000000 === 0 ? 0 : 1)}M`;
+  if (n >= 1000) return `€${(n / 1000).toFixed(0)}K`;
+  return `€${n}`;
+};
+
+/* ─── Active Filter Chips ─── */
+interface ActiveChip {
+  key: string;
+  label: string;
+  group: string;
+}
+
+function buildActiveChips(f: FilterState): ActiveChip[] {
+  const chips: ActiveChip[] = [];
+  f.locations.forEach(l => chips.push({ key: `loc-${l.id}`, label: l.name, group: "location" }));
+  f.types.forEach(t => chips.push({ key: `type-${t}`, label: t, group: "type" }));
+  if (f.priceMin && f.priceMax) {
+    chips.push({ key: "price-range", label: `${formatPrice(f.priceMin)} – ${formatPrice(f.priceMax)}`, group: "price" });
+  } else if (f.priceMin) {
+    chips.push({ key: "price-min", label: `From ${formatPrice(f.priceMin)}`, group: "price" });
+  } else if (f.priceMax) {
+    chips.push({ key: "price-max", label: `Up to ${formatPrice(f.priceMax)}`, group: "price" });
+  }
+  if (f.areaMin || f.areaMax) {
+    const minLabel = f.areaMin ? `${f.areaMin} m²` : "";
+    const maxLabel = f.areaMax ? `${f.areaMax} m²` : "";
+    chips.push({ key: "area", label: minLabel && maxLabel ? `${minLabel} – ${maxLabel}` : minLabel ? `From ${minLabel}` : `Up to ${maxLabel}`, group: "area" });
+  }
+  if (f.beds !== "Any") chips.push({ key: "beds", label: `${f.beds} Beds`, group: "beds" });
+  if (f.baths !== "Any") chips.push({ key: "baths", label: `${f.baths} Baths`, group: "baths" });
+  f.amenities.forEach(a => chips.push({ key: `amenity-${a}`, label: a, group: "amenity" }));
+  if (f.newBuilds) chips.push({ key: "newbuilds", label: "New Builds", group: "newBuilds" });
+  if (f.hidePriceOnRequest) chips.push({ key: "hide-por", label: "Hide Price on Request", group: "hidePOR" });
+  return chips;
+}
+
+function removeChip(f: FilterState, chip: ActiveChip): FilterState {
+  const next = { ...f };
+  switch (chip.group) {
+    case "location": next.locations = f.locations.filter(l => `loc-${l.id}` !== chip.key); break;
+    case "type": next.types = f.types.filter(t => t !== chip.label); break;
+    case "price": next.priceMin = ""; next.priceMax = ""; break;
+    case "area": next.areaMin = ""; next.areaMax = ""; break;
+    case "beds": next.beds = "Any"; break;
+    case "baths": next.baths = "Any"; break;
+    case "amenity": next.amenities = f.amenities.filter(a => a !== chip.label); break;
+    case "newBuilds": next.newBuilds = false; break;
+    case "hidePOR": next.hidePriceOnRequest = false; break;
+  }
+  return next;
+}
+
+/* ─── Filter Sidebar ─── */
+const FilterSidebar = ({ open, onClose, filters, onChange }: { open: boolean; onClose: () => void; filters: FilterState; onChange: (f: FilterState) => void }) => {
+  if (!open) return null;
+
+  const toggleType = (t: string) => onChange({ ...filters, types: filters.types.includes(t) ? filters.types.filter(x => x !== t) : [...filters.types, t] });
+  const toggleAmenity = (a: string) => onChange({ ...filters, amenities: filters.amenities.includes(a) ? filters.amenities.filter(x => x !== a) : [...filters.amenities, a] });
+
   return (
-    <button
-      onClick={() => setActive(!active)}
-      className={`text-[12px] px-4 py-1.5 rounded-full transition-all duration-200 shrink-0 border ${active ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-200 text-luxury-black/65 hover:border-luxury-black/30"}`}
-    >
-      New Builds
-    </button>
+    <>
+      <div className="fixed inset-0 bg-luxury-black/30 z-40" onClick={onClose} />
+      <aside className="fixed top-0 right-0 h-full w-[340px] bg-white z-50 overflow-y-auto border-l border-neutral-200 shadow-lg animate-in slide-in-from-right duration-300">
+        <div className="flex items-center justify-between p-5 border-b border-neutral-200">
+          <h2 className="text-[15px] font-medium text-luxury-black">Filters</h2>
+          <button onClick={onClose} className="text-luxury-black/50 hover:text-luxury-black transition-colors">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="p-5 space-y-7">
+          {/* Property type */}
+          <div>
+            <h3 className="text-[13px] font-medium text-luxury-black mb-3">Property type</h3>
+            <div className="space-y-2.5">
+              {TYPE_OPTIONS.map((t) => (
+                <label key={t} className="flex items-center gap-2.5 cursor-pointer group">
+                  <input type="checkbox" checked={filters.types.includes(t)} onChange={() => toggleType(t)} className="w-4 h-4 border-neutral-300 rounded-sm accent-luxury-black" />
+                  <span className="text-[13px] text-luxury-black/70 group-hover:text-luxury-black transition-colors">{t}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Price range */}
+          <div>
+            <h3 className="text-[13px] font-medium text-luxury-black mb-3">Price range</h3>
+            <div className="flex gap-3 mb-2">
+              <input type="text" value={filters.priceMin} onChange={(e) => onChange({ ...filters, priceMin: e.target.value })} placeholder="€ No Min" className="w-full border border-neutral-200 px-3 py-2 text-[12px] text-luxury-black focus:outline-none focus:border-luxury-black/30" />
+              <input type="text" value={filters.priceMax} onChange={(e) => onChange({ ...filters, priceMax: e.target.value })} placeholder="€ No Max" className="w-full border border-neutral-200 px-3 py-2 text-[12px] text-luxury-black focus:outline-none focus:border-luxury-black/30" />
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {PRICE_PRESETS.map(p => (
+                <button key={p.value} onClick={() => onChange({ ...filters, priceMin: filters.priceMin === p.value ? "" : p.value })} className={`text-[10px] px-2 py-0.5 rounded-full border transition-colors ${filters.priceMin === p.value ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-200 text-luxury-black/50 hover:border-luxury-black/30"}`}>
+                  {p.label}+
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Living area */}
+          <div>
+            <h3 className="text-[13px] font-medium text-luxury-black mb-3">Living area</h3>
+            <div className="flex gap-3">
+              <input type="text" value={filters.areaMin} onChange={(e) => onChange({ ...filters, areaMin: e.target.value })} placeholder="No Min" className="w-full border border-neutral-200 px-3 py-2 text-[12px] text-luxury-black focus:outline-none focus:border-luxury-black/30" />
+              <input type="text" value={filters.areaMax} onChange={(e) => onChange({ ...filters, areaMax: e.target.value })} placeholder="No Max" className="w-full border border-neutral-200 px-3 py-2 text-[12px] text-luxury-black focus:outline-none focus:border-luxury-black/30" />
+            </div>
+            <span className="text-[10px] text-luxury-black/35 mt-1 block">m²</span>
+          </div>
+
+          {/* Bedrooms */}
+          <div>
+            <h3 className="text-[13px] font-medium text-luxury-black mb-3">Bedrooms</h3>
+            <div className="flex gap-1.5">
+              {BED_OPTIONS.map((b) => (
+                <button key={b} onClick={() => onChange({ ...filters, beds: b })} className={`px-3.5 py-1.5 text-[12px] border transition-all duration-200 ${filters.beds === b ? "bg-luxury-black text-white border-luxury-black" : "border-neutral-200 text-luxury-black/60 hover:border-luxury-black/30"}`}>
+                  {b}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Bathrooms */}
+          <div>
+            <h3 className="text-[13px] font-medium text-luxury-black mb-3">Bathrooms</h3>
+            <div className="flex gap-1.5">
+              {BATH_OPTIONS.map((b) => (
+                <button key={b} onClick={() => onChange({ ...filters, baths: b })} className={`px-3.5 py-1.5 text-[12px] border transition-all duration-200 ${filters.baths === b ? "bg-luxury-black text-white border-luxury-black" : "border-neutral-200 text-luxury-black/60 hover:border-luxury-black/30"}`}>
+                  {b}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Amenities */}
+          <div>
+            <h3 className="text-[13px] font-medium text-luxury-black mb-3">Amenities</h3>
+            <div className="space-y-2.5">
+              {AMENITY_SIDEBAR.map((a) => (
+                <label key={a} className="flex items-center gap-2.5 cursor-pointer group">
+                  <input type="checkbox" checked={filters.amenities.includes(a)} onChange={() => toggleAmenity(a)} className="w-4 h-4 border-neutral-300 rounded-sm accent-luxury-black" />
+                  <span className="text-[13px] text-luxury-black/70 group-hover:text-luxury-black transition-colors">{a}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="sticky bottom-0 border-t border-neutral-200 bg-white p-4 flex gap-3">
+          <button onClick={() => onChange(defaultFilters)} className="text-[12px] text-luxury-black/50 hover:text-luxury-black transition-colors font-light">Clear all</button>
+          <button onClick={onClose} className="flex-1 bg-luxury-black text-white text-[12px] tracking-[0.1em] uppercase py-2.5 hover:bg-luxury-black/85 transition-all duration-300">
+            Show results
+          </button>
+        </div>
+      </aside>
+    </>
   );
 };
 
+/* ─── Properties Data ─── */
 const PROPERTIES = [
   {
     id: 1, image: heroImg, gallery: [heroImg, detail1, detail2],
@@ -229,105 +417,6 @@ const PROPERTIES = [
     features: ["Golf Views", "Pool", "Gym", "Staff Quarters"],
   },
 ];
-
-/* ─── Filter Sidebar ─── */
-const FilterSidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
-  if (!open) return null;
-
-  return (
-    <>
-      {/* Overlay for mobile */}
-      <div className="fixed inset-0 bg-luxury-black/30 z-40 lg:hidden" onClick={onClose} />
-
-      <aside className="fixed top-0 left-0 h-full w-[300px] bg-white z-50 overflow-y-auto border-r border-neutral-200 shadow-lg lg:shadow-none animate-in slide-in-from-left duration-300">
-        <div className="flex items-center justify-between p-5 border-b border-neutral-200">
-          <h2 className="text-[15px] font-medium text-luxury-black">Filters</h2>
-          <button onClick={onClose} className="text-luxury-black/50 hover:text-luxury-black transition-colors">
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        <div className="p-5 space-y-7">
-          {/* Property type */}
-          <div>
-            <h3 className="text-[13px] font-medium text-luxury-black mb-3">Property type</h3>
-            <div className="space-y-2.5">
-              {["Villa", "Penthouse", "Apartment", "Finca", "New Build", "Land"].map((t) => (
-                <label key={t} className="flex items-center gap-2.5 cursor-pointer group">
-                  <input type="checkbox" className="w-4 h-4 border-neutral-300 rounded-sm accent-luxury-black" />
-                  <span className="text-[13px] text-luxury-black/70 group-hover:text-luxury-black transition-colors">{t}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          {/* Price range */}
-          <div>
-            <h3 className="text-[13px] font-medium text-luxury-black mb-3">Price range</h3>
-            <div className="flex gap-3">
-              <input type="text" placeholder="€ No Min" className="w-full border border-neutral-200 px-3 py-2 text-[12px] text-luxury-black focus:outline-none focus:border-luxury-black/30" />
-              <input type="text" placeholder="€ No Max" className="w-full border border-neutral-200 px-3 py-2 text-[12px] text-luxury-black focus:outline-none focus:border-luxury-black/30" />
-            </div>
-          </div>
-
-          {/* Living area */}
-          <div>
-            <h3 className="text-[13px] font-medium text-luxury-black mb-3">Living area</h3>
-            <div className="flex gap-3">
-              <input type="text" placeholder="No Min" className="w-full border border-neutral-200 px-3 py-2 text-[12px] text-luxury-black focus:outline-none focus:border-luxury-black/30" />
-              <input type="text" placeholder="No Max" className="w-full border border-neutral-200 px-3 py-2 text-[12px] text-luxury-black focus:outline-none focus:border-luxury-black/30" />
-            </div>
-          </div>
-
-          {/* Bedrooms */}
-          <div>
-            <h3 className="text-[13px] font-medium text-luxury-black mb-3">Bedrooms</h3>
-            <div className="flex gap-1.5">
-              {["Any", "1+", "2+", "3+", "4+", "5+"].map((b, i) => (
-                <button key={b} className={`px-3.5 py-1.5 text-[12px] border transition-all duration-200 ${i === 0 ? "bg-luxury-black text-white border-luxury-black" : "border-neutral-200 text-luxury-black/60 hover:border-luxury-black/30"}`}>
-                  {b}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Bathrooms */}
-          <div>
-            <h3 className="text-[13px] font-medium text-luxury-black mb-3">Bathrooms</h3>
-            <div className="flex gap-1.5">
-              {["Any", "1+", "2+", "3+", "4+"].map((b, i) => (
-                <button key={b} className={`px-3.5 py-1.5 text-[12px] border transition-all duration-200 ${i === 0 ? "bg-luxury-black text-white border-luxury-black" : "border-neutral-200 text-luxury-black/60 hover:border-luxury-black/30"}`}>
-                  {b}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Amenities */}
-          <div>
-            <h3 className="text-[13px] font-medium text-luxury-black mb-3">Amenities</h3>
-            <div className="space-y-2.5">
-              {["Sea Views", "Pool", "Garden", "Garage", "Terrace", "Smart Home", "Gym", "Wine Cellar"].map((a) => (
-                <label key={a} className="flex items-center gap-2.5 cursor-pointer group">
-                  <input type="checkbox" className="w-4 h-4 border-neutral-300 rounded-sm accent-luxury-black" />
-                  <span className="text-[13px] text-luxury-black/70 group-hover:text-luxury-black transition-colors">{a}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="sticky bottom-0 border-t border-neutral-200 bg-white p-4 flex gap-3">
-          <button className="text-[12px] text-luxury-black/50 hover:text-luxury-black transition-colors font-light">Clear all</button>
-          <button className="flex-1 bg-luxury-black text-white text-[12px] tracking-[0.1em] uppercase py-2.5 hover:bg-luxury-black/85 transition-all duration-300">
-            Show results
-          </button>
-        </div>
-      </aside>
-    </>
-  );
-};
 
 /* ─── Property Card (horizontal) ─── */
 const PropertyCard = ({ property }: { property: typeof PROPERTIES[0] }) => {
@@ -409,15 +498,19 @@ const PropertyCard = ({ property }: { property: typeof PROPERTIES[0] }) => {
 
 const LuxuryPropertyListing = () => {
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [selectedLocations, setSelectedLocations] = useState<{ id: string; name: string; path: string; type: string }[]>([]);
+  const [filters, setFilters] = useState<FilterState>(defaultFilters);
+
+  const toggleType = (t: string) => setFilters(f => ({ ...f, types: f.types.includes(t) ? f.types.filter(x => x !== t) : [...f.types, t] }));
+  const toggleAmenity = (a: string) => setFilters(f => ({ ...f, amenities: f.amenities.includes(a) ? f.amenities.filter(x => x !== a) : [...f.amenities, a] }));
+
+  const activeChips = buildActiveChips(filters);
 
   return (
     <div className="flex-1 overflow-auto bg-white text-luxury-black font-sans">
 
-      {/* ─── NAVBAR (white, same as landing scrolled state) ─── */}
+      {/* ─── NAVBAR ─── */}
       <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm">
         <div className="max-w-[1400px] mx-auto grid grid-cols-3 items-center px-6 lg:px-10 h-[68px]">
-          {/* Left: Globe + nav links */}
           <div className="hidden lg:flex items-center gap-8">
             <button className="text-luxury-black/50 hover:text-luxury-black transition-colors duration-300">
               <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.2}><circle cx="12" cy="12" r="10" /><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
@@ -428,13 +521,11 @@ const LuxuryPropertyListing = () => {
           </div>
           <div className="lg:hidden" />
 
-          {/* Center logo */}
           <a href="/" className="flex flex-col items-center justify-center">
             <span className="font-serif text-lg md:text-xl tracking-[0.3em] font-light text-luxury-black">{BRAND_NAME}</span>
             <span className="text-[7px] tracking-[0.35em] uppercase font-light text-luxury-black/40">Real Estate</span>
           </a>
 
-          {/* Right: nav links + mobile menu */}
           <div className="flex items-center justify-end gap-8">
             <div className="hidden lg:flex items-center gap-8">
               {NAV_RIGHT.map((l) => (
@@ -462,11 +553,10 @@ const LuxuryPropertyListing = () => {
 
           {/* Search + filter chips row */}
           <div className="flex items-center gap-3 pb-3">
-            {/* Search */}
             <div className="hidden md:flex items-center shrink-0">
               <LocationSearchDropdown
-                selected={selectedLocations}
-                onSelectedChange={setSelectedLocations}
+                selected={filters.locations}
+                onSelectedChange={(locs) => setFilters(f => ({ ...f, locations: locs }))}
                 className="w-[420px]"
               />
             </div>
@@ -479,11 +569,16 @@ const LuxuryPropertyListing = () => {
             >
               <SlidersHorizontal className="w-3.5 h-3.5" /> Filters
             </button>
-            <TypeDropdown />
-            <PriceDropdown />
-            <BedsDropdown />
-            <AmenitiesDropdown />
-            <NewBuildsChip />
+            <TypeDropdown selected={filters.types} onToggle={toggleType} />
+            <PriceDropdown priceMin={filters.priceMin} priceMax={filters.priceMax} hidePOR={filters.hidePriceOnRequest} onMinChange={v => setFilters(f => ({ ...f, priceMin: v }))} onMaxChange={v => setFilters(f => ({ ...f, priceMax: v }))} onHidePORChange={v => setFilters(f => ({ ...f, hidePriceOnRequest: v }))} />
+            <BedsDropdown selected={filters.beds} onChange={v => setFilters(f => ({ ...f, beds: v }))} />
+            <AmenitiesDropdown selected={filters.amenities} onToggle={toggleAmenity} />
+            <button
+              onClick={() => setFilters(f => ({ ...f, newBuilds: !f.newBuilds }))}
+              className={`text-[12px] px-4 py-1.5 rounded-full transition-all duration-200 shrink-0 border ${filters.newBuilds ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-200 text-luxury-black/65 hover:border-luxury-black/30"}`}
+            >
+              New Builds
+            </button>
             <button className="flex items-center gap-1.5 border border-neutral-300 text-[12px] text-luxury-black/50 px-4 py-1.5 rounded-full hover:border-luxury-black/30 transition-all duration-200 shrink-0">
               <Search className="w-3 h-3" /> Save search
             </button>
@@ -492,38 +587,39 @@ const LuxuryPropertyListing = () => {
       </div>
 
       {/* ─── FILTER SIDEBAR ─── */}
-      <FilterSidebar open={filtersOpen} onClose={() => setFiltersOpen(false)} />
+      <FilterSidebar open={filtersOpen} onClose={() => setFiltersOpen(false)} filters={filters} onChange={setFilters} />
 
       {/* ─── RESULTS ─── */}
       <main className="max-w-[1400px] mx-auto px-6 lg:px-10 py-8">
+        {/* Active filter chips */}
+        {activeChips.length > 0 && (
+          <div className="flex flex-wrap items-center gap-2 mb-5">
+            {activeChips.map((chip) => (
+              <span
+                key={chip.key}
+                className="inline-flex items-center gap-1.5 bg-neutral-100 text-luxury-black text-[12px] font-medium rounded-full pl-3 pr-2 py-1.5 whitespace-nowrap"
+              >
+                {chip.label}
+                <button
+                  onClick={() => setFilters(f => removeChip(f, chip))}
+                  className="text-luxury-black/40 hover:text-luxury-black/70 transition-colors"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </span>
+            ))}
+            <button
+              onClick={() => setFilters(defaultFilters)}
+              className="text-[11px] text-luxury-black/40 hover:text-luxury-black/70 underline transition-colors ml-1"
+            >
+              Clear all
+            </button>
+          </div>
+        )}
+
         {/* Results header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            {/* Selected location chips */}
-            {selectedLocations.length > 0 && (
-              <div className="flex flex-wrap items-center gap-2 mb-3">
-                {selectedLocations.map((loc) => (
-                  <span
-                    key={loc.id}
-                    className="inline-flex items-center gap-1.5 bg-neutral-100 text-luxury-black text-[12px] font-medium rounded-full pl-3 pr-2 py-1.5 whitespace-nowrap"
-                  >
-                    {loc.name}
-                    <button
-                      onClick={() => setSelectedLocations((prev) => prev.filter((s) => s.id !== loc.id))}
-                      className="text-luxury-black/40 hover:text-luxury-black/70 transition-colors"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                  </span>
-                ))}
-                <button
-                  onClick={() => setSelectedLocations([])}
-                  className="text-[11px] text-luxury-black/40 hover:text-luxury-black/70 underline transition-colors ml-1"
-                >
-                  Clear all
-                </button>
-              </div>
-            )}
             <h1 className="text-xl md:text-2xl font-light text-luxury-black font-serif tracking-tight">Luxury Homes in Ibiza & Costa Blanca</h1>
             <p className="text-[13px] text-luxury-black/55 font-light mt-2 max-w-3xl leading-relaxed">
               Discover the finest selection of luxury villas, penthouses, fincas and new-build properties across Ibiza and the Costa Blanca. From beachfront estates with panoramic sea views to exclusive golf-side residences, explore hand-picked homes curated for the most discerning buyers.
@@ -584,7 +680,7 @@ const LuxuryPropertyListing = () => {
         </div>
       </section>
 
-      {/* ─── NEWSLETTER (horizontal) ─── */}
+      {/* ─── NEWSLETTER ─── */}
       <section className="border-t border-neutral-100">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
