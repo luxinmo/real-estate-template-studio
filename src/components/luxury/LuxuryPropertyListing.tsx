@@ -499,6 +499,31 @@ const LuxuryPropertyListing = () => {
         {/* Results header */}
         <div className="flex items-center justify-between mb-6">
           <div>
+            {/* Selected location chips */}
+            {selectedLocations.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2 mb-3">
+                {selectedLocations.map((loc) => (
+                  <span
+                    key={loc.id}
+                    className="inline-flex items-center gap-1.5 bg-neutral-100 text-luxury-black text-[12px] font-medium rounded-full pl-3 pr-2 py-1.5 whitespace-nowrap"
+                  >
+                    {loc.name}
+                    <button
+                      onClick={() => setSelectedLocations((prev) => prev.filter((s) => s.id !== loc.id))}
+                      className="text-luxury-black/40 hover:text-luxury-black/70 transition-colors"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                ))}
+                <button
+                  onClick={() => setSelectedLocations([])}
+                  className="text-[11px] text-luxury-black/40 hover:text-luxury-black/70 underline transition-colors ml-1"
+                >
+                  Clear all
+                </button>
+              </div>
+            )}
             <h1 className="text-xl md:text-2xl font-light text-luxury-black font-serif tracking-tight">Luxury Homes in Ibiza & Costa Blanca</h1>
             <p className="text-[13px] text-luxury-black/55 font-light mt-2 max-w-3xl leading-relaxed">
               Discover the finest selection of luxury villas, penthouses, fincas and new-build properties across Ibiza and the Costa Blanca. From beachfront estates with panoramic sea views to exclusive golf-side residences, explore hand-picked homes curated for the most discerning buyers.
