@@ -96,35 +96,23 @@ const LocationSearchDropdown = ({ selected, onSelectedChange, className = "" }: 
 
   return (
     <div ref={containerRef} className={`relative ${className}`}>
-      {/* Input area with chips */}
-      <div
-        className="flex items-center flex-wrap gap-1.5 min-h-[40px] border border-neutral-200 rounded-full px-3 py-1 cursor-text focus-within:border-luxury-black/30 transition-colors"
-        onClick={() => inputRef.current?.focus()}
-      >
-        <MapPin className="w-4 h-4 text-luxury-black/30 shrink-0" />
-        {selected.map((item) => (
-          <span
-            key={item.id}
-            className="inline-flex items-center gap-1 bg-neutral-100 text-luxury-black text-[11px] font-medium rounded-full pl-2.5 pr-1.5 py-0.5 whitespace-nowrap"
-          >
-            {item.name}
-            <button
-              onClick={(e) => { e.stopPropagation(); removeLocation(item.id); }}
-              className="text-luxury-black/40 hover:text-luxury-black/70 transition-colors"
-            >
-              <X className="w-3 h-3" />
-            </button>
-          </span>
-        ))}
+      {/* Clean input without chips */}
+      <div className="relative">
+        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-luxury-black/30" />
         <input
           ref={inputRef}
           type="text"
           value={query}
           onChange={(e) => { setQuery(e.target.value); setOpen(true); }}
           onFocus={() => setOpen(true)}
-          placeholder={selected.length === 0 ? "City, Region, Country" : "Add location..."}
-          className="flex-1 min-w-[80px] h-7 bg-transparent text-[12px] text-luxury-black placeholder:text-luxury-black/35 focus:outline-none"
+          placeholder={selected.length > 0 ? "Add location..." : "City, Region, Country"}
+          className="w-full h-10 border border-neutral-200 rounded-full pl-10 pr-9 text-[12px] text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/30 transition-colors"
         />
+        {query && (
+          <button onClick={() => { setQuery(""); inputRef.current?.focus(); }} className="absolute right-3 top-1/2 -translate-y-1/2 text-luxury-black/30 hover:text-luxury-black/60 transition-colors">
+            <X className="w-3.5 h-3.5" />
+          </button>
+        )}
       </div>
 
       {/* Dropdown */}
