@@ -170,43 +170,33 @@ const LuxuryPropertyDetail = () => {
 
       {/* ─── DESCRIPTION ─── */}
       <section className="max-w-[1400px] mx-auto px-6 lg:px-10 py-8 border-t border-neutral-100">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <h2 className="text-3xl font-light text-luxury-black font-serif tracking-tight mb-6">About This Property</h2>
-            <div className="text-base leading-[1.9] text-luxury-black/75 font-light whitespace-pre-line">
-              {PROPERTY.description}
-            </div>
+        <div className="max-w-3xl">
+          <h2 className="text-3xl font-light text-luxury-black font-serif tracking-tight mb-6">About This Property</h2>
+          <div className="text-base leading-[1.9] text-luxury-black/75 font-light whitespace-pre-line">
+            {PROPERTY.description}
           </div>
         </div>
       </section>
 
       {/* ─── FEATURES ─── */}
       <section className="max-w-[1400px] mx-auto px-6 lg:px-10 py-8 border-t border-neutral-100">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <h2 className="text-3xl font-light text-luxury-black font-serif tracking-tight mb-6">Features & Amenities</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-6 gap-y-4">
-              {PROPERTY.features.map((f, i) => (
-                <div key={i} className="flex items-center gap-2.5 text-base text-luxury-black/75 font-light">
-                  <Check className="w-4.5 h-4.5 text-luxury-black/50" strokeWidth={1.5} />
-                  {f}
-                </div>
-              ))}
+        <h2 className="text-3xl font-light text-luxury-black font-serif tracking-tight mb-6">Features & Amenities</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-6 gap-y-4">
+          {PROPERTY.features.map((f, i) => (
+            <div key={i} className="flex items-center gap-2.5 text-base text-luxury-black/75 font-light">
+              <Check className="w-4.5 h-4.5 text-luxury-black/50" strokeWidth={1.5} />
+              {f}
             </div>
-          </div>
+          ))}
         </div>
       </section>
 
       {/* ─── MAP PLACEHOLDER ─── */}
       <section className="max-w-[1400px] mx-auto px-6 lg:px-10 py-8 border-t border-neutral-100">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <h2 className="text-3xl font-light text-luxury-black font-serif tracking-tight mb-4">Explore the Area</h2>
-            <p className="text-base text-luxury-black/65 font-light mb-4">{PROPERTY.location}</p>
-            <div className="bg-neutral-100 h-[280px] flex items-center justify-center text-luxury-black/25 text-base">
-              <MapPin className="w-6 h-6 mr-2" /> Interactive Map
-            </div>
-          </div>
+        <h2 className="text-3xl font-light text-luxury-black font-serif tracking-tight mb-4">Explore the Area</h2>
+        <p className="text-base text-luxury-black/65 font-light mb-4">{PROPERTY.location}</p>
+        <div className="bg-neutral-100 h-[280px] flex items-center justify-center text-luxury-black/25 text-base">
+          <MapPin className="w-6 h-6 mr-2" /> Interactive Map
         </div>
       </section>
 
