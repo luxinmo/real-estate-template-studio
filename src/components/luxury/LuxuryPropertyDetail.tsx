@@ -151,11 +151,44 @@ const LuxuryPropertyDetail = () => {
               <h3 className="text-lg font-medium text-luxury-black mb-0.5">{PROPERTY.agent.name}</h3>
               <p className="text-base text-luxury-black/55 font-light mb-5">{PROPERTY.agent.role}</p>
 
-              <a href={`tel:${PROPERTY.agent.phone}`} className="flex items-center justify-center gap-2 bg-luxury-black text-white text-sm tracking-[0.15em] uppercase py-4 w-full mb-2 hover:bg-luxury-black/85 transition-all duration-300">
+              {/* Contact Form */}
+              <form className="space-y-3 mb-5" onSubmit={(e) => e.preventDefault()}>
+                <input
+                  type="text"
+                  placeholder="Name"
+                  className="w-full border border-neutral-300 bg-white px-4 py-3 text-sm text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/40 transition-colors duration-300"
+                />
+                <input
+                  type="email"
+                  placeholder="Email"
+                  className="w-full border border-neutral-300 bg-white px-4 py-3 text-sm text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/40 transition-colors duration-300"
+                />
+                <input
+                  type="tel"
+                  placeholder="Phone"
+                  className="w-full border border-neutral-300 bg-white px-4 py-3 text-sm text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/40 transition-colors duration-300"
+                />
+                <textarea
+                  placeholder="I'm interested in this property..."
+                  rows={3}
+                  className="w-full border border-neutral-300 bg-white px-4 py-3 text-sm text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/40 transition-colors duration-300 resize-none"
+                />
+                <label className="flex items-start gap-2 cursor-pointer">
+                  <input type="checkbox" className="mt-1 accent-luxury-black" />
+                  <span className="text-xs text-luxury-black/55 font-light leading-relaxed">
+                    I accept the <a href="#" className="underline hover:text-luxury-black transition-colors">terms and conditions</a> and the <a href="#" className="underline hover:text-luxury-black transition-colors">privacy policy</a>.
+                  </span>
+                </label>
+                <button
+                  type="submit"
+                  className="flex items-center justify-center gap-2 bg-luxury-black text-white text-sm tracking-[0.15em] uppercase py-4 w-full hover:bg-luxury-black/85 transition-all duration-300"
+                >
+                  <Mail className="w-4.5 h-4.5" /> Send Message
+                </button>
+              </form>
+
+              <a href={`tel:${PROPERTY.agent.phone}`} className="flex items-center justify-center gap-2 border border-luxury-black/20 text-luxury-black/70 text-sm tracking-[0.15em] uppercase py-4 w-full hover:bg-luxury-black hover:text-white transition-all duration-300">
                 <Phone className="w-4.5 h-4.5" /> Call Now
-              </a>
-              <a href={`mailto:${PROPERTY.agent.email}`} className="flex items-center justify-center gap-2 border border-luxury-black/20 text-luxury-black/70 text-sm tracking-[0.15em] uppercase py-4 w-full hover:bg-luxury-black hover:text-white transition-all duration-300">
-                <Mail className="w-4.5 h-4.5" /> Send Message
               </a>
 
               <div className="mt-5 pt-4 border-t border-neutral-200 flex items-center justify-between text-sm text-luxury-black/60 font-light">
