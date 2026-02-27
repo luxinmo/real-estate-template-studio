@@ -415,38 +415,35 @@ const LuxuryPropertyListing = () => {
 
       {/* ─── NAVBAR (white, same as landing scrolled state) ─── */}
       <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm">
-        <div className="max-w-[1400px] mx-auto flex items-center justify-between px-6 lg:px-10 h-[68px] relative">
-          {/* Globe icon */}
-          <div className="hidden lg:flex items-center">
+        <div className="max-w-[1400px] mx-auto grid grid-cols-3 items-center px-6 lg:px-10 h-[68px]">
+          {/* Left: Globe + nav links */}
+          <div className="hidden lg:flex items-center gap-8">
             <button className="text-luxury-black/50 hover:text-luxury-black transition-colors duration-300">
               <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.2}><circle cx="12" cy="12" r="10" /><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
             </button>
-          </div>
-
-          {/* Left nav links */}
-          <div className="hidden lg:flex items-center gap-8">
             {NAV_LEFT.map((l) => (
               <a key={l} href={l === "Home" ? "/" : l === "Properties" ? "/properties" : "#"} className="text-[11px] tracking-[0.18em] uppercase font-normal text-luxury-black/60 hover:text-luxury-black transition-colors duration-300">{l}</a>
             ))}
           </div>
+          <div className="lg:hidden" />
 
           {/* Center logo */}
-          <a href="/" className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center">
+          <a href="/" className="flex flex-col items-center justify-center">
             <span className="font-serif text-lg md:text-xl tracking-[0.3em] font-light text-luxury-black">{BRAND_NAME}</span>
             <span className="text-[7px] tracking-[0.35em] uppercase font-light text-luxury-black/40">Real Estate</span>
           </a>
 
-          {/* Right nav links */}
-          <div className="hidden lg:flex items-center gap-8">
-            {NAV_RIGHT.map((l) => (
-              <a key={l} href="#" className="text-[11px] tracking-[0.18em] uppercase font-normal text-luxury-black/60 hover:text-luxury-black transition-colors duration-300">{l}</a>
-            ))}
+          {/* Right: nav links + mobile menu */}
+          <div className="flex items-center justify-end gap-8">
+            <div className="hidden lg:flex items-center gap-8">
+              {NAV_RIGHT.map((l) => (
+                <a key={l} href="#" className="text-[11px] tracking-[0.18em] uppercase font-normal text-luxury-black/60 hover:text-luxury-black transition-colors duration-300">{l}</a>
+              ))}
+            </div>
+            <button className="lg:hidden text-luxury-black/70">
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" /></svg>
+            </button>
           </div>
-
-          {/* Mobile menu */}
-          <button className="lg:hidden text-luxury-black/70">
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" /></svg>
-          </button>
         </div>
       </nav>
 
@@ -473,7 +470,7 @@ const LuxuryPropertyListing = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="City, Region, Country"
-                  className="w-[220px] h-10 border border-neutral-200 rounded-full pl-10 pr-4 text-[12px] text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/30 transition-colors"
+                  className="w-[280px] h-10 border border-neutral-200 rounded-full pl-10 pr-4 text-[12px] text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/30 transition-colors"
                 />
               </div>
             </div>
