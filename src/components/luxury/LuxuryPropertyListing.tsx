@@ -440,11 +440,9 @@ const PropertyCard = ({ property }: { property: typeof PROPERTIES[0] }) => {
       {/* Image */}
       <div className="md:col-span-5 relative overflow-hidden aspect-[16/10] md:aspect-auto md:h-full min-h-[220px]">
         <img src={property.image} alt={property.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 absolute inset-0" />
-        {property.tag === "NEW BUILD" && (
-          <span className="absolute top-3 left-3 bg-luxury-black text-white text-[10px] tracking-[0.12em] uppercase font-medium px-2.5 py-1">
-            New Build
-          </span>
-        )}
+        <span className="absolute top-3 left-3 bg-luxury-black text-white text-[10px] tracking-[0.12em] uppercase font-medium px-2.5 py-1">
+          {property.tag}
+        </span>
         {property.gallery.length > 1 && (
           <span className="absolute bottom-3 right-3 bg-luxury-black/60 text-white text-[10px] px-2 py-1 font-light">
             1/{property.gallery.length}
