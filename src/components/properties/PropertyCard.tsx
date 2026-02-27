@@ -248,10 +248,10 @@ const PropertyCard = ({ property, onClick, selected, onSelect }: PropertyCardPro
                   MLS{p.collaborationAgency ? ` - ${p.collaborationAgency}` : ""}
                 </span>
               )}
-              {p.isCollaborator && p.collaboratorName && (
+              {p.isCollaborator && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-indigo-50 border border-indigo-200 px-2 py-0.5 text-[10px] font-medium text-indigo-600">
                   <Users className="h-3 w-3" />
-                  {p.collaboratorName}
+                  Compartido MLS
                 </span>
               )}
               {webFeatured && webActive && (

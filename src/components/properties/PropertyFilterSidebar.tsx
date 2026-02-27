@@ -54,42 +54,29 @@ const FilterSection = ({
   chips,
   onToggle,
   defaultOpen = true,
-  onSettings,
 }: {
   icon: React.ElementType;
   title: string;
   chips: FilterChip[];
   onToggle: (label: string) => void;
   defaultOpen?: boolean;
-  onSettings?: () => void;
 }) => {
   const activeCount = chips.filter(c => c.mode !== "off").length;
 
   return (
     <Collapsible defaultOpen={defaultOpen}>
-      <div className="flex items-center gap-1">
-        <CollapsibleTrigger className="flex-1 flex items-center justify-between py-2 text-[12px] font-semibold text-muted-foreground uppercase tracking-wider hover:text-foreground transition-colors">
-          <span className="flex items-center gap-2">
-            <Icon className="h-3.5 w-3.5" />
-            {title}
-            {activeCount > 0 && (
-              <span className="text-[9px] bg-primary text-primary-foreground rounded-full px-1.5 py-0.5 normal-case tracking-normal">
-                {activeCount}
-              </span>
-            )}
-          </span>
-          <ChevronDown className="h-3.5 w-3.5" />
-        </CollapsibleTrigger>
-        {onSettings && (
-          <button
-            onClick={onSettings}
-            className="p-1 rounded hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
-            title="Configurar"
-          >
-            <Settings className="h-3.5 w-3.5" />
-          </button>
-        )}
-      </div>
+      <CollapsibleTrigger className="flex items-center justify-between w-full py-2 text-[12px] font-semibold text-muted-foreground uppercase tracking-wider hover:text-foreground transition-colors">
+        <span className="flex items-center gap-2">
+          <Icon className="h-3.5 w-3.5" />
+          {title}
+          {activeCount > 0 && (
+            <span className="text-[9px] bg-primary text-primary-foreground rounded-full px-1.5 py-0.5 normal-case tracking-normal">
+              {activeCount}
+            </span>
+          )}
+        </span>
+        <ChevronDown className="h-3.5 w-3.5" />
+      </CollapsibleTrigger>
       <CollapsibleContent>
         <div className="flex flex-wrap gap-1.5 pb-3">
           {chips.map((chip) => (
@@ -196,6 +183,23 @@ const PropertyFilterSidebar = ({
     <div className="w-56 shrink-0 space-y-0.5 sticky top-8">
       <div className="flex items-center justify-between pb-2 border-b border-border mb-2">
         <span className="text-sm font-semibold text-foreground">Filtros</span>
+        <div className="flex items-center gap-1.5">
+          {activeTotal > 0 && (
+            <button
+              onClick={() => onChange(defaultSidebarFilters)}
+              className="text-[11px] font-medium text-primary hover:underline"
+            >
+              Limpiar ({activeTotal})
+            </button>
+          )}
+          <button
+            onClick={() => console.log("Settings: global")}
+            className="p-1 rounded hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
+            title="Configurar filtros"
+          >
+            <Settings className="h-3.5 w-3.5" />
+          </button>
+        </div>
         {activeTotal > 0 && (
           <button
             onClick={() => onChange(defaultSidebarFilters)}
@@ -215,14 +219,12 @@ const PropertyFilterSidebar = ({
         title="Etiquetas"
         chips={filters.tags}
         onToggle={(l) => toggleChip("tags", l)}
-        onSettings={() => console.log("Settings: tags")}
       />
       <FilterSection
         icon={User}
         title="Agente"
         chips={filters.users}
         onToggle={(l) => toggleChip("users", l)}
-        onSettings={() => console.log("Settings: users")}
       />
 
       {/* Star ratings */}
@@ -240,7 +242,7 @@ const PropertyFilterSidebar = ({
           <ChevronDown className="h-3.5 w-3.5" />
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <div className="flex flex-wrap gap-1.5 pb-3">
+          <div className="flex flex-nowrap gap-1.5 pb-3">
             {filters.ratings.map((chip) => (
               <StarChipButton
                 key={chip.label}
