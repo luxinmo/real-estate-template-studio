@@ -191,9 +191,9 @@ const PropertiesPage = ({ onViewProperty, onAddProperty }: { onViewProperty?: ()
       )}
 
       {/* Main content: cards + sidebar */}
-      <div className="px-8 pb-10 flex gap-6">
-        {/* Property List — centered with max-width */}
-        <div className="flex-1 min-w-0 max-w-5xl space-y-4">
+      <div className="px-8 pb-10 flex justify-center gap-6">
+        {/* Property List — centered */}
+        <div className="w-full max-w-4xl space-y-4">
           {sortedProperties.map((p) => (
             <PropertyCard
               key={p.id}
@@ -205,8 +205,10 @@ const PropertiesPage = ({ onViewProperty, onAddProperty }: { onViewProperty?: ()
           ))}
         </div>
 
-        {/* Right Sidebar */}
-        <PropertyFilterSidebar filters={sidebarFilters} onChange={setSidebarFilters} />
+        {/* Right Sidebar — hidden on small screens */}
+        <div className="hidden xl:block">
+          <PropertyFilterSidebar filters={sidebarFilters} onChange={setSidebarFilters} />
+        </div>
       </div>
     </div>
   );
