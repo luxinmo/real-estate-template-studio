@@ -385,50 +385,50 @@ const FilterSidebar = ({ open, onClose, filters, onChange }: { open: boolean; on
 const PROPERTIES = [
   {
     id: 1, image: heroImg, gallery: [heroImg, detail1, detail2],
-    tag: "FOR SALE", location: "Santa Eulalia del Río · Ibiza",
+    tag: "FOR SALE", style: "Contemporary", location: "Santa Eulalia del Río · Ibiza",
     title: "STUNNING CONTEMPORARY VILLA WITH PANORAMIC SEA VIEWS",
     excerpt: "This exceptional contemporary villa is set on an elevated plot offering uninterrupted panoramic views of the Mediterranean Sea and the island of Formentera...",
-    beds: 5, baths: 4, sqm: 420, price: "€4,650,000",
+    beds: 5, baths: 4, sqm: 420, plot: 1200, price: "€4,650,000",
     features: ["Sea Views", "Infinity Pool", "Smart Home", "Garage"],
   },
   {
     id: 2, image: prop1, gallery: [prop1, detail3, heroImg],
-    tag: "FOR SALE", location: "Marina Botafoch · Ibiza",
+    tag: "FOR SALE", style: "Luxury", location: "Marina Botafoch · Ibiza",
     title: "LUXURY PENTHOUSE WITH ROOFTOP TERRACE AND HARBOUR VIEWS",
     excerpt: "Exceptional penthouse located in the prestigious Marina Botafoch area, offering stunning views over Dalt Vila and the harbour. Features include a private rooftop terrace...",
-    beds: 3, baths: 3, sqm: 210, price: "€3,100,000",
+    beds: 3, baths: 3, sqm: 210, plot: null as number | null, price: "€3,100,000",
     features: ["Terrace", "Harbour Views", "Modern", "Elevator"],
   },
   {
     id: 3, image: prop2, gallery: [prop2, detail1, detail2],
-    tag: "FOR SALE", location: "San José · Ibiza",
+    tag: "FOR SALE", style: "Traditional", location: "San José · Ibiza",
     title: "TRADITIONAL FINCA WITH MODERN RENOVATION AND PRIVATE POOL",
     excerpt: "A beautifully restored traditional Ibicencan finca set within 15,000 m² of private land with olive and almond trees. The property combines authentic character with contemporary luxury...",
-    beds: 6, baths: 5, sqm: 480, price: "€5,800,000",
+    beds: 6, baths: 5, sqm: 480, plot: 15000, price: "€5,800,000",
     features: ["Pool", "Garden", "Guest House", "Parking"],
   },
   {
     id: 4, image: prop3, gallery: [prop3, detail3, heroImg],
-    tag: "FOR SALE", location: "Altea · Costa Blanca",
+    tag: "FOR SALE", style: "Modern", location: "Altea · Costa Blanca",
     title: "MODERN VILLA WITH INFINITY POOL OVERLOOKING THE MEDITERRANEAN",
     excerpt: "Architecturally striking villa perched on the hillside of Altea with sweeping views of the Mediterranean coastline. Floor-to-ceiling windows flood the interiors with natural light...",
-    beds: 4, baths: 4, sqm: 350, price: "€2,950,000",
+    beds: 4, baths: 4, sqm: 350, plot: 800, price: "€2,950,000",
     features: ["Infinity Pool", "Sea Views", "Home Cinema", "Wine Cellar"],
   },
   {
     id: 5, image: detail1, gallery: [detail1, prop1, prop2],
-    tag: "NEW BUILD", location: "Sant Antoni de Portmany · Ibiza",
+    tag: "NEW BUILD", style: "Modern", location: "Sant Antoni de Portmany · Ibiza",
     title: "MODERN IBIZA-STYLE FLAT WITH LARGE TERRACE",
     excerpt: "Modern Ibiza-style flat for sale in Sant Antoni de Portmany, offering a built area of approximately 70 m² and 54 m² of usable interior space. The property features a large terrace...",
-    beds: 1, baths: 1, sqm: 70, price: "€530,000",
+    beds: 1, baths: 1, sqm: 70, plot: null as number | null, price: "€530,000",
     features: ["Terrace", "Modern", "Community Pool", "Parking"],
   },
   {
     id: 6, image: detail2, gallery: [detail2, prop3, heroImg],
-    tag: "FOR SALE", location: "Jávea · Costa Blanca",
+    tag: "FOR SALE", style: "Classic", location: "Jávea · Costa Blanca",
     title: "FRONTLINE GOLF ESTATE WITH MOUNTAIN AND SEA VIEWS",
     excerpt: "Impressive estate located on the frontline of a prestigious golf course in Jávea, offering dual views of the Montgó mountain and the Mediterranean Sea...",
-    beds: 5, baths: 5, sqm: 520, price: "€3,750,000",
+    beds: 5, baths: 5, sqm: 520, plot: 2500, price: "€3,750,000",
     features: ["Golf Views", "Pool", "Gym", "Staff Quarters"],
   },
 ];
@@ -440,9 +440,11 @@ const PropertyCard = ({ property }: { property: typeof PROPERTIES[0] }) => {
       {/* Image */}
       <div className="md:col-span-5 relative overflow-hidden aspect-[16/10] md:aspect-auto md:h-full min-h-[220px]">
         <img src={property.image} alt={property.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 absolute inset-0" />
-        <span className="absolute top-3 left-3 bg-luxury-black text-white text-[10px] tracking-[0.12em] uppercase font-medium px-2.5 py-1">
-          {property.tag}
-        </span>
+        {property.tag === "NEW BUILD" && (
+          <span className="absolute top-3 left-3 bg-luxury-black/60 backdrop-blur-sm text-white text-[10px] tracking-[0.12em] uppercase font-medium px-2.5 py-1">
+            New Build
+          </span>
+        )}
         {property.gallery.length > 1 && (
           <span className="absolute bottom-3 right-3 bg-luxury-black/60 text-white text-[10px] px-2 py-1 font-light">
             1/{property.gallery.length}
@@ -454,7 +456,10 @@ const PropertyCard = ({ property }: { property: typeof PROPERTIES[0] }) => {
       <div className="md:col-span-7 flex flex-col justify-between p-5 md:p-6 lg:p-8">
         <div>
           <div className="flex items-center justify-between mb-3">
-            <span className="text-[10px] tracking-[0.18em] uppercase border border-luxury-black/20 text-luxury-black/60 px-2.5 py-1 font-medium">{property.tag}</span>
+            <div className="flex items-center gap-2.5">
+              <span className="text-[10px] tracking-[0.18em] uppercase border border-luxury-black/20 text-luxury-black/60 px-2.5 py-1 font-medium">{property.tag}</span>
+              <span className="text-[11px] text-luxury-black/45 font-light italic">{property.style}</span>
+            </div>
             <button onClick={(e) => { e.preventDefault(); }} className="text-luxury-black/30 hover:text-luxury-black transition-colors">
               <Mail className="w-4 h-4" />
             </button>
@@ -482,6 +487,12 @@ const PropertyCard = ({ property }: { property: typeof PROPERTIES[0] }) => {
               <p className="text-[10px] tracking-[0.1em] uppercase text-luxury-black/40 mb-0.5">Built</p>
               <p className="text-[15px] text-luxury-black font-light">{property.sqm} m²</p>
             </div>
+            {property.plot && (
+              <div className="text-center">
+                <p className="text-[10px] tracking-[0.1em] uppercase text-luxury-black/40 mb-0.5">Plot</p>
+                <p className="text-[15px] text-luxury-black font-light">{property.plot.toLocaleString()} m²</p>
+              </div>
+            )}
           </div>
 
           {/* Feature tags */}
