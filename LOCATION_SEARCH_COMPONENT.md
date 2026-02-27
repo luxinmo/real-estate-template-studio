@@ -15,9 +15,10 @@ A multiselect location search input with hierarchical grouping. Users can search
 |--------|--------|
 | Type a **municipality** name (e.g. "altea") | Shows matching municipalities **collapsed** with expand arrow + zone count |
 | Type a **zone** name (e.g. "galera") | Shows parent municipality **auto-expanded** with matching zone(s) visible |
-| Click a municipality checkbox | Selects the **entire municipality** (implies all zones) |
-| Click expand arrow → click zone checkbox | Selects **individual zones** within a municipality |
+| Click a municipality row | Selects the **entire municipality** (implies all zones) |
+| Click expand arrow → click zone | Selects/deselects **individual zones** within a municipality |
 | Click input when items are selected | Dropdown opens showing **"Selected" section** at top with expandable zone management |
+| Click input with no query and no selection | Shows **"Recent searches"** section |
 | Deselect a municipality | Removes the municipality AND all its individually selected zones |
 
 ---
@@ -206,35 +207,42 @@ Only visible when `selected.length > 0`.
 
 - **Header**: `"SELECTED"` — `text-[11px] font-semibold text-muted-foreground/60 uppercase tracking-wider`
 - **Municipality row**:
-  - Checkbox: `w-4 h-4 rounded border`
-    - Full selected (entire muni): `bg-foreground border-foreground` + Check icon
-    - Partial (some zones): `bg-foreground/50 border-foreground/50` + Check icon
-    - None: `border-border`
+  - MapPin icon: `w-4 h-4 text-muted-foreground/50`
   - Name: `text-sm font-medium text-foreground`
   - Subtitle: `text-xs text-muted-foreground` (e.g. "Alicante, España")
   - Right side: `"All zones"` or `"3/10"` count — `text-[10px] text-muted-foreground/50`
+  - X button to remove municipality
   - Expand button: ChevronRight/ChevronDown + zone count
 
 - **Zone row** (when expanded):
   - Indented: `pl-11`
-  - Smaller checkbox: `w-3.5 h-3.5`
+  - MapPin icon: `w-3.5 h-3.5 text-muted-foreground/40`
   - Name: `text-[13px] text-foreground`
+  - Unselected zones show `opacity-50`
+  - Selected zones show X icon to remove
 
-### 5.4 Search Results Section (below selected)
+### 5.3b Recent Searches Section
+
+Visible when `query` is empty AND there are recent searches not already selected.
+
+- **Header**: Clock icon + `"Recent searches"` — same style as section headers
+- **Row**: MapPin icon + name + type label. Clicking adds to selection.
+
+### 5.4 Search Results Section (below selected / recent)
 
 - **Municipality result row**:
-  - Checkbox (same as selected section)
+  - MapPin icon: `w-4 h-4 text-muted-foreground/50`
   - Two lines: name (bold) + subtitle path
   - Type label: `"City"` — `text-[11px] text-muted-foreground/60`
   - Expand arrow with zone count
 
 - **Zone result row** (when expanded under municipality):
-  - Checkbox
+  - MapPin icon (smaller)
   - Indented `pl-11`
   - Name + type label
 
 - **Standalone results** (country, province):
-  - Search icon instead of checkbox
+  - Search icon
   - Two lines: name + path
   - Type label
 
@@ -327,11 +335,12 @@ useEffect(() => {
 | Click input container | Focus input + open dropdown |
 | Type in input | Update query + open dropdown |
 | Click outside | Close dropdown (mousedown listener) |
-| Click municipality checkbox | `toggleMuniSelection()` — select/deselect entire muni |
+| Click municipality row | `toggleMuniSelection()` — select/deselect entire muni |
 | Click expand arrow | `toggleExpand()` / `toggleSelectedExpand()` — show/hide zones |
-| Click zone checkbox | `toggleZone()` — toggle individual zone |
+| Click zone row | `toggleZone()` — toggle individual zone |
 | Click chip X | `removeSelection()` — remove that item |
 | Click clear (X in input) | Clear query text, keep selections |
+| Click recent search item | `addSelection()` — add to selection |
 
 ---
 
@@ -339,12 +348,12 @@ useEffect(() => {
 
 | Icon | Usage |
 |------|-------|
-| `MapPin` | Input prefix, selected municipality rows |
-| `Search` | Search result rows, zone result rows |
-| `X` | Chip remove, clear input, standalone item remove |
+| `MapPin` | Input prefix, municipality rows, zone rows (all locations) |
+| `Search` | Standalone result rows (country, province) |
+| `X` | Chip remove, clear input, selected item remove, zone deselect |
 | `ChevronRight` | Collapsed expand arrow |
 | `ChevronDown` | Expanded expand arrow |
-| `Check` | Checkbox checkmark (inside checkbox div) |
+| `Clock` | Recent searches section header |
 
 ---
 
@@ -362,10 +371,9 @@ useEffect(() => {
 | Subtitle text | `text-muted-foreground` |
 | Type label | `text-muted-foreground/60` |
 | Section header | `text-muted-foreground/60` |
-| Checkbox filled | `bg-foreground border-foreground` |
-| Checkbox partial | `bg-foreground/50 border-foreground/50` |
-| Checkbox empty | `border-border` |
-| Check icon | `text-background` |
+| MapPin icon (muni) | `text-muted-foreground/50` |
+| MapPin icon (zone) | `text-muted-foreground/40` |
+| Unselected zone | `opacity-50` |
 
 ### Typography
 
@@ -390,20 +398,19 @@ useEffect(() => {
 | Row padding | `px-4 py-2.5` (results), `px-4 py-2` (selected), `pl-11 pr-4 py-1.5` (zones) |
 | Dropdown max height | `max-h-[420px]` |
 | Dropdown min width | `min-w-[340px]` |
-| Checkbox size | `w-4 h-4` (muni), `w-3.5 h-3.5` (zone) |
-| Icon size | `w-4 h-4` (standard), `w-3.5 h-3.5` (zone search icon) |
-| Check icon size | `w-3 h-3` (muni), `w-2.5 h-2.5` (zone) |
+| Icon size | `w-4 h-4` (standard), `w-3.5 h-3.5` (zone) |
 
 ---
 
 ## 11. Edge Cases
 
-1. **Municipality selected + user selects individual zone**: Zone is already implicitly selected (muni = all zones). The zone checkbox should appear checked.
+1. **Municipality selected + expand zones**: All zones appear as selected (not dimmed). Clicking a zone deselects it individually.
 2. **All zones manually selected**: Does NOT auto-promote to municipality selection. The chip shows `"Altea (10)"` not `"Altea"`.
-3. **Remove chip for municipality with individual zones**: Removes the municipality group entry. If only zones were selected, it removes those zones' parent chip.
+3. **Remove chip for municipality with individual zones**: Removes the municipality group entry and all its zones from selection.
 4. **Search returns both municipality AND its zones**: Only municipality appears (priority logic). Zones are accessible via expand arrow.
-5. **Empty query + dropdown open**: Shows only the "Selected" section (no search results).
+5. **Empty query + dropdown open**: Shows "Selected" section (if any) + "Recent searches" section (if any).
 6. **Max chips overflow**: Shows first N chips + `"+M"` counter.
+7. **Recent searches**: Tracked in component state. Items already selected are excluded from recent list.
 
 ---
 
