@@ -26,31 +26,23 @@ const FilterChipButton = ({ chip, onToggle }: { chip: FilterChip; onToggle: () =
   );
 };
 
-/* ─── Star rating chip ─── */
+/* ─── Star rating chip — large star with number ─── */
 const StarChipButton = ({ stars, mode, onToggle }: { stars: number; mode: FilterMode; onToggle: () => void }) => {
-  const base = "inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[11px] font-medium transition-all cursor-pointer select-none";
-  const styles: Record<FilterMode, string> = {
-    off: "border-border bg-card text-muted-foreground hover:bg-accent",
-    include: "border-emerald-300 bg-emerald-50 text-emerald-700",
-    exclude: "border-red-300 bg-red-50 text-red-700",
+  const borderStyle: Record<FilterMode, string> = {
+    off: "border-transparent",
+    include: "border-emerald-400 ring-1 ring-emerald-200",
+    exclude: "border-red-400 ring-1 ring-red-200",
   };
 
   return (
-    <button onClick={onToggle} className={`${base} ${styles[mode]}`}>
-      {mode === "include" && <Plus className="h-3 w-3" />}
-      {mode === "exclude" && <Minus className="h-3 w-3" />}
-      {stars === 0 ? (
-        <span className="flex items-center gap-0.5">
-          <Star className="h-3 w-3 text-muted-foreground/40" />
-          Sin
-        </span>
-      ) : (
-        <span className="flex items-center gap-0.5">
-          {Array.from({ length: stars }).map((_, i) => (
-            <Star key={i} className="h-3 w-3 text-amber-400 fill-amber-400" />
-          ))}
-        </span>
-      )}
+    <button
+      onClick={onToggle}
+      className={`relative flex flex-col items-center justify-center w-10 h-10 rounded-md border-2 transition-all cursor-pointer select-none hover:bg-accent ${borderStyle[mode]}`}
+    >
+      <Star className={`h-7 w-7 ${stars === 0 ? "text-muted-foreground/30" : "text-muted-foreground/40 fill-muted-foreground/40"}`} />
+      <span className="absolute text-[11px] font-bold text-foreground" style={{ marginTop: "-2px" }}>
+        {stars}
+      </span>
     </button>
   );
 };
