@@ -18,7 +18,25 @@ const buildPath = (locationId: string): string => {
   const parts: string[] = [];
   let current = mockLocations.find((l) => l.id === locationId);
   while (current) {
-    parts.unshift(current.name);
+    // Skip region level — show Province, Country only
+    if (current.level !== "region") {
+      parts.unshift(current.name);
+    }
+    current = current.parentId ? mockLocations.find((l) => l.id === current!.parentId) : undefined;
+  }
+  return parts.join(", ");
+};
+
+/** Build subtitle path: province, country (skip self, region, municipality) */
+const buildSubtitle = (locationId: string): string => {
+  const parts: string[] = [];
+  const self = mockLocations.find((l) => l.id === locationId);
+  if (!self) return "";
+  let current = self.parentId ? mockLocations.find((l) => l.id === self.parentId) : undefined;
+  while (current) {
+    if (current.level !== "region" && current.level !== "municipality") {
+      parts.push(current.name);
+    }
     current = current.parentId ? mockLocations.find((l) => l.id === current!.parentId) : undefined;
   }
   return parts.join(", ");
@@ -304,51 +322,69 @@ export const VariantECollapsible = () => {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
   const { standalone, municipalities } = useMemo(() => {
-    const results = searchLocations(query, 20);
+    if (!query.trim()) return { standalone: [], municipalities: [] };
+    const q = query.toLowerCase().trim();
 
     const standaloneItems: LocationItem[] = [];
     const muniMap: Record<string, GroupedMunicipality> = {};
 
-    results.forEach((item) => {
-      if (item.type === "Zone") {
-        const parentMuni = mockLocations.find((l) => l.id === mockLocations.find((z) => z.id === item.id)?.parentId);
+    // Step 1: Search municipalities first
+    const matchingMunis = mockLocations.filter(
+      (loc) => loc.active && loc.level === "municipality" &&
+        (loc.name.toLowerCase().includes(q) || Object.values(loc.names).some((n) => n.toLowerCase().includes(q)))
+    );
+
+    matchingMunis.forEach((muni) => {
+      const children = mockLocations
+        .filter((l) => l.parentId === muni.id && l.level === "borough" && l.active)
+        .map((l) => ({
+          id: l.id, name: l.name, path: buildPath(l.id),
+          type: LEVEL_DISPLAY[l.level] || l.level, parentName: muni.name,
+        }));
+      const subtitle = buildSubtitle(muni.id);
+      muniMap[muni.id] = {
+        id: muni.id, name: muni.name, path: subtitle, type: "City",
+        children, autoExpanded: false,
+      };
+    });
+
+    // Step 2: If no municipalities matched, search zones
+    if (matchingMunis.length === 0) {
+      const matchingZones = mockLocations.filter(
+        (loc) => loc.active && loc.level === "borough" &&
+          (loc.name.toLowerCase().includes(q) || Object.values(loc.names).some((n) => n.toLowerCase().includes(q)))
+      ).slice(0, 12);
+
+      matchingZones.forEach((zone) => {
+        const parentMuni = mockLocations.find((l) => l.id === zone.parentId);
         if (parentMuni) {
           if (!muniMap[parentMuni.id]) {
+            const subtitle = buildSubtitle(parentMuni.id);
             muniMap[parentMuni.id] = {
-              id: parentMuni.id,
-              name: parentMuni.name,
-              path: buildPath(parentMuni.id),
-              type: "City",
-              children: [],
-              autoExpanded: true,
+              id: parentMuni.id, name: parentMuni.name, path: subtitle, type: "City",
+              children: [], autoExpanded: true,
             };
           }
-          muniMap[parentMuni.id].children.push(item);
+          muniMap[parentMuni.id].children.push({
+            id: zone.id, name: zone.name, path: buildPath(zone.id),
+            type: LEVEL_DISPLAY[zone.level] || zone.level, parentName: parentMuni.name,
+          });
           muniMap[parentMuni.id].autoExpanded = true;
         }
-      } else if (item.type === "City") {
-        if (!muniMap[item.id]) {
-          const children = mockLocations
-            .filter((l) => l.parentId === item.id && l.level === "borough" && l.active)
-            .map((l) => ({
-              id: l.id,
-              name: l.name,
-              path: buildPath(l.id),
-              type: LEVEL_DISPLAY[l.level] || l.level,
-              parentName: item.name,
-            }));
-          muniMap[item.id] = {
-            id: item.id,
-            name: item.name,
-            path: item.path,
-            type: item.type,
-            children,
-            autoExpanded: false,
-          };
-        }
-      } else {
-        standaloneItems.push(item);
-      }
+      });
+    }
+
+    // Step 3: Other levels (country, province) as standalone
+    const otherMatches = mockLocations.filter(
+      (loc) => loc.active && loc.level !== "municipality" && loc.level !== "borough" && loc.level !== "region" &&
+        (loc.name.toLowerCase().includes(q) || Object.values(loc.names).some((n) => n.toLowerCase().includes(q)))
+    ).slice(0, 4);
+
+    otherMatches.forEach((loc) => {
+      standaloneItems.push({
+        id: loc.id, name: loc.name, path: buildSubtitle(loc.id),
+        type: LEVEL_DISPLAY[loc.level] || loc.level,
+      });
     });
 
     return { standalone: standaloneItems, municipalities: Object.values(muniMap) };
