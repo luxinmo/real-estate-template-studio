@@ -15,7 +15,6 @@ const MOCK = {
   sqm: 420,
   plot: 1200,
   price: "€4,650,000",
-  features: ["Sea Views", "Infinity Pool", "Smart Home", "Garage"],
   galleryCount: 3,
   isNewBuild: false,
 };
@@ -25,14 +24,13 @@ const LuxuryCardPreview = ({ config }: { config: CardDesignConfig }) => {
   const isH = c.layout === "horizontal";
 
   /* Derived sizes that scale proportionally with the config */
-  const tagSize = c.badgeSize;         // ~10
-  const styleSize = c.badgeSize + 1;   // ~11
-  const locationSize = c.badgeSize + 1;// ~11
-  const titleFSize = c.titleSize;      // ~18
-  const excerptSize = c.bodySize + 1;  // ~13
-  const specLabelSize = c.badgeSize;   // ~10
-  const specValueSize = c.labelSize + 2;// ~15
-  const featureSize = c.badgeSize + 1; // ~11
+  const tagSize = c.badgeSize;
+  const styleSize = c.badgeSize + 1;
+  const locationSize = c.badgeSize + 1;
+  const titleFSize = c.titleSize;
+  const excerptSize = c.bodySize + 1;
+  const specLabelSize = c.badgeSize;
+  const specValueSize = c.labelSize + 2;
   const priceSize = c.priceSize;       // ~24
 
   const cardStyle: React.CSSProperties = {
@@ -154,20 +152,6 @@ const LuxuryCardPreview = ({ config }: { config: CardDesignConfig }) => {
             ))}
           </div>
 
-          {/* Feature tags with dots */}
-          {c.showTags && (
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
-              {MOCK.features.map((f) => (
-                <span key={f} style={{
-                  fontSize: featureSize, color: `${c.textColor}80`, fontWeight: 300,
-                  display: "flex", alignItems: "center", gap: 6,
-                }}>
-                  <span style={{ width: 4, height: 4, borderRadius: 999, background: `${c.textColor}33`, flexShrink: 0 }} />
-                  {f}
-                </span>
-              ))}
-            </div>
-          )}
         </div>
 
         {/* Price */}

@@ -2,7 +2,7 @@ import { useState, useRef, useCallback } from "react";
 import html2canvas from "html2canvas";
 import {
   Download, Type, BoxSelect, Palette, RotateCcw, Eye, Layers,
-  ChevronDown, ChevronRight, Minus, Plus, Monitor, Tablet, Smartphone, Code
+  ChevronDown, ChevronRight, Minus, Plus, Monitor, Tablet, Smartphone, Code, Save
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
@@ -141,6 +141,15 @@ const CardDesignerPage = () => {
 
   const resetConfig = () => setConfig(cardType === "crm" ? { ...defaultCrmConfig } : { ...defaultLuxuryConfig });
 
+  /* Per-device saved configs */
+  const [savedConfigs, setSavedConfigs] = useState<Record<DeviceId, CardDesignConfig | null>>({
+    desktop: null, tablet: null, mobile: null,
+  });
+
+  const handleSaveDevice = () => {
+    setSavedConfigs(prev => ({ ...prev, [activeDevice]: { ...config } }));
+  };
+
   const handleDownloadPng = async () => {
     if (!previewRef.current) return;
     try {
@@ -222,6 +231,9 @@ const CardDesignerPage = () => {
               </button>
             ))}
             <span className="ml-2 text-[11px] font-mono text-muted-foreground/60">{activeDeviceDef.width}px</span>
+            <Button variant={savedConfigs[activeDevice] ? "default" : "outline"} size="sm" onClick={handleSaveDevice} className="ml-3 gap-1.5 text-[12px]">
+              <Save className="h-3.5 w-3.5" />{savedConfigs[activeDevice] ? "Guardado ✓" : "Guardar vista"}
+            </Button>
           </div>
 
           {/* Card Preview */}
