@@ -52,7 +52,6 @@ function detectCountry(): string {
 }
 
 function findCountryByPrefix(prefix: string) {
-  // Sort by prefix length descending so longer prefixes match first
   const sorted = [...COUNTRIES].sort((a, b) => b.prefix.length - a.prefix.length);
   return sorted.find((c) => prefix === c.prefix) || null;
 }
@@ -72,7 +71,6 @@ const LuxuryPhoneInput = ({ className }: LuxuryPhoneInputProps) => {
   const [search, setSearch] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -84,9 +82,7 @@ const LuxuryPhoneInput = ({ className }: LuxuryPhoneInputProps) => {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  // When prefix is manually edited, try to match a country
   const handlePrefixChange = (val: string) => {
-    // Only allow + and digits
     const cleaned = val.replace(/[^+\d]/g, "");
     if (!cleaned.startsWith("+")) {
       setPrefixValue("+" + cleaned);
@@ -116,14 +112,13 @@ const LuxuryPhoneInput = ({ className }: LuxuryPhoneInputProps) => {
   return (
     <div className={`relative ${className || ""}`} ref={dropdownRef}>
       <div className="flex border border-neutral-300 focus-within:border-luxury-black/40 transition-colors duration-300">
-        {/* Flag + prefix */}
         <button
           type="button"
           onClick={() => setShowDropdown(!showDropdown)}
           className="flex items-center gap-1 px-3 border-r border-neutral-300 bg-neutral-50/50 hover:bg-neutral-100 transition-colors shrink-0"
         >
-          <span className="text-lg leading-none">{country.flag}</span>
-          <svg className="w-3 h-3 text-luxury-black/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <span className="text-xl leading-none">{country.flag}</span>
+          <svg className="w-3.5 h-3.5 text-luxury-black/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
         </button>
@@ -131,27 +126,26 @@ const LuxuryPhoneInput = ({ className }: LuxuryPhoneInputProps) => {
           type="text"
           value={prefixValue}
           onChange={(e) => handlePrefixChange(e.target.value)}
-          className="w-[70px] px-2 py-3 text-sm text-luxury-black bg-transparent focus:outline-none text-center"
+          className="w-[70px] px-2 py-3.5 text-base text-luxury-black bg-transparent focus:outline-none text-center"
         />
         <input
           type="tel"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           placeholder="Phone number"
-          className="flex-1 px-2 py-3 text-sm text-luxury-black placeholder:text-luxury-black/35 bg-white focus:outline-none"
+          className="flex-1 px-2 py-3.5 text-base text-luxury-black placeholder:text-luxury-black/35 bg-white focus:outline-none"
         />
       </div>
 
-      {/* Dropdown */}
       {showDropdown && (
-        <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-white border border-neutral-200 shadow-lg max-h-[220px] overflow-auto">
+        <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-white border border-neutral-200 shadow-lg max-h-[240px] overflow-auto">
           <div className="sticky top-0 bg-white border-b border-neutral-100 p-2">
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search country..."
-              className="w-full px-3 py-2 text-xs border border-neutral-200 focus:outline-none focus:border-luxury-black/30"
+              className="w-full px-3 py-2.5 text-sm border border-neutral-200 focus:outline-none focus:border-luxury-black/30"
               autoFocus
             />
           </div>
@@ -160,13 +154,13 @@ const LuxuryPhoneInput = ({ className }: LuxuryPhoneInputProps) => {
               key={c.code}
               type="button"
               onClick={() => selectCountry(c)}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-neutral-50 transition-colors ${
+              className={`w-full flex items-center gap-3 px-4 py-3 text-base hover:bg-neutral-50 transition-colors ${
                 c.code === country.code ? "bg-neutral-50 font-medium" : "font-light"
               }`}
             >
-              <span className="text-lg leading-none">{c.flag}</span>
+              <span className="text-xl leading-none">{c.flag}</span>
               <span className="text-luxury-black/80">{c.name}</span>
-              <span className="ml-auto text-luxury-black/45 text-xs">{c.prefix}</span>
+              <span className="ml-auto text-luxury-black/45 text-sm">{c.prefix}</span>
             </button>
           ))}
         </div>

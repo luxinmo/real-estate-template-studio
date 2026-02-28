@@ -28,19 +28,19 @@ const LuxuryPurchaseTaxCalculator = () => {
   const pct = (n: number) => `${(n / price * 100).toFixed(2)}%`;
 
   return (
-    <div className="pt-8 border-t border-neutral-100">
-      <h2 className="text-3xl font-light text-luxury-black font-serif tracking-tight mb-6 flex items-center gap-3">
-        <Receipt className="w-7 h-7 text-luxury-black/40" strokeWidth={1.3} />
+    <div className="pt-10 border-t border-neutral-100">
+      <h2 className="text-4xl font-light text-luxury-black font-serif tracking-tight mb-8 flex items-center gap-3">
+        <Receipt className="w-8 h-8 text-luxury-black/40" strokeWidth={1.3} />
         Purchase Costs & Taxes
       </h2>
 
       {/* Purchase type selector */}
-      <div className="flex gap-2 mb-6">
+      <div className="flex gap-2 mb-8">
         {(Object.entries(TAX_RATES) as [PurchaseType, typeof TAX_RATES["new"]][]).map(([key, val]) => (
           <button
             key={key}
             onClick={() => setType(key)}
-            className={`px-4 py-2 text-sm transition-all duration-300 border ${
+            className={`px-5 py-2.5 text-base transition-all duration-300 border ${
               type === key
                 ? "bg-luxury-black text-white border-luxury-black"
                 : "border-neutral-300 text-luxury-black/60 hover:border-luxury-black/40"
@@ -52,8 +52,8 @@ const LuxuryPurchaseTaxCalculator = () => {
       </div>
 
       {/* Price slider */}
-      <div className="mb-6">
-        <div className="flex justify-between text-sm mb-2">
+      <div className="mb-8">
+        <div className="flex justify-between text-base mb-2">
           <span className="text-luxury-black/60 font-light">Purchase Price</span>
           <span className="text-luxury-black font-medium">{fmt(price)}</span>
         </div>
@@ -63,57 +63,57 @@ const LuxuryPurchaseTaxCalculator = () => {
 
       {/* Breakdown table */}
       <div className="border border-neutral-200 divide-y divide-neutral-100">
-        <div className="px-5 py-3 bg-neutral-50/50">
-          <p className="text-xs tracking-[0.15em] uppercase text-luxury-black/50 font-medium">Tax Breakdown — {rates.label}</p>
+        <div className="px-5 py-3.5 bg-neutral-50/50">
+          <p className="text-sm tracking-[0.15em] uppercase text-luxury-black/50 font-medium">Tax Breakdown — {rates.label}</p>
         </div>
 
         {rates.vat > 0 && (
-          <div className="px-5 py-3 flex justify-between text-sm">
+          <div className="px-5 py-3.5 flex justify-between text-base">
             <span className="text-luxury-black/70 font-light">VAT (IVA) — {rates.vat}%</span>
             <span className="text-luxury-black font-medium">{fmt(vatAmount)}</span>
           </div>
         )}
         {rates.ajd > 0 && (
-          <div className="px-5 py-3 flex justify-between text-sm">
+          <div className="px-5 py-3.5 flex justify-between text-base">
             <span className="text-luxury-black/70 font-light">Stamp Duty (AJD) — {rates.ajd}%</span>
             <span className="text-luxury-black font-medium">{fmt(ajdAmount)}</span>
           </div>
         )}
         {rates.itp > 0 && (
-          <div className="px-5 py-3 flex justify-between text-sm">
+          <div className="px-5 py-3.5 flex justify-between text-base">
             <span className="text-luxury-black/70 font-light">Transfer Tax (ITP) — {rates.itp}%</span>
             <span className="text-luxury-black font-medium">{fmt(itpAmount)}</span>
           </div>
         )}
 
-        <div className="px-5 py-3 bg-neutral-50/50">
-          <p className="text-xs tracking-[0.15em] uppercase text-luxury-black/50 font-medium">Additional Costs</p>
+        <div className="px-5 py-3.5 bg-neutral-50/50">
+          <p className="text-sm tracking-[0.15em] uppercase text-luxury-black/50 font-medium">Additional Costs</p>
         </div>
 
-        <div className="px-5 py-3 flex justify-between text-sm">
+        <div className="px-5 py-3.5 flex justify-between text-base">
           <span className="text-luxury-black/70 font-light">Notary Fees</span>
           <span className="text-luxury-black font-medium">{fmt(notaryFees)}</span>
         </div>
-        <div className="px-5 py-3 flex justify-between text-sm">
+        <div className="px-5 py-3.5 flex justify-between text-base">
           <span className="text-luxury-black/70 font-light">Land Registry</span>
           <span className="text-luxury-black font-medium">{fmt(registryFees)}</span>
         </div>
-        <div className="px-5 py-3 flex justify-between text-sm">
+        <div className="px-5 py-3.5 flex justify-between text-base">
           <span className="text-luxury-black/70 font-light">Legal Fees (~1%)</span>
           <span className="text-luxury-black font-medium">{fmt(legalFees)}</span>
         </div>
 
         {/* Totals */}
-        <div className="px-5 py-4 flex justify-between text-sm bg-neutral-50/80">
+        <div className="px-5 py-4.5 flex justify-between text-base bg-neutral-50/80">
           <span className="text-luxury-black/80 font-medium">Total Additional Costs</span>
           <div className="text-right">
             <span className="text-luxury-black font-medium">{fmt(totalCosts)}</span>
-            <span className="text-luxury-black/40 text-xs ml-2">({pct(totalCosts)})</span>
+            <span className="text-luxury-black/40 text-sm ml-2">({pct(totalCosts)})</span>
           </div>
         </div>
-        <div className="px-5 py-4 flex justify-between bg-luxury-black text-white">
-          <span className="font-medium">Total Investment</span>
-          <span className="font-serif text-xl">{fmt(grandTotal)}</span>
+        <div className="px-5 py-5 flex justify-between bg-luxury-black text-white">
+          <span className="font-medium text-lg">Total Investment</span>
+          <span className="font-serif text-2xl">{fmt(grandTotal)}</span>
         </div>
       </div>
     </div>
