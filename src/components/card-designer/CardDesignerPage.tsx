@@ -43,7 +43,7 @@ export interface CardDesignConfig {
   showBadges: boolean;
 }
 
-const defaultConfig: CardDesignConfig = {
+const defaultCrmConfig: CardDesignConfig = {
   titleSize: 15,
   priceSize: 20,
   bodySize: 12,
@@ -68,6 +68,33 @@ const defaultConfig: CardDesignConfig = {
   showRating: true,
   showPortals: true,
   showBadges: true,
+};
+
+const defaultLuxuryConfig: CardDesignConfig = {
+  titleSize: 18,
+  priceSize: 26,
+  bodySize: 13,
+  labelSize: 13,
+  badgeSize: 10,
+  fontFamily: "Inter",
+  titleWeight: 600,
+  cardPadding: 20,
+  cardGap: 10,
+  borderRadius: 2,
+  imageHeight: 280,
+  imageWidth: 240,
+  bgColor: "#fafafa",
+  textColor: "#1a1a1a",
+  mutedColor: "#64748b",
+  accentColor: "#1a1a1a",
+  borderColor: "#e5e5e5",
+  layout: "horizontal",
+  showDescription: true,
+  showTags: true,
+  showFooter: true,
+  showRating: false,
+  showPortals: false,
+  showBadges: false,
 };
 
 /* ─── Collapsible Section ─── */
@@ -132,15 +159,20 @@ const ColorInput = ({ value, onChange }: { value: string; onChange: (v: string) 
 
 /* ─── Main Page ─── */
 const CardDesignerPage = () => {
-  const [config, setConfig] = useState<CardDesignConfig>({ ...defaultConfig });
   const [cardType, setCardType] = useState<"crm" | "luxury">("crm");
+  const [config, setConfig] = useState<CardDesignConfig>({ ...defaultCrmConfig });
   const previewRef = useRef<HTMLDivElement>(null);
 
   const update = useCallback(<K extends keyof CardDesignConfig>(key: K, value: CardDesignConfig[K]) => {
     setConfig(prev => ({ ...prev, [key]: value }));
   }, []);
 
-  const resetConfig = () => setConfig({ ...defaultConfig });
+  const switchCardType = (type: "crm" | "luxury") => {
+    setCardType(type);
+    setConfig(type === "crm" ? { ...defaultCrmConfig } : { ...defaultLuxuryConfig });
+  };
+
+  const resetConfig = () => setConfig(cardType === "crm" ? { ...defaultCrmConfig } : { ...defaultLuxuryConfig });
 
   const handleDownload = async () => {
     if (!previewRef.current) return;
@@ -171,13 +203,13 @@ const CardDesignerPage = () => {
           {/* Card type tabs */}
           <div className="flex items-center bg-muted/50 rounded-lg border border-border p-0.5 mr-2">
             <button
-              onClick={() => setCardType("crm")}
+              onClick={() => switchCardType("crm")}
               className={`text-[12px] px-3 py-1.5 rounded-md font-medium transition-all ${cardType === "crm" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
             >
               CRM Card
             </button>
             <button
-              onClick={() => setCardType("luxury")}
+              onClick={() => switchCardType("luxury")}
               className={`text-[12px] px-3 py-1.5 rounded-md font-medium transition-all ${cardType === "luxury" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
             >
               Luxury Web

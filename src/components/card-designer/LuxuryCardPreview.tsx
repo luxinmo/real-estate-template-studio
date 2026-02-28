@@ -24,6 +24,17 @@ const LuxuryCardPreview = ({ config }: { config: CardDesignConfig }) => {
   const c = config;
   const isH = c.layout === "horizontal";
 
+  /* Derived sizes that scale proportionally with the config */
+  const tagSize = c.badgeSize;         // ~10
+  const styleSize = c.badgeSize + 1;   // ~11
+  const locationSize = c.badgeSize + 1;// ~11
+  const titleFSize = c.titleSize;      // ~18
+  const excerptSize = c.bodySize + 1;  // ~13
+  const specLabelSize = c.badgeSize;   // ~10
+  const specValueSize = c.labelSize + 2;// ~15
+  const featureSize = c.badgeSize + 1; // ~11
+  const priceSize = c.priceSize;       // ~24
+
   const cardStyle: React.CSSProperties = {
     fontFamily: c.fontFamily,
     backgroundColor: c.bgColor,
@@ -36,6 +47,8 @@ const LuxuryCardPreview = ({ config }: { config: CardDesignConfig }) => {
     flexDirection: isH ? undefined : "column",
   };
 
+  const infoPad = c.cardPadding + 8; // match the generous padding of the real card
+
   return (
     <div style={cardStyle}>
       {/* ─── Image ─── */}
@@ -44,7 +57,7 @@ const LuxuryCardPreview = ({ config }: { config: CardDesignConfig }) => {
           position: "relative",
           overflow: "hidden",
           height: isH ? "auto" : c.imageHeight,
-          minHeight: isH ? 220 : undefined,
+          minHeight: isH ? 280 : undefined,
         }}
       >
         <img
@@ -56,7 +69,7 @@ const LuxuryCardPreview = ({ config }: { config: CardDesignConfig }) => {
           <span style={{
             position: "absolute", top: 12, left: 12,
             background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)",
-            color: "#fff", fontSize: c.badgeSize,
+            color: "#fff", fontSize: tagSize,
             letterSpacing: "0.12em", textTransform: "uppercase",
             fontWeight: 500, padding: "4px 10px",
           }}>
@@ -66,7 +79,7 @@ const LuxuryCardPreview = ({ config }: { config: CardDesignConfig }) => {
         <span style={{
           position: "absolute", bottom: 12, right: 12,
           background: "rgba(0,0,0,0.6)", color: "#fff",
-          fontSize: c.badgeSize, padding: "4px 8px", fontWeight: 300,
+          fontSize: tagSize, padding: "4px 8px", fontWeight: 300,
         }}>
           1/{MOCK.galleryCount}
         </span>
@@ -75,29 +88,29 @@ const LuxuryCardPreview = ({ config }: { config: CardDesignConfig }) => {
       {/* ─── Info ─── */}
       <div style={{
         display: "flex", flexDirection: "column", justifyContent: "space-between",
-        padding: isH ? `${c.cardPadding + 4}px ${c.cardPadding + 8}px ${c.cardPadding + 4}px ${c.cardPadding + 8}px` : `${c.cardPadding}px`,
+        padding: `${infoPad}px ${infoPad + 4}px`,
       }}>
         <div>
           {/* Tag row */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               <span style={{
-                fontSize: c.badgeSize, letterSpacing: "0.18em", textTransform: "uppercase",
+                fontSize: tagSize, letterSpacing: "0.18em", textTransform: "uppercase",
                 border: `1px solid ${c.textColor}33`, color: `${c.textColor}99`,
-                padding: "4px 10px", fontWeight: 500,
+                padding: "5px 12px", fontWeight: 500,
               }}>
                 {MOCK.tag}
               </span>
-              <span style={{ fontSize: c.badgeSize + 1, color: `${c.textColor}73`, fontWeight: 300, fontStyle: "italic" }}>
+              <span style={{ fontSize: styleSize, color: `${c.textColor}73`, fontWeight: 300, fontStyle: "italic" }}>
                 {MOCK.style}
               </span>
             </div>
-            <Mail style={{ width: 16, height: 16, color: `${c.textColor}4d`, cursor: "pointer" }} />
+            <Mail style={{ width: 18, height: 18, color: `${c.textColor}4d`, cursor: "pointer" }} />
           </div>
 
           {/* Location */}
           <p style={{
-            fontSize: c.badgeSize + 1, letterSpacing: "0.15em", textTransform: "uppercase",
+            fontSize: locationSize, letterSpacing: "0.15em", textTransform: "uppercase",
             color: `${c.textColor}80`, marginBottom: 6,
           }}>
             {MOCK.location}
@@ -105,9 +118,9 @@ const LuxuryCardPreview = ({ config }: { config: CardDesignConfig }) => {
 
           {/* Title */}
           <h2 style={{
-            fontSize: c.titleSize + 2,
-            fontWeight: c.titleWeight === 700 ? 600 : 500,
-            color: c.textColor, lineHeight: 1.35, marginBottom: 12,
+            fontSize: titleFSize,
+            fontWeight: c.titleWeight,
+            color: c.textColor, lineHeight: 1.35, marginBottom: 14,
           }}>
             {MOCK.title}
           </h2>
@@ -115,8 +128,8 @@ const LuxuryCardPreview = ({ config }: { config: CardDesignConfig }) => {
           {/* Excerpt */}
           {c.showDescription && (
             <p style={{
-              fontSize: c.bodySize + 1, color: `${c.textColor}8c`, fontWeight: 300,
-              lineHeight: 1.65, marginBottom: 16,
+              fontSize: excerptSize, color: `${c.textColor}8c`, fontWeight: 300,
+              lineHeight: 1.7, marginBottom: 18,
               display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
             }}>
               {MOCK.excerpt}
@@ -124,7 +137,7 @@ const LuxuryCardPreview = ({ config }: { config: CardDesignConfig }) => {
           )}
 
           {/* Specs strip */}
-          <div style={{ display: "flex", alignItems: "center", gap: 24, marginBottom: 16 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 28, marginBottom: 18 }}>
             {[
               { label: "BEDS", value: String(MOCK.beds) },
               { label: "BATHS", value: String(MOCK.baths) },
@@ -133,21 +146,21 @@ const LuxuryCardPreview = ({ config }: { config: CardDesignConfig }) => {
             ].map((s) => (
               <div key={s.label} style={{ textAlign: "center" }}>
                 <p style={{
-                  fontSize: c.badgeSize, letterSpacing: "0.1em", textTransform: "uppercase",
-                  color: `${c.textColor}66`, marginBottom: 2,
+                  fontSize: specLabelSize, letterSpacing: "0.1em", textTransform: "uppercase",
+                  color: `${c.textColor}66`, marginBottom: 3,
                 }}>{s.label}</p>
-                <p style={{ fontSize: c.labelSize + 2, color: c.textColor, fontWeight: 300 }}>{s.value}</p>
+                <p style={{ fontSize: specValueSize, color: c.textColor, fontWeight: 300 }}>{s.value}</p>
               </div>
             ))}
           </div>
 
           {/* Feature tags with dots */}
           {c.showTags && (
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
               {MOCK.features.map((f) => (
                 <span key={f} style={{
-                  fontSize: c.badgeSize + 1, color: `${c.textColor}80`, fontWeight: 300,
-                  display: "flex", alignItems: "center", gap: 5,
+                  fontSize: featureSize, color: `${c.textColor}80`, fontWeight: 300,
+                  display: "flex", alignItems: "center", gap: 6,
                 }}>
                   <span style={{ width: 4, height: 4, borderRadius: 999, background: `${c.textColor}33`, flexShrink: 0 }} />
                   {f}
@@ -159,9 +172,9 @@ const LuxuryCardPreview = ({ config }: { config: CardDesignConfig }) => {
 
         {/* Price */}
         {c.showFooter && (
-          <div style={{ marginTop: 20, paddingTop: 16, borderTop: `1px solid ${c.borderColor}` }}>
+          <div style={{ marginTop: 22, paddingTop: 18, borderTop: `1px solid ${c.borderColor}` }}>
             <p style={{
-              fontSize: c.priceSize + 4, fontWeight: 300, color: c.textColor,
+              fontSize: priceSize, fontWeight: 300, color: c.textColor,
               fontFamily: "'Georgia', 'Playfair Display', serif",
               letterSpacing: "-0.02em",
             }}>
