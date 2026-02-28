@@ -50,24 +50,24 @@ const CATEGORIES = [
 
 const LuxuryNearbyPlaces = () => {
   return (
-    <div className="pt-8 border-t border-neutral-100">
-      <h2 className="text-3xl font-light text-luxury-black font-serif tracking-tight mb-6 flex items-center gap-3">
-        <MapPin className="w-7 h-7 text-luxury-black/40" strokeWidth={1.3} />
+    <div className="pt-10 border-t border-neutral-100">
+      <h2 className="text-4xl font-light text-luxury-black font-serif tracking-tight mb-8 flex items-center gap-3">
+        <MapPin className="w-8 h-8 text-luxury-black/40" strokeWidth={1.3} />
         What's Nearby
       </h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
         {CATEGORIES.map((cat, ci) => (
           <div key={ci}>
-            <div className="flex items-center gap-2 mb-3">
-              <cat.icon className={`w-4.5 h-4.5 ${cat.color}`} strokeWidth={1.5} />
-              <h3 className="text-sm font-medium tracking-[0.1em] uppercase text-luxury-black/70">{cat.label}</h3>
+            <div className="flex items-center gap-2 mb-4">
+              <cat.icon className={`w-5 h-5 ${cat.color}`} strokeWidth={1.5} />
+              <h3 className="text-base font-medium tracking-[0.1em] uppercase text-luxury-black/70">{cat.label}</h3>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               {cat.places.map((place, pi) => (
-                <div key={pi} className="flex items-center justify-between text-sm">
+                <div key={pi} className="flex items-center justify-between text-base">
                   <span className="text-luxury-black/75 font-light">{place.name}</span>
-                  <div className="flex items-center gap-3 text-luxury-black/45 text-xs font-light">
+                  <div className="flex items-center gap-3 text-luxury-black/45 text-sm font-light">
                     <span>{place.distance}</span>
                     <span className="text-luxury-black/30">•</span>
                     <span>{"walk" in place ? `🚶 ${place.walk}` : `🚗 ${place.drive}`}</span>

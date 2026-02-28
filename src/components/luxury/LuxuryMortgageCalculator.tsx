@@ -19,16 +19,16 @@ const MortgageCalculator = () => {
   const fmt = (n: number) => new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(n);
 
   return (
-    <div className="pt-8 border-t border-neutral-100">
-      <h2 className="text-3xl font-light text-luxury-black font-serif tracking-tight mb-6 flex items-center gap-3">
-        <Calculator className="w-7 h-7 text-luxury-black/40" strokeWidth={1.3} />
+    <div className="pt-10 border-t border-neutral-100">
+      <h2 className="text-4xl font-light text-luxury-black font-serif tracking-tight mb-8 flex items-center gap-3">
+        <Calculator className="w-8 h-8 text-luxury-black/40" strokeWidth={1.3} />
         Mortgage Calculator
       </h2>
 
-      <div className="space-y-6">
+      <div className="space-y-7">
         {/* Price */}
         <div>
-          <div className="flex justify-between text-sm mb-2">
+          <div className="flex justify-between text-base mb-2">
             <span className="text-luxury-black/60 font-light">Property Price</span>
             <span className="text-luxury-black font-medium">{fmt(price)}</span>
           </div>
@@ -38,7 +38,7 @@ const MortgageCalculator = () => {
 
         {/* Down payment */}
         <div>
-          <div className="flex justify-between text-sm mb-2">
+          <div className="flex justify-between text-base mb-2">
             <span className="text-luxury-black/60 font-light">Down Payment</span>
             <span className="text-luxury-black font-medium">{downPayment}% — {fmt(price * downPayment / 100)}</span>
           </div>
@@ -48,7 +48,7 @@ const MortgageCalculator = () => {
 
         {/* Interest */}
         <div>
-          <div className="flex justify-between text-sm mb-2">
+          <div className="flex justify-between text-base mb-2">
             <span className="text-luxury-black/60 font-light">Interest Rate</span>
             <span className="text-luxury-black font-medium">{interestRate.toFixed(1)}%</span>
           </div>
@@ -58,7 +58,7 @@ const MortgageCalculator = () => {
 
         {/* Term */}
         <div>
-          <div className="flex justify-between text-sm mb-2">
+          <div className="flex justify-between text-base mb-2">
             <span className="text-luxury-black/60 font-light">Loan Term</span>
             <span className="text-luxury-black font-medium">{years} years</span>
           </div>
@@ -67,18 +67,18 @@ const MortgageCalculator = () => {
         </div>
 
         {/* Results */}
-        <div className="grid grid-cols-3 gap-4 pt-4 border-t border-neutral-100">
+        <div className="grid grid-cols-3 gap-4 pt-5 border-t border-neutral-100">
           <div className="text-center">
-            <p className="text-2xl font-light text-luxury-black font-serif">{fmt(monthlyPayment)}</p>
-            <p className="text-xs text-luxury-black/50 font-light mt-1">Monthly Payment</p>
+            <p className="text-3xl font-light text-luxury-black font-serif">{fmt(monthlyPayment)}</p>
+            <p className="text-sm text-luxury-black/50 font-light mt-1.5">Monthly Payment</p>
           </div>
           <div className="text-center">
-            <p className="text-2xl font-light text-luxury-black font-serif">{fmt(totalInterest)}</p>
-            <p className="text-xs text-luxury-black/50 font-light mt-1">Total Interest</p>
+            <p className="text-3xl font-light text-luxury-black font-serif">{fmt(totalInterest)}</p>
+            <p className="text-sm text-luxury-black/50 font-light mt-1.5">Total Interest</p>
           </div>
           <div className="text-center">
-            <p className="text-2xl font-light text-luxury-black font-serif">{fmt(totalPaid)}</p>
-            <p className="text-xs text-luxury-black/50 font-light mt-1">Total Cost</p>
+            <p className="text-3xl font-light text-luxury-black font-serif">{fmt(totalPaid)}</p>
+            <p className="text-sm text-luxury-black/50 font-light mt-1.5">Total Cost</p>
           </div>
         </div>
       </div>
