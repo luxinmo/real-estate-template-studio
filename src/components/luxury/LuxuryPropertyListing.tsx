@@ -89,8 +89,8 @@ const TypeDropdown = ({ selected, onToggle }: { selected: string[]; onToggle: (v
   const { open, setOpen, ref } = useDropdown();
   return (
     <div ref={ref} className="relative shrink-0">
-      <button onClick={() => setOpen(!open)} className={`flex items-center gap-1 border text-[12px] px-4 py-1.5 rounded-full transition-all duration-200 shrink-0 ${selected.length > 0 ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-200 text-luxury-black/65 hover:border-luxury-black/30"}`}>
-        Type {selected.length > 0 && <span className="bg-white text-luxury-black text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-medium">{selected.length}</span>} <ChevronDown className="w-3 h-3" />
+      <button onClick={() => setOpen(!open)} className={`flex items-center gap-1 border text-[14px] px-4 py-2 rounded-full transition-all duration-200 shrink-0 ${selected.length > 0 ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-200 text-luxury-black/65 hover:border-luxury-black/30"}`}>
+        Type {selected.length > 0 && <span className="bg-white text-luxury-black text-[11px] w-4 h-4 rounded-full flex items-center justify-center font-medium">{selected.length}</span>} <ChevronDown className="w-3.5 h-3.5" />
       </button>
       {open && (
         <div className="absolute top-full left-0 mt-2 bg-white border border-neutral-200 rounded-sm shadow-lg w-[300px] py-2 z-50">
@@ -114,8 +114,8 @@ const PriceDropdown = ({ priceMin, priceMax, hidePOR, onMinChange, onMaxChange, 
   const hasValue = priceMin || priceMax;
   return (
     <div ref={ref} className="relative shrink-0">
-      <button onClick={() => setOpen(!open)} className={`flex items-center gap-1 border text-[12px] px-4 py-1.5 rounded-full transition-all duration-200 ${hasValue ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-200 text-luxury-black/65 hover:border-luxury-black/30"}`}>
-        Price {hasValue && "●"} <ChevronDown className="w-3 h-3" />
+      <button onClick={() => setOpen(!open)} className={`flex items-center gap-1 border text-[14px] px-4 py-2 rounded-full transition-all duration-200 ${hasValue ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-200 text-luxury-black/65 hover:border-luxury-black/30"}`}>
+        Price {hasValue && "●"} <ChevronDown className="w-3.5 h-3.5" />
       </button>
       {open && (
         <div className="absolute top-full left-0 mt-2 bg-white border border-neutral-200 rounded-sm shadow-lg w-[380px] p-5 z-50">
@@ -157,8 +157,8 @@ const BedsDropdown = ({ selected, onChange }: { selected: string; onChange: (v: 
   const { open, setOpen, ref } = useDropdown();
   return (
     <div ref={ref} className="relative shrink-0">
-      <button onClick={() => setOpen(!open)} className={`flex items-center gap-1 border text-[12px] px-4 py-1.5 rounded-full transition-all duration-200 ${selected !== "Any" ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-200 text-luxury-black/65 hover:border-luxury-black/30"}`}>
-        Beds {selected !== "Any" && <span className="text-[10px]">{selected}</span>} <ChevronDown className="w-3 h-3" />
+      <button onClick={() => setOpen(!open)} className={`flex items-center gap-1 border text-[14px] px-4 py-2 rounded-full transition-all duration-200 ${selected !== "Any" ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-200 text-luxury-black/65 hover:border-luxury-black/30"}`}>
+        Beds {selected !== "Any" && <span className="text-[11px]">{selected}</span>} <ChevronDown className="w-3.5 h-3.5" />
       </button>
       {open && (
         <div className="absolute top-full left-0 mt-2 bg-white border border-neutral-200 rounded-sm shadow-lg w-[320px] p-5 z-50">
@@ -179,8 +179,8 @@ const AmenitiesDropdown = ({ selected, onToggle }: { selected: string[]; onToggl
   const { open, setOpen, ref } = useDropdown();
   return (
     <div ref={ref} className="relative shrink-0">
-      <button onClick={() => setOpen(!open)} className={`flex items-center gap-1 border text-[12px] px-4 py-1.5 rounded-full transition-all duration-200 ${selected.length > 0 ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-200 text-luxury-black/65 hover:border-luxury-black/30"}`}>
-        Amenities {selected.length > 0 && <span className="bg-white text-luxury-black text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-medium">{selected.length}</span>} <ChevronDown className="w-3 h-3" />
+      <button onClick={() => setOpen(!open)} className={`flex items-center gap-1 border text-[14px] px-4 py-2 rounded-full transition-all duration-200 ${selected.length > 0 ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-200 text-luxury-black/65 hover:border-luxury-black/30"}`}>
+        Amenities {selected.length > 0 && <span className="bg-white text-luxury-black text-[11px] w-4 h-4 rounded-full flex items-center justify-center font-medium">{selected.length}</span>} <ChevronDown className="w-3.5 h-3.5" />
       </button>
       {open && (
         <div className="absolute top-full right-0 mt-2 bg-white border border-neutral-200 rounded-sm shadow-lg w-[480px] max-h-[420px] overflow-y-auto p-5 z-50">
@@ -564,7 +564,7 @@ const LuxuryPropertyListing = () => {
       <div className="sticky top-[68px] z-40 bg-white border-b border-neutral-200">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
           {/* Breadcrumb */}
-          <div className="flex items-center gap-1.5 pt-3 pb-2 text-[11px] text-luxury-black/45 font-light">
+          <div className="flex items-center gap-1.5 pt-3 pb-2 text-[13px] text-luxury-black/45 font-light">
             <a href="/" className="hover:text-luxury-black transition-colors">Home</a>
             <ChevronRight className="w-3 h-3" />
             <a href="/properties" className="hover:text-luxury-black transition-colors">Properties</a>
@@ -586,7 +586,7 @@ const LuxuryPropertyListing = () => {
 
             <button
               onClick={() => setFiltersOpen(true)}
-              className="flex items-center gap-1.5 bg-luxury-black text-white text-[12px] px-4 py-1.5 rounded-full hover:bg-luxury-black/85 transition-all duration-200 shrink-0"
+              className="flex items-center gap-1.5 bg-luxury-black text-white text-[14px] px-4 py-2 rounded-full hover:bg-luxury-black/85 transition-all duration-200 shrink-0"
             >
               <SlidersHorizontal className="w-3.5 h-3.5" /> Filters
             </button>
@@ -596,7 +596,7 @@ const LuxuryPropertyListing = () => {
             <AmenitiesDropdown selected={filters.amenities} onToggle={toggleAmenity} />
             <button
               onClick={() => setFilters(f => ({ ...f, newBuilds: !f.newBuilds }))}
-              className={`text-[12px] px-4 py-1.5 rounded-full transition-all duration-200 shrink-0 border ${filters.newBuilds ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-200 text-luxury-black/65 hover:border-luxury-black/30"}`}
+              className={`text-[14px] px-4 py-2 rounded-full transition-all duration-200 shrink-0 border ${filters.newBuilds ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-200 text-luxury-black/65 hover:border-luxury-black/30"}`}
             >
               New Builds
             </button>
