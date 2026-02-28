@@ -101,135 +101,119 @@ const LuxuryPropertyDetail = () => {
         </div>
       </section>
 
-      {/* ─── HEADER INFO ─── */}
+      {/* ─── HEADER INFO (full width) ─── */}
       <section className="max-w-[1400px] mx-auto px-6 lg:px-10 pt-8 pb-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left: title, location, specs */}
-          <div className="lg:col-span-2">
-            <div className="flex items-start justify-between gap-4 mb-3">
-              <div>
-                <p className="text-4xl md:text-5xl font-light text-luxury-black font-serif tracking-tight">{PROPERTY.price}</p>
-                <span className="text-sm tracking-[0.15em] uppercase text-luxury-black/50 mt-1 block">Ref: {PROPERTY.ref}</span>
-              </div>
-              <div className="flex gap-2">
-                <button onClick={() => setLiked(!liked)} className={`w-10 h-10 border flex items-center justify-center transition-all duration-300 ${liked ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-300 text-luxury-black/40 hover:border-luxury-black/40"}`}>
-                  <Heart className="w-4 h-4" fill={liked ? "currentColor" : "none"} />
-                </button>
-                <button className="w-10 h-10 border border-neutral-300 text-luxury-black/40 hover:border-luxury-black/40 flex items-center justify-center transition-all duration-300">
-                  <Share2 className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-
-            <h1 className="text-2xl md:text-3xl font-light text-luxury-black leading-snug mb-3">{PROPERTY.title}</h1>
-            <p className="flex items-center gap-2 text-base text-luxury-black/70 font-light mb-6">
-              <MapPin className="w-4 h-4" /> {PROPERTY.location}
-            </p>
-
-            {/* Specs strip */}
-            <div className="flex flex-wrap gap-6 border-t border-b border-neutral-200 py-4">
-              {[
-                { icon: Bed, label: "Bedrooms", value: PROPERTY.beds },
-                { icon: Bath, label: "Bathrooms", value: PROPERTY.baths },
-                { icon: Maximize, label: "Built", value: `${PROPERTY.sqm} m²` },
-                { icon: Fence, label: "Plot", value: `${PROPERTY.plot} m²` },
-                { icon: Car, label: "Garage", value: PROPERTY.garage },
-              ].map((s, i) => (
-                <div key={i} className="flex items-center gap-2.5 text-base text-luxury-black/80">
-                  <s.icon className="w-5 h-5 text-luxury-black/50" strokeWidth={1.3} />
-                  <span className="font-light">{s.value}</span>
-                  <span className="text-luxury-black/50 text-sm">{s.label}</span>
-                </div>
-              ))}
-            </div>
+        <div className="flex items-start justify-between gap-4 mb-3">
+          <div>
+            <p className="text-4xl md:text-5xl font-light text-luxury-black font-serif tracking-tight">{PROPERTY.price}</p>
+            <span className="text-sm tracking-[0.15em] uppercase text-luxury-black/50 mt-1 block">Ref: {PROPERTY.ref}</span>
           </div>
-
-          {/* Right: Agent card */}
-          <div className="lg:col-span-1">
-            <div className="border border-neutral-200 p-6">
-              <p className="text-sm tracking-[0.2em] uppercase text-luxury-black/55 mb-3">Your Advisor</p>
-              <h3 className="text-lg font-medium text-luxury-black mb-0.5">{PROPERTY.agent.name}</h3>
-              <p className="text-base text-luxury-black/55 font-light mb-5">{PROPERTY.agent.role}</p>
-
-              {/* Contact Form */}
-              <form className="space-y-3 mb-5" onSubmit={(e) => e.preventDefault()}>
-                <input
-                  type="text"
-                  placeholder="Name"
-                  className="w-full border border-neutral-300 bg-white px-4 py-3 text-sm text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/40 transition-colors duration-300"
-                />
-                <input
-                  type="email"
-                  placeholder="Email"
-                  className="w-full border border-neutral-300 bg-white px-4 py-3 text-sm text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/40 transition-colors duration-300"
-                />
-                <input
-                  type="tel"
-                  placeholder="Phone"
-                  className="w-full border border-neutral-300 bg-white px-4 py-3 text-sm text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/40 transition-colors duration-300"
-                />
-                <textarea
-                  placeholder="I'm interested in this property..."
-                  rows={3}
-                  className="w-full border border-neutral-300 bg-white px-4 py-3 text-sm text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/40 transition-colors duration-300 resize-none"
-                />
-                <label className="flex items-start gap-2 cursor-pointer">
-                  <input type="checkbox" className="mt-1 accent-luxury-black" />
-                  <span className="text-xs text-luxury-black/55 font-light leading-relaxed">
-                    I accept the <a href="#" className="underline hover:text-luxury-black transition-colors">terms and conditions</a> and the <a href="#" className="underline hover:text-luxury-black transition-colors">privacy policy</a>.
-                  </span>
-                </label>
-                <button
-                  type="submit"
-                  className="flex items-center justify-center gap-2 bg-luxury-black text-white text-sm tracking-[0.15em] uppercase py-4 w-full hover:bg-luxury-black/85 transition-all duration-300"
-                >
-                  <Mail className="w-4.5 h-4.5" /> Send Message
-                </button>
-              </form>
-
-              <a href={`tel:${PROPERTY.agent.phone}`} className="flex items-center justify-center gap-2 border border-luxury-black/20 text-luxury-black/70 text-sm tracking-[0.15em] uppercase py-4 w-full hover:bg-luxury-black hover:text-white transition-all duration-300">
-                <Phone className="w-4.5 h-4.5" /> Call Now
-              </a>
-
-              <div className="mt-5 pt-4 border-t border-neutral-200 flex items-center justify-between text-sm text-luxury-black/60 font-light">
-                <span>Energy: <strong className="text-luxury-black/70">{PROPERTY.energyClass}</strong></span>
-                <span>Year: <strong className="text-luxury-black/70">{PROPERTY.year}</strong></span>
-                <span className="text-green-600 font-medium">{PROPERTY.status}</span>
-              </div>
-            </div>
+          <div className="flex gap-2">
+            <button onClick={() => setLiked(!liked)} className={`w-10 h-10 border flex items-center justify-center transition-all duration-300 ${liked ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-300 text-luxury-black/40 hover:border-luxury-black/40"}`}>
+              <Heart className="w-4 h-4" fill={liked ? "currentColor" : "none"} />
+            </button>
+            <button className="w-10 h-10 border border-neutral-300 text-luxury-black/40 hover:border-luxury-black/40 flex items-center justify-center transition-all duration-300">
+              <Share2 className="w-4 h-4" />
+            </button>
           </div>
         </div>
-      </section>
 
-      {/* ─── DESCRIPTION ─── */}
-      <section className="max-w-[1400px] mx-auto px-6 lg:px-10 py-8 border-t border-neutral-100">
-        <div className="max-w-3xl">
-          <h2 className="text-3xl font-light text-luxury-black font-serif tracking-tight mb-6">About This Property</h2>
-          <div className="text-base leading-[1.9] text-luxury-black/75 font-light whitespace-pre-line">
-            {PROPERTY.description}
-          </div>
-        </div>
-      </section>
+        <h1 className="text-2xl md:text-3xl font-light text-luxury-black leading-snug mb-3">{PROPERTY.title}</h1>
+        <p className="flex items-center gap-2 text-base text-luxury-black/70 font-light mb-6">
+          <MapPin className="w-4 h-4" /> {PROPERTY.location}
+        </p>
 
-      {/* ─── FEATURES ─── */}
-      <section className="max-w-[1400px] mx-auto px-6 lg:px-10 py-8 border-t border-neutral-100">
-        <h2 className="text-3xl font-light text-luxury-black font-serif tracking-tight mb-6">Features & Amenities</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-6 gap-y-4">
-          {PROPERTY.features.map((f, i) => (
-            <div key={i} className="flex items-center gap-2.5 text-base text-luxury-black/75 font-light">
-              <Check className="w-4.5 h-4.5 text-luxury-black/50" strokeWidth={1.5} />
-              {f}
+        {/* Specs strip */}
+        <div className="flex flex-wrap gap-6 border-t border-b border-neutral-200 py-4">
+          {[
+            { icon: Bed, label: "Bedrooms", value: PROPERTY.beds },
+            { icon: Bath, label: "Bathrooms", value: PROPERTY.baths },
+            { icon: Maximize, label: "Built", value: `${PROPERTY.sqm} m²` },
+            { icon: Fence, label: "Plot", value: `${PROPERTY.plot} m²` },
+            { icon: Car, label: "Garage", value: PROPERTY.garage },
+          ].map((s, i) => (
+            <div key={i} className="flex items-center gap-2.5 text-base text-luxury-black/80">
+              <s.icon className="w-5 h-5 text-luxury-black/50" strokeWidth={1.3} />
+              <span className="font-light">{s.value}</span>
+              <span className="text-luxury-black/50 text-sm">{s.label}</span>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ─── MAP PLACEHOLDER ─── */}
-      <section className="max-w-[1400px] mx-auto px-6 lg:px-10 py-8 border-t border-neutral-100">
-        <h2 className="text-3xl font-light text-luxury-black font-serif tracking-tight mb-4">Explore the Area</h2>
-        <p className="text-base text-luxury-black/65 font-light mb-4">{PROPERTY.location}</p>
-        <div className="bg-neutral-100 h-[280px] flex items-center justify-center text-luxury-black/25 text-base">
-          <MapPin className="w-6 h-6 mr-2" /> Interactive Map
+      {/* ─── CONTENT + SIDEBAR ─── */}
+      <section className="max-w-[1400px] mx-auto px-6 lg:px-10 pb-10">
+        <div className="flex flex-col lg:flex-row gap-10">
+          {/* Left: main content */}
+          <div className="flex-1 min-w-0 space-y-10">
+            {/* Description */}
+            <div className="pt-8 border-t border-neutral-100">
+              <h2 className="text-3xl font-light text-luxury-black font-serif tracking-tight mb-6">About This Property</h2>
+              <div className="text-base leading-[1.9] text-luxury-black/75 font-light whitespace-pre-line">
+                {PROPERTY.description}
+              </div>
+            </div>
+
+            {/* Features */}
+            <div className="pt-8 border-t border-neutral-100">
+              <h2 className="text-3xl font-light text-luxury-black font-serif tracking-tight mb-6">Features & Amenities</h2>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-4">
+                {PROPERTY.features.map((f, i) => (
+                  <div key={i} className="flex items-center gap-2.5 text-base text-luxury-black/75 font-light">
+                    <Check className="w-4.5 h-4.5 text-luxury-black/50" strokeWidth={1.5} />
+                    {f}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Map */}
+            <div className="pt-8 border-t border-neutral-100">
+              <h2 className="text-3xl font-light text-luxury-black font-serif tracking-tight mb-4">Explore the Area</h2>
+              <p className="text-base text-luxury-black/65 font-light mb-4">{PROPERTY.location}</p>
+              <div className="bg-neutral-100 h-[280px] flex items-center justify-center text-luxury-black/25 text-base">
+                <MapPin className="w-6 h-6 mr-2" /> Interactive Map
+              </div>
+            </div>
+          </div>
+
+          {/* Right: Advisor sticky sidebar */}
+          <div className="w-full lg:w-[360px] shrink-0">
+            <div className="lg:sticky lg:top-[76px]">
+              <div className="border border-neutral-200 p-6">
+                <p className="text-sm tracking-[0.2em] uppercase text-luxury-black/55 mb-3">Your Advisor</p>
+                <h3 className="text-lg font-medium text-luxury-black mb-0.5">{PROPERTY.agent.name}</h3>
+                <p className="text-base text-luxury-black/55 font-light mb-5">{PROPERTY.agent.role}</p>
+
+                {/* Contact Form */}
+                <form className="space-y-3 mb-5" onSubmit={(e) => e.preventDefault()}>
+                  <input type="text" placeholder="Name" className="w-full border border-neutral-300 bg-white px-4 py-3 text-sm text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/40 transition-colors duration-300" />
+                  <input type="email" placeholder="Email" className="w-full border border-neutral-300 bg-white px-4 py-3 text-sm text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/40 transition-colors duration-300" />
+                  <input type="tel" placeholder="Phone" className="w-full border border-neutral-300 bg-white px-4 py-3 text-sm text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/40 transition-colors duration-300" />
+                  <textarea placeholder="I'm interested in this property..." rows={3} className="w-full border border-neutral-300 bg-white px-4 py-3 text-sm text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/40 transition-colors duration-300 resize-none" />
+                  <label className="flex items-start gap-2 cursor-pointer">
+                    <input type="checkbox" className="mt-1 accent-luxury-black" />
+                    <span className="text-xs text-luxury-black/55 font-light leading-relaxed">
+                      I accept the <a href="#" className="underline hover:text-luxury-black transition-colors">terms and conditions</a> and the <a href="#" className="underline hover:text-luxury-black transition-colors">privacy policy</a>.
+                    </span>
+                  </label>
+                  <button type="submit" className="flex items-center justify-center gap-2 bg-luxury-black text-white text-sm tracking-[0.15em] uppercase py-4 w-full hover:bg-luxury-black/85 transition-all duration-300">
+                    <Mail className="w-4.5 h-4.5" /> Send Message
+                  </button>
+                </form>
+
+                <a href={`tel:${PROPERTY.agent.phone}`} className="flex items-center justify-center gap-2 border border-luxury-black/20 text-luxury-black/70 text-sm tracking-[0.15em] uppercase py-4 w-full hover:bg-luxury-black hover:text-white transition-all duration-300">
+                  <Phone className="w-4.5 h-4.5" /> Call Now
+                </a>
+
+                <div className="mt-5 pt-4 border-t border-neutral-200 flex items-center justify-between text-sm text-luxury-black/60 font-light">
+                  <span>Energy: <strong className="text-luxury-black/70">{PROPERTY.energyClass}</strong></span>
+                  <span>Year: <strong className="text-luxury-black/70">{PROPERTY.year}</strong></span>
+                  <span className="text-green-600 font-medium">{PROPERTY.status}</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
