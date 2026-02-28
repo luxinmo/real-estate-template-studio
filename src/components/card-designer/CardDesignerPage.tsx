@@ -9,6 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import CardPreview from "./CardPreview";
+import LuxuryCardPreview from "./LuxuryCardPreview";
 
 /* ─── Types ─── */
 export interface CardDesignConfig {
@@ -132,6 +133,7 @@ const ColorInput = ({ value, onChange }: { value: string; onChange: (v: string) 
 /* ─── Main Page ─── */
 const CardDesignerPage = () => {
   const [config, setConfig] = useState<CardDesignConfig>({ ...defaultConfig });
+  const [cardType, setCardType] = useState<"crm" | "luxury">("crm");
   const previewRef = useRef<HTMLDivElement>(null);
 
   const update = useCallback(<K extends keyof CardDesignConfig>(key: K, value: CardDesignConfig[K]) => {
@@ -166,6 +168,21 @@ const CardDesignerPage = () => {
           <p className="text-[12px] text-muted-foreground mt-0.5">Diseña y personaliza la tarjeta de propiedad</p>
         </div>
         <div className="flex items-center gap-2">
+          {/* Card type tabs */}
+          <div className="flex items-center bg-muted/50 rounded-lg border border-border p-0.5 mr-2">
+            <button
+              onClick={() => setCardType("crm")}
+              className={`text-[12px] px-3 py-1.5 rounded-md font-medium transition-all ${cardType === "crm" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              CRM Card
+            </button>
+            <button
+              onClick={() => setCardType("luxury")}
+              className={`text-[12px] px-3 py-1.5 rounded-md font-medium transition-all ${cardType === "luxury" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              Luxury Web
+            </button>
+          </div>
           <Button variant="outline" size="sm" onClick={resetConfig} className="gap-1.5 text-[12px]">
             <RotateCcw className="h-3.5 w-3.5" />
             Reset
@@ -182,7 +199,11 @@ const CardDesignerPage = () => {
         {/* Preview Area */}
         <div className="flex-1 overflow-auto bg-muted/30 p-6 sm:p-10 flex items-start justify-center">
           <div ref={previewRef} className="w-full max-w-3xl">
-            <CardPreview config={config} />
+            {cardType === "crm" ? (
+              <CardPreview config={config} />
+            ) : (
+              <LuxuryCardPreview config={config} />
+            )}
           </div>
         </div>
 
