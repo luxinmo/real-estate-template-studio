@@ -1,4 +1,4 @@
-import { Building2, LayoutGrid, Home, Users, Building, UserCircle, Briefcase, Settings, X, Component, MapPin, FileDown, FolderClock, Timer, AlertTriangle, Gem } from "lucide-react";
+import { Building2, LayoutGrid, Home, Users, Building, UserCircle, Briefcase, Settings, X, Component, MapPin, FileDown, FolderClock, Timer, AlertTriangle, Gem, CreditCard } from "lucide-react";
 
 const topItems = [
   { icon: LayoutGrid, label: "Dashboard", view: "dashboard" },
@@ -8,6 +8,7 @@ const topItems = [
   { icon: MapPin, label: "Locations", view: "locations" },
   { icon: Gem, label: "Luxury Landing", view: "luxury-landing" },
   { icon: Component, label: "Componentes", view: "components" },
+  { icon: CreditCard, label: "Card Designer", view: "card-designer" },
 ];
 
 const importerItems = [
