@@ -455,55 +455,53 @@ const PropertyCard = ({ property }: { property: typeof PROPERTIES[0] }) => {
       {/* Info */}
       <div className="md:col-span-7 flex flex-col justify-between p-5 md:p-6 lg:p-8">
         <div>
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2.5">
-              <span className="text-[10px] tracking-[0.18em] uppercase border border-luxury-black/20 text-luxury-black/60 px-2.5 py-1 font-medium">{property.tag}</span>
-              <span className="text-[11px] text-luxury-black/45 font-light italic">{property.style}</span>
-            </div>
-            <button onClick={(e) => { e.preventDefault(); }} className="text-luxury-black/30 hover:text-luxury-black transition-colors">
-              <Mail className="w-4 h-4" />
-            </button>
+          {/* Tag + Style */}
+          <div className="flex items-center gap-2.5 mb-2">
+            <span className="text-[10px] tracking-[0.18em] uppercase border border-luxury-black/20 text-luxury-black/60 px-2.5 py-1 font-medium">{property.tag}</span>
+            <span className="text-[12px] text-luxury-black/45 font-light italic">{property.style}</span>
           </div>
 
-          <p className="text-[11px] tracking-[0.15em] uppercase text-luxury-black/50 mb-1.5">{property.location}</p>
-          <h2 className="text-[16px] md:text-[18px] font-medium text-luxury-black leading-snug mb-3 group-hover:text-luxury-black/75 transition-colors duration-300">
+          {/* Location */}
+          <div className="flex items-center gap-1.5 mb-1">
+            <MapPin className="w-3.5 h-3.5 text-luxury-black/40" strokeWidth={1.5} />
+            <span className="text-[13px] tracking-[0.05em] text-luxury-black/70">{property.location}</span>
+          </div>
+
+          {/* Title */}
+          <h2 className="text-[17px] md:text-[19px] font-medium text-luxury-black leading-snug mb-3 group-hover:text-luxury-black/75 transition-colors duration-300">
             {property.title}
           </h2>
-          <p className="text-[13px] text-luxury-black/55 font-light leading-relaxed mb-4 line-clamp-2">
-            {property.excerpt}
-          </p>
 
-          {/* Specs */}
-          <div className="flex items-center gap-6 mb-4">
-            <div className="text-center">
-              <p className="text-[10px] tracking-[0.1em] uppercase text-luxury-black/40 mb-0.5">Beds</p>
-              <p className="text-[15px] text-luxury-black font-light">{property.beds}</p>
+          {/* Specs — prominent horizontal strip */}
+          <div className="flex items-center gap-5 mb-3">
+            <div className="flex items-center gap-1.5">
+              <Bed className="w-4 h-4 text-luxury-black/50" strokeWidth={1.5} />
+              <span className="text-[15px] text-luxury-black font-medium">{property.beds}</span>
+              <span className="text-[12px] text-luxury-black/50">beds</span>
             </div>
-            <div className="text-center">
-              <p className="text-[10px] tracking-[0.1em] uppercase text-luxury-black/40 mb-0.5">Baths</p>
-              <p className="text-[15px] text-luxury-black font-light">{property.baths}</p>
+            <div className="flex items-center gap-1.5">
+              <Bath className="w-4 h-4 text-luxury-black/50" strokeWidth={1.5} />
+              <span className="text-[15px] text-luxury-black font-medium">{property.baths}</span>
+              <span className="text-[12px] text-luxury-black/50">baths</span>
             </div>
-            <div className="text-center">
-              <p className="text-[10px] tracking-[0.1em] uppercase text-luxury-black/40 mb-0.5">Built</p>
-              <p className="text-[15px] text-luxury-black font-light">{property.sqm} m²</p>
+            <div className="flex items-center gap-1.5">
+              <Maximize className="w-4 h-4 text-luxury-black/50" strokeWidth={1.5} />
+              <span className="text-[15px] text-luxury-black font-medium">{property.sqm}</span>
+              <span className="text-[12px] text-luxury-black/50">m²</span>
             </div>
             {property.plot && (
-              <div className="text-center">
-                <p className="text-[10px] tracking-[0.1em] uppercase text-luxury-black/40 mb-0.5">Plot</p>
-                <p className="text-[15px] text-luxury-black font-light">{property.plot.toLocaleString()} m²</p>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[12px] text-luxury-black/50">Plot</span>
+                <span className="text-[15px] text-luxury-black font-medium">{property.plot.toLocaleString()}</span>
+                <span className="text-[12px] text-luxury-black/50">m²</span>
               </div>
             )}
           </div>
 
-          {/* Feature tags */}
-          <div className="flex flex-wrap gap-2">
-            {property.features.map((f, i) => (
-              <span key={i} className="text-[11px] text-luxury-black/50 font-light flex items-center gap-1">
-                <span className="w-1 h-1 rounded-full bg-luxury-black/20" />
-                {f}
-              </span>
-            ))}
-          </div>
+          {/* Description */}
+          <p className="text-[13px] text-luxury-black/55 font-light leading-relaxed line-clamp-2">
+            {property.excerpt}
+          </p>
         </div>
 
         {/* Price */}
