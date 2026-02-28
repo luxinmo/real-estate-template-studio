@@ -81,11 +81,11 @@ const FadeIn = ({ children, className = "", delay = 0 }: { children: React.React
   );
 };
 
-/* ─── Styles — Drumelia-inspired ─── */
+/* ─── Styles ─── */
 const font = {
-  brand: "'Libre Bodoni', 'Playfair Display', Georgia, serif",
-  heading: "'Libre Bodoni', 'Playfair Display', Georgia, serif",
-  body: "'Montserrat', 'Outfit', system-ui, sans-serif",
+  brand: "'futura-pt', Helvetica, sans-serif",
+  heading: "'futura-pt', Helvetica, sans-serif",
+  body: "'futura-pt', Helvetica, sans-serif",
 };
 
 const palette = {
@@ -94,13 +94,13 @@ const palette = {
   text: "#1A1714",
   textMuted: "#7A7269",
   textLight: "#A69E94",
-  accent: "#96794A",       // warm gold
+  accent: "#96794A",
   accentLight: "#B8986A",
   border: "#DDD6CC",
   white: "#FDFBF8",
   footerBg: "#1A1714",
-  offMarketBg: "#1E2A1E", // deep forest green
-  offMarketAccent: "#7DA67D",
+  offMarketBg: "#2C2824",
+  offMarketAccent: "#B8986A",
 };
 
 /* ═══════════════════════════════════════════════════════════ */
