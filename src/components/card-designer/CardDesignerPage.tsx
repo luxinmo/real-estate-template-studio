@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import html2canvas from "html2canvas";
 import {
   Download, Type, BoxSelect, Palette, RotateCcw, Eye, Layers,
@@ -76,6 +76,29 @@ const DEVICES: { id: DeviceId; label: string; width: number; icon: React.Element
   { id: "mobile", label: "Móvil", width: 375, icon: Smartphone },
 ];
 
+const DESIGNER_STORAGE_PREFIX = "card-designer-config-v1";
+
+const EMPTY_SAVED_CONFIGS: Record<DeviceId, CardDesignConfig | null> = {
+  desktop: null,
+  tablet: null,
+  mobile: null,
+};
+
+const createDeviceConfigs = (baseConfig: CardDesignConfig): Record<DeviceId, CardDesignConfig> => ({
+  desktop: { ...baseConfig },
+  tablet: { ...baseConfig },
+  mobile: { ...baseConfig },
+});
+
+const hydrateDeviceConfigs = (
+  incoming: Partial<Record<DeviceId, CardDesignConfig>> | undefined,
+  fallback: CardDesignConfig,
+): Record<DeviceId, CardDesignConfig> => ({
+  desktop: { ...fallback, ...(incoming?.desktop ?? {}) },
+  tablet: { ...fallback, ...(incoming?.tablet ?? {}) },
+  mobile: { ...fallback, ...(incoming?.mobile ?? {}) },
+});
+
 /* ─── Collapsible Section ─── */
 const Section = ({ title, icon: Icon, children, defaultOpen = true }: {
   title: string; icon: React.ElementType; children: React.ReactNode; defaultOpen?: boolean;
@@ -126,28 +149,93 @@ const ColorInput = ({ value, onChange }: { value: string; onChange: (v: string) 
 /* ─── Main Page ─── */
 const CardDesignerPage = () => {
   const [cardType, setCardType] = useState<"crm" | "luxury">("crm");
-  const [config, setConfig] = useState<CardDesignConfig>({ ...defaultCrmConfig });
   const [activeDevice, setActiveDevice] = useState<DeviceId>("desktop");
   const previewRef = useRef<HTMLDivElement>(null);
 
+  const [deviceConfigs, setDeviceConfigs] = useState<Record<DeviceId, CardDesignConfig>>(() =>
+    createDeviceConfigs(defaultCrmConfig),
+  );
+  const [savedConfigs, setSavedConfigs] = useState<Record<DeviceId, CardDesignConfig | null>>(EMPTY_SAVED_CONFIGS);
+
+  const config = deviceConfigs[activeDevice];
+
+  const persistDesignerState = useCallback(
+    (
+      nextDeviceConfigs: Record<DeviceId, CardDesignConfig>,
+      nextSavedConfigs: Record<DeviceId, CardDesignConfig | null>,
+      type: "crm" | "luxury" = cardType,
+    ) => {
+      localStorage.setItem(
+        `${DESIGNER_STORAGE_PREFIX}-${type}`,
+        JSON.stringify({ deviceConfigs: nextDeviceConfigs, savedConfigs: nextSavedConfigs }),
+      );
+    },
+    [cardType],
+  );
+
+  useEffect(() => {
+    const fallbackConfig = cardType === "crm" ? defaultCrmConfig : defaultLuxuryConfig;
+    const raw = localStorage.getItem(`${DESIGNER_STORAGE_PREFIX}-${cardType}`);
+
+    if (!raw) {
+      setDeviceConfigs(createDeviceConfigs(fallbackConfig));
+      setSavedConfigs(EMPTY_SAVED_CONFIGS);
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(raw) as {
+        deviceConfigs?: Partial<Record<DeviceId, CardDesignConfig>>;
+        savedConfigs?: Partial<Record<DeviceId, CardDesignConfig | null>>;
+      };
+
+      setDeviceConfigs(hydrateDeviceConfigs(parsed.deviceConfigs, fallbackConfig));
+      setSavedConfigs({
+        desktop: parsed.savedConfigs?.desktop ? { ...fallbackConfig, ...parsed.savedConfigs.desktop } : null,
+        tablet: parsed.savedConfigs?.tablet ? { ...fallbackConfig, ...parsed.savedConfigs.tablet } : null,
+        mobile: parsed.savedConfigs?.mobile ? { ...fallbackConfig, ...parsed.savedConfigs.mobile } : null,
+      });
+    } catch {
+      setDeviceConfigs(createDeviceConfigs(fallbackConfig));
+      setSavedConfigs(EMPTY_SAVED_CONFIGS);
+    }
+  }, [cardType]);
+
   const update = useCallback(<K extends keyof CardDesignConfig>(key: K, value: CardDesignConfig[K]) => {
-    setConfig(prev => ({ ...prev, [key]: value }));
-  }, []);
+    setDeviceConfigs((prev) => ({
+      ...prev,
+      [activeDevice]: { ...prev[activeDevice], [key]: value },
+    }));
+  }, [activeDevice]);
 
   const switchCardType = (type: "crm" | "luxury") => {
     setCardType(type);
-    setConfig(type === "crm" ? { ...defaultCrmConfig } : { ...defaultLuxuryConfig });
   };
 
-  const resetConfig = () => setConfig(cardType === "crm" ? { ...defaultCrmConfig } : { ...defaultLuxuryConfig });
+  const resetConfig = () => {
+    const base = cardType === "crm" ? defaultCrmConfig : defaultLuxuryConfig;
+    const nextDeviceConfigs = {
+      ...deviceConfigs,
+      [activeDevice]: { ...base },
+    };
+    const nextSavedConfigs = {
+      ...savedConfigs,
+      [activeDevice]: null,
+    };
 
-  /* Per-device saved configs */
-  const [savedConfigs, setSavedConfigs] = useState<Record<DeviceId, CardDesignConfig | null>>({
-    desktop: null, tablet: null, mobile: null,
-  });
+    setDeviceConfigs(nextDeviceConfigs);
+    setSavedConfigs(nextSavedConfigs);
+    persistDesignerState(nextDeviceConfigs, nextSavedConfigs);
+  };
 
   const handleSaveDevice = () => {
-    setSavedConfigs(prev => ({ ...prev, [activeDevice]: { ...config } }));
+    const nextSavedConfigs = {
+      ...savedConfigs,
+      [activeDevice]: { ...config },
+    };
+
+    setSavedConfigs(nextSavedConfigs);
+    persistDesignerState(deviceConfigs, nextSavedConfigs);
   };
 
   const handleDownloadPng = async () => {
@@ -162,7 +250,13 @@ const CardDesignerPage = () => {
   };
 
   const handleDownloadHtml = () => {
-    const html = generateHtmlExport(config, cardType);
+    const exportConfigs: Record<DeviceId, CardDesignConfig> = {
+      desktop: savedConfigs.desktop ?? deviceConfigs.desktop,
+      tablet: savedConfigs.tablet ?? deviceConfigs.tablet,
+      mobile: savedConfigs.mobile ?? deviceConfigs.mobile,
+    };
+
+    const html = generateHtmlExport(exportConfigs.desktop, cardType, exportConfigs);
     const blob = new Blob([html], { type: "text/html" });
     const link = document.createElement("a");
     link.download = `card-${cardType}-${Date.now()}.html`;
@@ -171,13 +265,9 @@ const CardDesignerPage = () => {
     URL.revokeObjectURL(link.href);
   };
 
-  /* Build per-device config */
+  /* Active per-device config (independent between desktop/tablet/mobile) */
   const activeDeviceDef = DEVICES.find(d => d.id === activeDevice)!;
-  const deviceConfig: CardDesignConfig = activeDevice === "mobile"
-    ? { ...config, layout: "vertical", titleSize: Math.max(config.titleSize - 2, 12), priceSize: Math.max(config.priceSize - 2, 16), bodySize: Math.max(config.bodySize - 1, 10), labelSize: Math.max(config.labelSize - 1, 10) }
-    : activeDevice === "tablet"
-    ? { ...config, titleSize: Math.max(config.titleSize - 1, 13), priceSize: Math.max(config.priceSize - 1, 18) }
-    : config;
+  const deviceConfig: CardDesignConfig = config;
 
   const CardComponent = cardType === "crm" ? CardPreview : LuxuryCardPreview;
 

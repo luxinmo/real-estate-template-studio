@@ -1,20 +1,27 @@
 import type { CardDesignConfig } from "./CardDesignerPage";
 
+type ExportDeviceId = "desktop" | "tablet" | "mobile";
+
 /**
  * Generates a standalone HTML file with inline CSS for the card design.
- * Includes responsive breakpoints for desktop, tablet, and mobile.
+ * Exports using saved independent configs per device when provided.
  */
-export function generateHtmlExport(config: CardDesignConfig, cardType: "crm" | "luxury"): string {
-  const c = config;
-  const isLuxury = cardType === "luxury";
+export function generateHtmlExport(
+  config: CardDesignConfig,
+  cardType: "crm" | "luxury",
+  deviceConfigs?: Partial<Record<ExportDeviceId, CardDesignConfig>>,
+): string {
+  const desktop = deviceConfigs?.desktop ?? config;
+  const tablet = deviceConfigs?.tablet ?? desktop;
+  const mobile = deviceConfigs?.mobile ?? desktop;
 
+  const c = desktop;
+  const isLuxury = cardType === "luxury";
   const priceFontFamily = isLuxury ? "'Georgia', 'Playfair Display', serif" : c.fontFamily;
 
-  const mobileTitle = Math.max(c.titleSize - 2, 12);
-  const mobilePrice = Math.max(c.priceSize - 2, 16);
-  const mobileBody = Math.max(c.bodySize - 1, 10);
-  const tabletTitle = Math.max(c.titleSize - 1, 13);
-  const tabletPrice = Math.max(c.priceSize - 1, 18);
+  const desktopGrid = c.layout === "horizontal" ? "5fr 7fr" : "1fr";
+  const tabletGrid = tablet.layout === "horizontal" ? "5fr 7fr" : "1fr";
+  const mobileGrid = mobile.layout === "horizontal" ? "5fr 7fr" : "1fr";
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -45,7 +52,7 @@ export function generateHtmlExport(config: CardDesignConfig, cardType: "crm" | "
       max-width: 900px;
       width: 100%;
       display: grid;
-      grid-template-columns: ${c.layout === "horizontal" ? "5fr 7fr" : "1fr"};
+      grid-template-columns: ${desktopGrid};
     }
 
     .card-image {
@@ -81,7 +88,7 @@ export function generateHtmlExport(config: CardDesignConfig, cardType: "crm" | "
 
     .tag-row {
       display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 14px;
+      margin-bottom: ${c.spacingTagRow}px;
     }
     .tag-row .tags { display: flex; align-items: center; gap: 12px; }
     .tag-label {
@@ -97,21 +104,21 @@ export function generateHtmlExport(config: CardDesignConfig, cardType: "crm" | "
 
     .location {
       font-size: ${c.badgeSize + 1}px; letter-spacing: 0.15em;
-      text-transform: uppercase; color: ${c.textColor}80; margin-bottom: 6px;
+      text-transform: uppercase; color: ${c.textColor}80; margin-bottom: ${c.spacingLocation}px;
     }
 
     .title {
       font-size: ${c.titleSize}px; font-weight: ${c.titleWeight};
-      color: ${c.textColor}; line-height: 1.35; margin-bottom: 14px;
+      color: ${c.textColor}; line-height: 1.35; margin-bottom: ${c.spacingTitle}px;
     }
 
     .excerpt {
       font-size: ${c.bodySize + 1}px; color: ${c.textColor}8c; font-weight: 300;
-      line-height: 1.7; margin-bottom: 18px;
+      line-height: 1.7; margin-bottom: ${c.spacingDescription}px;
       display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
     }
 
-    .specs { display: flex; align-items: center; gap: 28px; margin-bottom: 18px; }
+    .specs { display: flex; align-items: center; gap: 28px; margin-bottom: ${c.spacingSpecs}px; }
     .spec { text-align: center; }
     .spec-label {
       font-size: ${c.badgeSize}px; letter-spacing: 0.1em; text-transform: uppercase;
@@ -119,18 +126,8 @@ export function generateHtmlExport(config: CardDesignConfig, cardType: "crm" | "
     }
     .spec-value { font-size: ${c.labelSize + 2}px; color: ${c.textColor}; font-weight: 300; }
 
-    .features { display: flex; flex-wrap: wrap; gap: 12px; }
-    .feature {
-      font-size: ${c.badgeSize + 1}px; color: ${c.textColor}80; font-weight: 300;
-      display: flex; align-items: center; gap: 6px;
-    }
-    .feature-dot {
-      width: 4px; height: 4px; border-radius: 50%;
-      background: ${c.textColor}33; flex-shrink: 0;
-    }
-
     .price-row {
-      margin-top: 22px; padding-top: 18px;
+      margin-top: ${c.spacingPrice}px; padding-top: 18px;
       border-top: 1px solid ${c.borderColor};
     }
     .price {
@@ -141,19 +138,42 @@ export function generateHtmlExport(config: CardDesignConfig, cardType: "crm" | "
 
     /* ── Tablet ── */
     @media (max-width: 768px) {
-      .title { font-size: ${tabletTitle}px; }
-      .price { font-size: ${tabletPrice}px; }
+      .card {
+        border-radius: ${tablet.borderRadius}px;
+        border-color: ${tablet.borderColor};
+        background: ${tablet.bgColor};
+        color: ${tablet.textColor};
+        grid-template-columns: ${tabletGrid};
+      }
+      .card-image { min-height: ${tablet.imageHeight}px; }
+      .card-info { padding: ${tablet.cardPadding + 8}px ${tablet.cardPadding + 12}px; }
+      .tag-row { margin-bottom: ${tablet.spacingTagRow}px; }
+      .location { font-size: ${tablet.badgeSize + 1}px; margin-bottom: ${tablet.spacingLocation}px; }
+      .title { font-size: ${tablet.titleSize}px; margin-bottom: ${tablet.spacingTitle}px; }
+      .excerpt { font-size: ${tablet.bodySize + 1}px; margin-bottom: ${tablet.spacingDescription}px; }
+      .specs { margin-bottom: ${tablet.spacingSpecs}px; }
+      .price-row { margin-top: ${tablet.spacingPrice}px; border-top-color: ${tablet.borderColor}; }
+      .price { font-size: ${tablet.priceSize}px; }
     }
 
     /* ── Mobile ── */
     @media (max-width: 480px) {
-      .card { grid-template-columns: 1fr; }
-      .card-image { min-height: 200px; aspect-ratio: 16/10; }
-      .title { font-size: ${mobileTitle}px; }
-      .price { font-size: ${mobilePrice}px; }
-      .excerpt { font-size: ${mobileBody}px; }
-      .card-info { padding: ${c.cardPadding}px; }
-      .specs { gap: 16px; }
+      .card {
+        border-radius: ${mobile.borderRadius}px;
+        border-color: ${mobile.borderColor};
+        background: ${mobile.bgColor};
+        color: ${mobile.textColor};
+        grid-template-columns: ${mobileGrid};
+      }
+      .card-image { min-height: ${mobile.imageHeight}px; }
+      .card-info { padding: ${mobile.cardPadding + 8}px ${mobile.cardPadding + 12}px; }
+      .tag-row { margin-bottom: ${mobile.spacingTagRow}px; }
+      .location { font-size: ${mobile.badgeSize + 1}px; margin-bottom: ${mobile.spacingLocation}px; }
+      .title { font-size: ${mobile.titleSize}px; margin-bottom: ${mobile.spacingTitle}px; }
+      .excerpt { font-size: ${mobile.bodySize + 1}px; margin-bottom: ${mobile.spacingDescription}px; }
+      .specs { gap: 16px; margin-bottom: ${mobile.spacingSpecs}px; }
+      .price-row { margin-top: ${mobile.spacingPrice}px; border-top-color: ${mobile.borderColor}; }
+      .price { font-size: ${mobile.priceSize}px; }
     }
   </style>
 </head>
@@ -181,12 +201,6 @@ export function generateHtmlExport(config: CardDesignConfig, cardType: "crm" | "
           <div class="spec"><p class="spec-label">BUILT</p><p class="spec-value">420 m²</p></div>
           <div class="spec"><p class="spec-label">PLOT</p><p class="spec-value">1,200 m²</p></div>
         </div>
-        ${c.showTags ? `<div class="features">
-          <span class="feature"><span class="feature-dot"></span>Sea Views</span>
-          <span class="feature"><span class="feature-dot"></span>Infinity Pool</span>
-          <span class="feature"><span class="feature-dot"></span>Smart Home</span>
-          <span class="feature"><span class="feature-dot"></span>Garage</span>
-        </div>` : ""}
       </div>
       ${c.showFooter ? `<div class="price-row"><p class="price">€4,650,000</p></div>` : ""}
     </div>
