@@ -58,10 +58,11 @@ const defaultLuxuryConfig: CardDesignConfig = {
 };
 
 /* ─── Device definitions ─── */
-const DEVICES = [
-  { id: "desktop" as const, label: "Desktop", width: 900, icon: Monitor },
-  { id: "tablet" as const, label: "Tablet", width: 600, icon: Tablet },
-  { id: "mobile" as const, label: "Móvil", width: 375, icon: Smartphone },
+type DeviceId = "desktop" | "tablet" | "mobile";
+const DEVICES: { id: DeviceId; label: string; width: number; icon: React.ElementType }[] = [
+  { id: "desktop", label: "Desktop", width: 1200, icon: Monitor },
+  { id: "tablet", label: "Tablet", width: 768, icon: Tablet },
+  { id: "mobile", label: "Móvil", width: 375, icon: Smartphone },
 ];
 
 /* ─── Collapsible Section ─── */
@@ -110,34 +111,13 @@ const ColorInput = ({ value, onChange }: { value: string; onChange: (v: string) 
   </div>
 );
 
-/* ─── Device Frame ─── */
-const DeviceFrame = ({ device, children, cardType }: {
-  device: typeof DEVICES[number];
-  children: React.ReactNode;
-  cardType: string;
-}) => (
-  <div className="flex flex-col items-center gap-2">
-    <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground font-medium">
-      <device.icon className="h-3.5 w-3.5" />
-      {device.label}
-      <span className="text-muted-foreground/50 font-mono">{device.width}px</span>
-    </div>
-    <div
-      className="border border-border rounded-lg bg-card shadow-sm overflow-hidden"
-      style={{ width: device.width, maxWidth: "100%" }}
-    >
-      <div className="p-3" style={{ background: "#f4f4f5" }}>
-        {children}
-      </div>
-    </div>
-  </div>
-);
 
 /* ─── Main Page ─── */
 const CardDesignerPage = () => {
   const [cardType, setCardType] = useState<"crm" | "luxury">("crm");
   const [config, setConfig] = useState<CardDesignConfig>({ ...defaultCrmConfig });
-  const desktopRef = useRef<HTMLDivElement>(null);
+  const [activeDevice, setActiveDevice] = useState<DeviceId>("desktop");
+  const previewRef = useRef<HTMLDivElement>(null);
 
   const update = useCallback(<K extends keyof CardDesignConfig>(key: K, value: CardDesignConfig[K]) => {
     setConfig(prev => ({ ...prev, [key]: value }));
@@ -151,9 +131,9 @@ const CardDesignerPage = () => {
   const resetConfig = () => setConfig(cardType === "crm" ? { ...defaultCrmConfig } : { ...defaultLuxuryConfig });
 
   const handleDownloadPng = async () => {
-    if (!desktopRef.current) return;
+    if (!previewRef.current) return;
     try {
-      const canvas = await html2canvas(desktopRef.current, { scale: 2, backgroundColor: null, useCORS: true });
+      const canvas = await html2canvas(previewRef.current, { scale: 2, backgroundColor: null, useCORS: true });
       const link = document.createElement("a");
       link.download = `card-${cardType}-${Date.now()}.png`;
       link.href = canvas.toDataURL("image/png");
@@ -171,21 +151,13 @@ const CardDesignerPage = () => {
     URL.revokeObjectURL(link.href);
   };
 
-  /* Build per-device configs: mobile forces vertical layout */
-  const mobileConfig: CardDesignConfig = {
-    ...config,
-    layout: "vertical",
-    titleSize: Math.max(config.titleSize - 2, 12),
-    priceSize: Math.max(config.priceSize - 2, 16),
-    bodySize: Math.max(config.bodySize - 1, 10),
-    labelSize: Math.max(config.labelSize - 1, 10),
-  };
-
-  const tabletConfig: CardDesignConfig = {
-    ...config,
-    titleSize: Math.max(config.titleSize - 1, 13),
-    priceSize: Math.max(config.priceSize - 1, 18),
-  };
+  /* Build per-device config */
+  const activeDeviceDef = DEVICES.find(d => d.id === activeDevice)!;
+  const deviceConfig: CardDesignConfig = activeDevice === "mobile"
+    ? { ...config, layout: "vertical", titleSize: Math.max(config.titleSize - 2, 12), priceSize: Math.max(config.priceSize - 2, 16), bodySize: Math.max(config.bodySize - 1, 10), labelSize: Math.max(config.labelSize - 1, 10) }
+    : activeDevice === "tablet"
+    ? { ...config, titleSize: Math.max(config.titleSize - 1, 13), priceSize: Math.max(config.priceSize - 1, 18) }
+    : config;
 
   const CardComponent = cardType === "crm" ? CardPreview : LuxuryCardPreview;
 
@@ -220,25 +192,37 @@ const CardDesignerPage = () => {
 
       {/* Content */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Preview Area — 3 device frames */}
-        <div className="flex-1 overflow-auto bg-muted/30 p-6">
-          {/* Desktop */}
-          <div className="flex justify-center mb-8">
-            <DeviceFrame device={DEVICES[0]} cardType={cardType}>
-              <div ref={desktopRef}>
-                <CardComponent config={config} />
-              </div>
-            </DeviceFrame>
+        {/* Preview Area */}
+        <div className="flex-1 overflow-auto bg-muted/30 flex flex-col">
+          {/* Device Tabs */}
+          <div className="flex items-center justify-center gap-1 px-4 py-2 border-b border-border bg-card">
+            {DEVICES.map((d) => (
+              <button
+                key={d.id}
+                onClick={() => setActiveDevice(d.id)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-medium transition-all ${
+                  activeDevice === d.id
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                }`}
+              >
+                <d.icon className="h-3.5 w-3.5" />
+                {d.label}
+              </button>
+            ))}
+            <span className="ml-2 text-[11px] font-mono text-muted-foreground/60">{activeDeviceDef.width}px</span>
           </div>
 
-          {/* Tablet + Mobile side by side */}
-          <div className="flex flex-wrap justify-center gap-6">
-            <DeviceFrame device={DEVICES[1]} cardType={cardType}>
-              <CardComponent config={tabletConfig} />
-            </DeviceFrame>
-            <DeviceFrame device={DEVICES[2]} cardType={cardType}>
-              <CardComponent config={mobileConfig} />
-            </DeviceFrame>
+          {/* Card Preview */}
+          <div className="flex-1 flex justify-center p-6 overflow-auto">
+            <div
+              style={{ width: activeDeviceDef.width, maxWidth: "100%" }}
+              className="h-fit"
+            >
+              <div ref={previewRef}>
+                <CardComponent config={deviceConfig} />
+              </div>
+            </div>
           </div>
         </div>
 
