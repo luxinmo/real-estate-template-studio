@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Bed, Bath, Maximize, MapPin, Heart, Share2, ChevronLeft, ChevronRight, X, Check, Car, Waves, Trees, Fence, Wind, Sun, Wifi, ShieldCheck, Phone, Mail, ArrowRight } from "lucide-react";
+import { Bed, Bath, Maximize, MapPin, Heart, Share2, ChevronLeft, ChevronRight, X, Check, Car, Waves, Trees, Fence, Wind, Sun, Wifi, ShieldCheck, Phone, Mail, ArrowRight, ChevronDown } from "lucide-react";
+import LuxuryPhoneInput from "./LuxuryPhoneInput";
 import heroImg from "@/assets/luxury-hero.jpg";
 import prop1 from "@/assets/luxury-property-1.jpg";
 import prop2 from "@/assets/luxury-property-2.jpg";
@@ -13,8 +14,10 @@ import detail5 from "@/assets/property-detail-5.jpg";
 /* ─── Mock Data ─── */
 const PROPERTY = {
   title: "Stunning Contemporary Villa with Panoramic Sea Views",
-  location: "Santa Eulalia del Río, Ibiza, Spain",
+  breadcrumb: ["Spain", "Balearic Islands", "Ibiza", "Santa Eulalia del Río"],
   price: "€4,650,000",
+  originalPrice: "€5,200,000",
+  discount: 11,
   beds: 5,
   baths: 4,
   sqm: 420,
@@ -103,10 +106,23 @@ const LuxuryPropertyDetail = () => {
 
       {/* ─── HEADER INFO (full width) ─── */}
       <section className="max-w-[1400px] mx-auto px-6 lg:px-10 pt-8 pb-6">
+        {/* Breadcrumb */}
+        <nav className="flex items-center gap-1.5 text-sm text-luxury-black/50 font-light mb-5">
+          {PROPERTY.breadcrumb.map((crumb, i) => (
+            <span key={i} className="flex items-center gap-1.5">
+              {i > 0 && <ChevronRight className="w-3 h-3 text-luxury-black/30" />}
+              <a href="#" className={`hover:text-luxury-black transition-colors ${i === PROPERTY.breadcrumb.length - 1 ? "text-luxury-black/80" : ""}`}>{crumb}</a>
+            </span>
+          ))}
+        </nav>
+
         <div className="flex items-start justify-between gap-4 mb-3">
           <div>
-            <p className="text-4xl md:text-5xl font-light text-luxury-black font-serif tracking-tight">{PROPERTY.price}</p>
-            <span className="text-sm tracking-[0.15em] uppercase text-luxury-black/50 mt-1 block">Ref: {PROPERTY.ref}</span>
+            <div className="flex items-baseline gap-3 flex-wrap">
+              <p className="text-4xl md:text-5xl font-light text-luxury-black font-serif tracking-tight">{PROPERTY.price}</p>
+              <span className="text-xl text-luxury-black/35 line-through font-light">{PROPERTY.originalPrice}</span>
+              <span className="text-sm font-medium text-red-500 bg-red-50 px-2 py-0.5">-{PROPERTY.discount}%</span>
+            </div>
           </div>
           <div className="flex gap-2">
             <button onClick={() => setLiked(!liked)} className={`w-10 h-10 border flex items-center justify-center transition-all duration-300 ${liked ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-300 text-luxury-black/40 hover:border-luxury-black/40"}`}>
@@ -118,10 +134,8 @@ const LuxuryPropertyDetail = () => {
           </div>
         </div>
 
-        <h1 className="text-2xl md:text-3xl font-light text-luxury-black leading-snug mb-3">{PROPERTY.title}</h1>
-        <p className="flex items-center gap-2 text-base text-luxury-black/70 font-light mb-6">
-          <MapPin className="w-4 h-4" /> {PROPERTY.location}
-        </p>
+        <h1 className="text-2xl md:text-3xl font-light text-luxury-black leading-snug mb-2">{PROPERTY.title}</h1>
+        <span className="text-sm tracking-[0.1em] uppercase text-luxury-black/40 mb-6 block">Ref: {PROPERTY.ref}</span>
 
         {/* Specs strip */}
         <div className="flex flex-wrap gap-6 border-t border-b border-neutral-200 py-4">
@@ -170,7 +184,7 @@ const LuxuryPropertyDetail = () => {
             {/* Map */}
             <div className="pt-8 border-t border-neutral-100">
               <h2 className="text-3xl font-light text-luxury-black font-serif tracking-tight mb-4">Explore the Area</h2>
-              <p className="text-base text-luxury-black/65 font-light mb-4">{PROPERTY.location}</p>
+              <p className="text-base text-luxury-black/65 font-light mb-4">{PROPERTY.breadcrumb.join(", ")}</p>
               <div className="bg-neutral-100 h-[280px] flex items-center justify-center text-luxury-black/25 text-base">
                 <MapPin className="w-6 h-6 mr-2" /> Interactive Map
               </div>
@@ -189,7 +203,7 @@ const LuxuryPropertyDetail = () => {
                 <form className="space-y-3 mb-5" onSubmit={(e) => e.preventDefault()}>
                   <input type="text" placeholder="Name" className="w-full border border-neutral-300 bg-white px-4 py-3 text-sm text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/40 transition-colors duration-300" />
                   <input type="email" placeholder="Email" className="w-full border border-neutral-300 bg-white px-4 py-3 text-sm text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/40 transition-colors duration-300" />
-                  <input type="tel" placeholder="Phone" className="w-full border border-neutral-300 bg-white px-4 py-3 text-sm text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/40 transition-colors duration-300" />
+                  <LuxuryPhoneInput />
                   <textarea placeholder="I'm interested in this property..." rows={3} className="w-full border border-neutral-300 bg-white px-4 py-3 text-sm text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/40 transition-colors duration-300 resize-none" />
                   <label className="flex items-start gap-2 cursor-pointer">
                     <input type="checkbox" className="mt-1 accent-luxury-black" />
@@ -205,12 +219,6 @@ const LuxuryPropertyDetail = () => {
                 <a href={`tel:${PROPERTY.agent.phone}`} className="flex items-center justify-center gap-2 border border-luxury-black/20 text-luxury-black/70 text-sm tracking-[0.15em] uppercase py-4 w-full hover:bg-luxury-black hover:text-white transition-all duration-300">
                   <Phone className="w-4.5 h-4.5" /> Call Now
                 </a>
-
-                <div className="mt-5 pt-4 border-t border-neutral-200 flex items-center justify-between text-sm text-luxury-black/60 font-light">
-                  <span>Energy: <strong className="text-luxury-black/70">{PROPERTY.energyClass}</strong></span>
-                  <span>Year: <strong className="text-luxury-black/70">{PROPERTY.year}</strong></span>
-                  <span className="text-green-600 font-medium">{PROPERTY.status}</span>
-                </div>
               </div>
             </div>
           </div>
