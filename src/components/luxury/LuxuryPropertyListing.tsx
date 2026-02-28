@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Search, SlidersHorizontal, X, ChevronDown, ChevronRight, Bed, Bath, Maximize, MapPin, Mail } from "lucide-react";
+import { Search, SlidersHorizontal, X, ChevronDown, ChevronRight, MapPin, Mail } from "lucide-react";
 import heroImg from "@/assets/luxury-hero.jpg";
 import LocationSearchDropdown from "./LocationSearchDropdown";
 import prop1 from "@/assets/luxury-property-1.jpg";
@@ -472,29 +472,18 @@ const PropertyCard = ({ property }: { property: typeof PROPERTIES[0] }) => {
             {property.title}
           </h2>
 
-          {/* Specs — prominent horizontal strip */}
-          <div className="flex items-center gap-5 mb-3">
-            <div className="flex items-center gap-1.5">
-              <Bed className="w-4 h-4 text-luxury-black/50" strokeWidth={1.5} />
-              <span className="text-[15px] text-luxury-black font-medium">{property.beds}</span>
-              <span className="text-[12px] text-luxury-black/50">beds</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <Bath className="w-4 h-4 text-luxury-black/50" strokeWidth={1.5} />
-              <span className="text-[15px] text-luxury-black font-medium">{property.baths}</span>
-              <span className="text-[12px] text-luxury-black/50">baths</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <Maximize className="w-4 h-4 text-luxury-black/50" strokeWidth={1.5} />
-              <span className="text-[15px] text-luxury-black font-medium">{property.sqm}</span>
-              <span className="text-[12px] text-luxury-black/50">m²</span>
-            </div>
+          {/* Specs */}
+          <div className="flex items-center gap-4 mb-3 text-[14px] text-luxury-black/70">
+            <span><strong className="text-luxury-black">{property.beds}</strong> beds</span>
+            <span className="text-luxury-black/20">·</span>
+            <span><strong className="text-luxury-black">{property.baths}</strong> baths</span>
+            <span className="text-luxury-black/20">·</span>
+            <span><strong className="text-luxury-black">{property.sqm}</strong> m²</span>
             {property.plot && (
-              <div className="flex items-center gap-1.5">
-                <span className="text-[12px] text-luxury-black/50">Plot</span>
-                <span className="text-[15px] text-luxury-black font-medium">{property.plot.toLocaleString()}</span>
-                <span className="text-[12px] text-luxury-black/50">m²</span>
-              </div>
+              <>
+                <span className="text-luxury-black/20">·</span>
+                <span>Plot <strong className="text-luxury-black">{property.plot.toLocaleString()}</strong> m²</span>
+              </>
             )}
           </div>
 
