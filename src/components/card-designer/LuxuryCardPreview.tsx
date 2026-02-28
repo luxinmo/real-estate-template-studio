@@ -92,7 +92,7 @@ const LuxuryCardPreview = ({ config }: { config: CardDesignConfig }) => {
       }}>
         <div>
           {/* Tag row */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: c.spacingTagRow }}>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               <span style={{
                 fontSize: tagSize, letterSpacing: "0.18em", textTransform: "uppercase",
@@ -111,7 +111,7 @@ const LuxuryCardPreview = ({ config }: { config: CardDesignConfig }) => {
           {/* Location */}
           <p style={{
             fontSize: locationSize, letterSpacing: "0.15em", textTransform: "uppercase",
-            color: `${c.textColor}80`, marginBottom: 6,
+            color: `${c.textColor}80`, marginBottom: c.spacingLocation,
           }}>
             {MOCK.location}
           </p>
@@ -120,7 +120,7 @@ const LuxuryCardPreview = ({ config }: { config: CardDesignConfig }) => {
           <h2 style={{
             fontSize: titleFSize,
             fontWeight: c.titleWeight,
-            color: c.textColor, lineHeight: 1.35, marginBottom: 14,
+            color: c.textColor, lineHeight: 1.35, marginBottom: c.spacingTitle,
           }}>
             {MOCK.title}
           </h2>
@@ -129,7 +129,7 @@ const LuxuryCardPreview = ({ config }: { config: CardDesignConfig }) => {
           {c.showDescription && (
             <p style={{
               fontSize: excerptSize, color: `${c.textColor}8c`, fontWeight: 300,
-              lineHeight: 1.7, marginBottom: 18,
+              lineHeight: 1.7, marginBottom: c.spacingDescription,
               display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
             }}>
               {MOCK.excerpt}
@@ -137,7 +137,7 @@ const LuxuryCardPreview = ({ config }: { config: CardDesignConfig }) => {
           )}
 
           {/* Specs strip */}
-          <div style={{ display: "flex", alignItems: "center", gap: 28, marginBottom: 18 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 28, marginBottom: c.spacingSpecs }}>
             {[
               { label: "BEDS", value: String(MOCK.beds) },
               { label: "BATHS", value: String(MOCK.baths) },
@@ -172,7 +172,7 @@ const LuxuryCardPreview = ({ config }: { config: CardDesignConfig }) => {
 
         {/* Price */}
         {c.showFooter && (
-          <div style={{ marginTop: 22, paddingTop: 18, borderTop: `1px solid ${c.borderColor}` }}>
+          <div style={{ marginTop: c.spacingPrice, paddingTop: 18, borderTop: `1px solid ${c.borderColor}` }}>
             <p style={{
               fontSize: priceSize, fontWeight: 300, color: c.textColor,
               fontFamily: "'Georgia', 'Playfair Display', serif",
