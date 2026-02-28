@@ -37,6 +37,13 @@ export interface CardDesignConfig {
   showRating: boolean;
   showPortals: boolean;
   showBadges: boolean;
+  spacingTagRow: number;
+  spacingLocation: number;
+  spacingTitle: number;
+  spacingDescription: number;
+  spacingSpecs: number;
+  spacingFeatures: number;
+  spacingPrice: number;
 }
 
 const defaultCrmConfig: CardDesignConfig = {
@@ -46,6 +53,8 @@ const defaultCrmConfig: CardDesignConfig = {
   bgColor: "#ffffff", textColor: "#0f172a", mutedColor: "#64748b", accentColor: "#2563eb", borderColor: "#e2e8f0",
   layout: "horizontal", showDescription: true, showTags: true, showFooter: true,
   showRating: true, showPortals: true, showBadges: true,
+  spacingTagRow: 14, spacingLocation: 6, spacingTitle: 14, spacingDescription: 18,
+  spacingSpecs: 18, spacingFeatures: 0, spacingPrice: 22,
 };
 
 const defaultLuxuryConfig: CardDesignConfig = {
@@ -55,6 +64,8 @@ const defaultLuxuryConfig: CardDesignConfig = {
   bgColor: "#fafafa", textColor: "#1a1a1a", mutedColor: "#64748b", accentColor: "#1a1a1a", borderColor: "#e5e5e5",
   layout: "horizontal", showDescription: true, showTags: true, showFooter: true,
   showRating: false, showPortals: false, showBadges: false,
+  spacingTagRow: 14, spacingLocation: 6, spacingTitle: 14, spacingDescription: 18,
+  spacingSpecs: 18, spacingFeatures: 0, spacingPrice: 22,
 };
 
 /* ─── Device definitions ─── */
@@ -281,7 +292,17 @@ const CardDesignerPage = () => {
             <ControlRow label="Badges"><NumericStepper value={config.badgeSize} onChange={(v) => update("badgeSize", v)} min={8} max={14} /></ControlRow>
           </Section>
 
-          <Section title="Márgenes" icon={BoxSelect}>
+          <Section title="Espaciado por bloque" icon={BoxSelect}>
+            <ControlRow label="Tag row ↓"><NumericStepper value={config.spacingTagRow} onChange={(v) => update("spacingTagRow", v)} min={0} max={60} /></ControlRow>
+            <ControlRow label="Ubicación ↓"><NumericStepper value={config.spacingLocation} onChange={(v) => update("spacingLocation", v)} min={0} max={60} /></ControlRow>
+            <ControlRow label="Título ↓"><NumericStepper value={config.spacingTitle} onChange={(v) => update("spacingTitle", v)} min={0} max={60} /></ControlRow>
+            <ControlRow label="Descripción ↓"><NumericStepper value={config.spacingDescription} onChange={(v) => update("spacingDescription", v)} min={0} max={60} /></ControlRow>
+            <ControlRow label="Specs ↓"><NumericStepper value={config.spacingSpecs} onChange={(v) => update("spacingSpecs", v)} min={0} max={60} /></ControlRow>
+            <ControlRow label="Features ↓"><NumericStepper value={config.spacingFeatures} onChange={(v) => update("spacingFeatures", v)} min={0} max={60} /></ControlRow>
+            <ControlRow label="Precio ↑"><NumericStepper value={config.spacingPrice} onChange={(v) => update("spacingPrice", v)} min={0} max={60} /></ControlRow>
+          </Section>
+
+          <Section title="Márgenes generales" icon={BoxSelect}>
             <ControlRow label="Padding interno"><NumericStepper value={config.cardPadding} onChange={(v) => update("cardPadding", v)} min={0} max={40} /></ControlRow>
             <ControlRow label="Gap elementos"><NumericStepper value={config.cardGap} onChange={(v) => update("cardGap", v)} min={0} max={24} /></ControlRow>
           </Section>
