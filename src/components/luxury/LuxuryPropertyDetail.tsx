@@ -82,7 +82,7 @@ const LuxuryPropertyDetail = () => {
 
       {/* ─── GALLERY GRID ─── */}
       <section className="max-w-[1400px] mx-auto px-4 lg:px-10 pt-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-1.5 h-[280px] md:h-[420px] lg:h-[480px]">
+        <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-1.5 h-[280px] md:h-[420px] lg:h-[480px]">
           {/* Main image */}
           <div className="md:col-span-2 md:row-span-2 relative overflow-hidden cursor-pointer group" onClick={() => openLightbox(0)}>
             <img src={PROPERTY.images[0]} alt="Main" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
