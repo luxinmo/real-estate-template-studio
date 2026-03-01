@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, Save, Eye, X, Image as ImageIcon, Plus, Tag } from "lucide-react";
+import { ArrowLeft, Save, Eye, X, Image as ImageIcon, Plus, Tag, GripVertical, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,6 +7,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import RichTextEditor from "@/components/locations/shared/RichTextEditor";
 import { MOCK_BLOG_POSTS, BLOG_CATEGORIES, AVAILABLE_TAGS } from "./mock-data";
+
+interface FaqItem { question: string; answer: string; }
 
 interface Props {
   postId?: string | null;
@@ -28,7 +30,7 @@ const CmsBlogEditorPage = ({ postId, onBack }: Props) => {
   const [scheduledAt, setScheduledAt] = useState(existing?.scheduledAt ?? "");
   const [featuredImage, setFeaturedImage] = useState<string | null>(existing?.featuredImage ?? null);
   const [tagInput, setTagInput] = useState("");
-
+  const [faqItems, setFaqItems] = useState<FaqItem[]>(existing?.faq ?? [{ question: "", answer: "" }]);
   const handleTitleChange = (val: string) => {
     setTitle(val);
     if (!existing) setSlug(val.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""));
@@ -124,6 +126,45 @@ const CmsBlogEditorPage = ({ postId, onBack }: Props) => {
               ) : (
                 <RichTextEditor value={content} onChange={setContent} minHeight={400} placeholder="Escribe el contenido del artículo..." />
               )}
+            </div>
+
+            {/* FAQ Section */}
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <Label className="text-[12px] font-medium">Preguntas y Respuestas (FAQ)</Label>
+                <Button variant="outline" size="sm" className="h-7 text-[11px] gap-1" onClick={() => setFaqItems([...faqItems, { question: "", answer: "" }])}>
+                  <Plus className="h-3 w-3" /> Añadir pregunta
+                </Button>
+              </div>
+              <div className="space-y-3">
+                {faqItems.map((item, i) => (
+                  <div key={i} className="rounded-lg border border-border bg-card p-4 space-y-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-2 text-[11px] text-muted-foreground font-medium">
+                        <GripVertical className="h-3.5 w-3.5" />
+                        <span>Pregunta {i + 1}</span>
+                      </div>
+                      {faqItems.length > 1 && (
+                        <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => setFaqItems(faqItems.filter((_, idx) => idx !== i))}>
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      )}
+                    </div>
+                    <Input
+                      value={item.question}
+                      onChange={(e) => { const updated = [...faqItems]; updated[i] = { ...updated[i], question: e.target.value }; setFaqItems(updated); }}
+                      placeholder="Escribe la pregunta..."
+                      className="text-[13px] h-9"
+                    />
+                    <Textarea
+                      value={item.answer}
+                      onChange={(e) => { const updated = [...faqItems]; updated[i] = { ...updated[i], answer: e.target.value }; setFaqItems(updated); }}
+                      placeholder="Escribe la respuesta..."
+                      className="text-[12px] min-h-[80px]"
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 

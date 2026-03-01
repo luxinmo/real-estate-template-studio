@@ -28,6 +28,7 @@ export interface CmsBlogPost {
   tags: string[];
   category: string;
   readTime: number;
+  faq?: { question: string; answer: string }[];
 }
 
 export const MOCK_PAGES: CmsPage[] = [
