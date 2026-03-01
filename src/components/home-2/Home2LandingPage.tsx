@@ -172,7 +172,7 @@ const Home2LandingPage = () => {
           marginBottom: scrolled ? 0 : "-80px",
         }}
       >
-        <div className="max-w-[1440px] mx-auto flex items-center justify-between px-6 lg:px-12 h-[80px]">
+        <div className="max-w-[1440px] mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-12 h-[64px] sm:h-[80px]">
           <div className="hidden lg:flex items-center gap-8">
             {NAV_LINKS.slice(0, 3).map((l) => (
               <a key={l} href="#" className="text-[13px] tracking-[0.12em] font-light transition-colors duration-300 hover:opacity-60" style={{ color: scrolled ? palette.text : "#fff" }}>{l}</a>
@@ -215,7 +215,7 @@ const Home2LandingPage = () => {
       </nav>
 
       {/* ─── HERO ─── */}
-      <section className="relative h-[70vh] sm:h-[80vh] lg:h-[100vh] min-h-[500px] flex items-center justify-center overflow-hidden">
+      <section className="relative h-[60vh] sm:h-[80vh] lg:h-[100vh] min-h-[420px] flex items-center justify-center overflow-hidden">
         {HERO_SLIDES.map((slide, i) => (
           <div key={i} className="absolute inset-0 transition-opacity duration-[2s] ease-in-out" style={{ opacity: currentSlide === i ? 1 : 0 }}>
             <img src={slide.image} alt="" className="w-full h-full object-cover" style={{ transform: currentSlide === i ? "scale(1.04)" : "scale(1)", transition: "transform 8s ease-out" }} />
@@ -223,23 +223,23 @@ const Home2LandingPage = () => {
         ))}
         <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(26,23,20,0.6) 0%, rgba(26,23,20,0.15) 40%, rgba(26,23,20,0.25) 100%)" }} />
 
-        <div className="relative z-10 text-center px-6 max-w-4xl">
+        <div className="relative z-10 text-center px-5 sm:px-6 max-w-4xl">
           <FadeIn>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extralight leading-[1.2] mb-5" style={{ color: "#fff", fontFamily: font.heading, letterSpacing: "0.06em" }}>
+            <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extralight leading-[1.15] sm:leading-[1.2] mb-4 sm:mb-5" style={{ color: "#fff", fontFamily: font.heading, letterSpacing: "0.06em" }}>
               {HERO_SLIDES[currentSlide].headline}
             </h1>
           </FadeIn>
           <FadeIn delay={0.15}>
-            <p className="text-sm tracking-[0.25em] uppercase font-light mb-10" style={{ color: "rgba(255,255,255,0.55)" }}>
+            <p className="text-[11px] sm:text-sm tracking-[0.25em] uppercase font-light mb-7 sm:mb-10" style={{ color: "rgba(255,255,255,0.55)" }}>
               {HERO_SLIDES[currentSlide].sub}
             </p>
           </FadeIn>
           <FadeIn delay={0.3}>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="text-[13px] tracking-[0.2em] uppercase font-light px-10 py-4 transition-all duration-500 hover:bg-white hover:text-[#1A1714] min-w-[200px]" style={{ background: "transparent", color: "#fff", border: "1px solid rgba(255,255,255,0.4)" }}>
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 sm:px-0">
+              <button className="text-[12px] sm:text-[13px] tracking-[0.2em] uppercase font-light px-8 sm:px-10 py-3.5 sm:py-4 transition-all duration-500 hover:bg-white hover:text-[#1A1714]" style={{ background: "transparent", color: "#fff", border: "1px solid rgba(255,255,255,0.4)" }}>
                 All Properties
               </button>
-              <button className="text-[13px] tracking-[0.2em] uppercase font-light px-10 py-4 transition-all duration-500 hover:bg-white hover:text-[#1A1714] min-w-[200px]" style={{ background: "transparent", color: "#fff", border: "1px solid rgba(255,255,255,0.4)" }}>
+              <button className="text-[12px] sm:text-[13px] tracking-[0.2em] uppercase font-light px-8 sm:px-10 py-3.5 sm:py-4 transition-all duration-500 hover:bg-white hover:text-[#1A1714]" style={{ background: "transparent", color: "#fff", border: "1px solid rgba(255,255,255,0.4)" }}>
                 Sell With Us
               </button>
             </div>
@@ -254,8 +254,8 @@ const Home2LandingPage = () => {
       </section>
 
       {/* ─── INTRO ─── */}
-      <section className="py-20 md:py-32" style={{ background: palette.white }}>
-        <div className="max-w-5xl mx-auto px-6 lg:px-12">
+      <section className="py-14 sm:py-20 md:py-32" style={{ background: palette.white }}>
+        <div className="max-w-5xl mx-auto px-5 sm:px-6 lg:px-12">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-20 items-start">
             <FadeIn className="md:col-span-5">
               <p className="text-xs tracking-[0.3em] uppercase mb-4 font-normal" style={{ color: palette.accent }}>About Us</p>
@@ -280,14 +280,14 @@ const Home2LandingPage = () => {
       </section>
 
       {/* ─── STATS ─── */}
-      <section className="py-16 md:py-20" style={{ background: palette.bgAlt }}>
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-12">
+      <section className="py-12 sm:py-16 md:py-20" style={{ background: palette.bgAlt }}>
+        <div className="max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-12">
           <FadeIn>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-0">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-y-6 md:gap-y-0">
               {STATS.map((s, i) => (
-                <div key={i} className="text-center py-6 md:py-0" style={{ borderRight: i < 3 ? `1px solid ${palette.border}` : "none" }}>
-                  <p className="text-4xl md:text-5xl font-extralight" style={{ fontFamily: font.heading, color: palette.accent, letterSpacing: "0.04em" }}>{s.value}</p>
-                  <p className="text-xs tracking-[0.18em] uppercase mt-3 font-normal" style={{ color: palette.textLight }}>{s.label}</p>
+                <div key={i} className="text-center py-2 md:py-0" style={{ borderRight: (i === 0 || i === 2) ? `1px solid ${palette.border}` : (i === 1 ? "none" : "none") }}>
+                  <p className="text-3xl sm:text-4xl md:text-5xl font-extralight" style={{ fontFamily: font.heading, color: palette.accent, letterSpacing: "0.04em" }}>{s.value}</p>
+                  <p className="text-[10px] sm:text-xs tracking-[0.18em] uppercase mt-2 sm:mt-3 font-normal" style={{ color: palette.textLight }}>{s.label}</p>
                 </div>
               ))}
             </div>
@@ -296,15 +296,15 @@ const Home2LandingPage = () => {
       </section>
 
       {/* ─── DESTINATIONS — Browse by region ─── */}
-      <section className="py-20 md:py-28" style={{ background: palette.white }}>
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
+      <section className="py-14 sm:py-20 md:py-28" style={{ background: palette.white }}>
+        <div className="max-w-[1440px] mx-auto px-5 sm:px-6 lg:px-12">
           <FadeIn>
-            <div className="text-center mb-14">
+            <div className="text-center mb-10 sm:mb-14">
               <p className="text-xs tracking-[0.3em] uppercase mb-3 font-normal" style={{ color: palette.accent }}>Explore</p>
-              <h2 className="text-3xl md:text-4xl font-extralight" style={{ fontFamily: font.heading, letterSpacing: "0.04em" }}>Browse by Destination</h2>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-extralight" style={{ fontFamily: font.heading, letterSpacing: "0.04em" }}>Browse by Destination</h2>
             </div>
           </FadeIn>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
             {DESTINATIONS.map((d, i) => (
               <FadeIn key={i} delay={i * 0.06}>
                 <a href="#" className="group block relative overflow-hidden aspect-[3/4]">
@@ -325,13 +325,13 @@ const Home2LandingPage = () => {
       </section>
 
       {/* ─── FEATURED PROPERTIES ─── */}
-      <section className="py-20 md:py-28" style={{ background: palette.bg }}>
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
+      <section className="py-14 sm:py-20 md:py-28" style={{ background: palette.bg }}>
+        <div className="max-w-[1440px] mx-auto px-5 sm:px-6 lg:px-12">
           <FadeIn>
-            <div className="flex items-end justify-between mb-12 sm:mb-16">
+            <div className="flex items-end justify-between mb-10 sm:mb-16">
               <div>
                 <p className="text-xs tracking-[0.3em] uppercase mb-3 font-normal" style={{ color: palette.accent }}>Portfolio</p>
-                <h2 className="text-3xl md:text-4xl font-extralight" style={{ fontFamily: font.heading, letterSpacing: "0.04em" }}>Featured Properties</h2>
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-extralight" style={{ fontFamily: font.heading, letterSpacing: "0.04em" }}>Featured Properties</h2>
               </div>
               <a href="#" className="hidden sm:flex items-center gap-2 text-[13px] tracking-[0.12em] uppercase font-light transition-opacity hover:opacity-60" style={{ color: palette.accent }}>
                 View All <ArrowUpRight className="w-4 h-4" />
@@ -339,7 +339,7 @@ const Home2LandingPage = () => {
             </div>
           </FadeIn>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
             {PROPERTIES.map((p, i) => (
               <FadeIn key={i} delay={i * 0.12}>
                 <div className="group cursor-pointer">
@@ -373,31 +373,31 @@ const Home2LandingPage = () => {
       </section>
 
       {/* ═══ NEW DEVELOPMENTS ═══ */}
-      <section className="py-20 md:py-28" style={{ background: palette.newDevBg }}>
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
+      <section className="py-14 sm:py-20 md:py-28" style={{ background: palette.newDevBg }}>
+        <div className="max-w-[1440px] mx-auto px-5 sm:px-6 lg:px-12">
           <FadeIn>
-            <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-14 gap-6">
+            <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-10 sm:mb-14 gap-6">
               <div>
                 <p className="text-xs tracking-[0.3em] uppercase mb-3 font-normal" style={{ color: palette.accent }}>New Build</p>
-                <h2 className="text-3xl md:text-4xl font-extralight" style={{ fontFamily: font.heading, letterSpacing: "0.04em" }}>New Developments</h2>
-                <p className="text-[15px] font-light mt-4 max-w-lg" style={{ color: palette.textMuted }}>
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-extralight" style={{ fontFamily: font.heading, letterSpacing: "0.04em" }}>New Developments</h2>
+                <p className="text-[14px] sm:text-[15px] font-light mt-3 sm:mt-4 max-w-lg" style={{ color: palette.textMuted }}>
                   Discover the finest new-build projects across Spain's most sought-after locations — from beachfront apartments to hillside villas.
                 </p>
               </div>
               {/* Stats strip */}
-              <div className="flex items-center gap-6 md:gap-10 shrink-0">
+              <div className="flex items-center gap-5 sm:gap-6 md:gap-10 shrink-0">
                 {NEW_DEV_STATS.map((s, i) => (
                   <div key={i} className="text-center">
-                    <s.icon className="w-5 h-5 mx-auto mb-2" style={{ color: palette.accent }} strokeWidth={1.5} />
-                    <p className="text-2xl md:text-3xl font-extralight" style={{ fontFamily: font.heading, color: palette.accent }}>{s.value}</p>
-                    <p className="text-xs tracking-[0.1em] uppercase mt-1 font-normal" style={{ color: palette.textLight }}>{s.label}</p>
+                    <s.icon className="w-4 h-4 sm:w-5 sm:h-5 mx-auto mb-1.5 sm:mb-2" style={{ color: palette.accent }} strokeWidth={1.5} />
+                    <p className="text-xl sm:text-2xl md:text-3xl font-extralight" style={{ fontFamily: font.heading, color: palette.accent }}>{s.value}</p>
+                    <p className="text-[10px] sm:text-xs tracking-[0.1em] uppercase mt-1 font-normal" style={{ color: palette.textLight }}>{s.label}</p>
                   </div>
                 ))}
               </div>
             </div>
           </FadeIn>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
             {NEW_DEVELOPMENTS.map((d, i) => (
               <FadeIn key={i} delay={i * 0.1}>
                 <div className="group cursor-pointer" style={{ background: palette.white }}>
@@ -437,13 +437,13 @@ const Home2LandingPage = () => {
       </section>
 
       {/* ═══ CINEMATIC QUOTE BREAK ═══ */}
-      <section className="relative h-[50vh] md:h-[60vh] flex items-center justify-center overflow-hidden">
+      <section className="relative h-[45vh] sm:h-[50vh] md:h-[60vh] flex items-center justify-center overflow-hidden">
         <img src={prop2} alt="" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0" style={{ background: "rgba(26,23,20,0.55)" }} />
-        <div className="relative z-10 text-center px-6 max-w-3xl">
+        <div className="relative z-10 text-center px-5 sm:px-6 max-w-3xl">
           <FadeIn>
             <Quote className="w-8 h-8 mx-auto mb-6" style={{ color: "rgba(255,255,255,0.2)" }} strokeWidth={1} />
-            <p className="text-xl sm:text-2xl md:text-3xl font-extralight leading-[1.5] italic" style={{ color: "#fff", fontFamily: font.heading, letterSpacing: "0.03em" }}>
+            <p className="text-lg sm:text-2xl md:text-3xl font-extralight leading-[1.4] sm:leading-[1.5] italic" style={{ color: "#fff", fontFamily: font.heading, letterSpacing: "0.03em" }}>
               "{TESTIMONIALS[activeTestimonial].quote}"
             </p>
             <div className="mt-6 flex flex-col items-center gap-1">
@@ -460,8 +460,8 @@ const Home2LandingPage = () => {
       </section>
 
       {/* ═══ OFF-MARKET COLLECTION ═══ */}
-      <section className="py-20 md:py-28" style={{ background: palette.offMarketBg }}>
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
+      <section className="py-14 sm:py-20 md:py-28" style={{ background: palette.offMarketBg }}>
+        <div className="max-w-[1440px] mx-auto px-5 sm:px-6 lg:px-12">
           <FadeIn>
             <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-14 gap-6">
               <div>
@@ -469,7 +469,7 @@ const Home2LandingPage = () => {
                   <div className="w-5 h-[1px]" style={{ background: palette.offMarketAccent }} />
                   <p className="text-xs tracking-[0.3em] uppercase font-normal" style={{ color: palette.offMarketAccent }}>Private & Confidential</p>
                 </div>
-                <h2 className="text-3xl md:text-4xl lg:text-5xl font-extralight leading-[1.1]" style={{ fontFamily: font.heading, color: "#fff", letterSpacing: "0.06em" }}>
+                <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extralight leading-[1.1]" style={{ fontFamily: font.heading, color: "#fff", letterSpacing: "0.06em" }}>
                   Off-Market<br />Collection
                 </h2>
                 <p className="text-[15px] leading-[1.9] font-light mt-5 max-w-lg" style={{ color: "rgba(255,255,255,0.5)" }}>
@@ -483,9 +483,9 @@ const Home2LandingPage = () => {
             </div>
           </FadeIn>
 
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-5 lg:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-4 sm:gap-5 lg:gap-6">
             {OFF_MARKET.map((p, i) => (
-              <FadeIn key={i} delay={i * 0.08} className="md:col-span-6">
+              <FadeIn key={i} delay={i * 0.08} className="sm:col-span-1 md:col-span-6">
                 <div className="group cursor-pointer">
                   <div className="relative overflow-hidden" style={{ aspectRatio: "16/10" }}>
                     <img src={p.image} alt={p.name} className="w-full h-full object-cover transition-transform duration-[1.2s] group-hover:scale-[1.05]" />
@@ -531,19 +531,19 @@ const Home2LandingPage = () => {
       </section>
 
       {/* ─── SERVICES ─── */}
-      <section className="py-20 md:py-28" style={{ background: palette.white }}>
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-12">
+      <section className="py-14 sm:py-20 md:py-28" style={{ background: palette.white }}>
+        <div className="max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-12">
           <FadeIn>
-            <div className="text-center mb-14">
+            <div className="text-center mb-10 sm:mb-14">
               <p className="text-xs tracking-[0.3em] uppercase mb-3 font-normal" style={{ color: palette.accent }}>Why Choose Us</p>
-              <h2 className="text-3xl md:text-4xl font-extralight" style={{ fontFamily: font.heading, letterSpacing: "0.04em" }}>A Standard Apart</h2>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-extralight" style={{ fontFamily: font.heading, letterSpacing: "0.04em" }}>A Standard Apart</h2>
             </div>
           </FadeIn>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0">
             {SERVICES.map((s, i) => (
               <FadeIn key={i} delay={i * 0.08}>
-                <div className="p-8 group transition-all duration-500 text-center" style={{ borderRight: i < 3 ? `1px solid ${palette.border}` : "none" }}>
+                <div className="p-6 sm:p-8 group transition-all duration-500 text-center lg:border-r last:border-r-0" style={{ borderColor: `${palette.border}` }}>
                   <div className="w-12 h-12 mx-auto rounded-full flex items-center justify-center mb-5 transition-colors duration-500 group-hover:bg-[#8B6F4710]" style={{ border: `1px solid ${palette.border}` }}>
                     <s.icon className="w-5 h-5" style={{ color: palette.accent }} strokeWidth={1.5} />
                   </div>
@@ -558,13 +558,13 @@ const Home2LandingPage = () => {
       </section>
 
       {/* ─── JOURNAL ─── */}
-      <section className="py-20 md:py-28" style={{ background: palette.bg }}>
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
+      <section className="py-14 sm:py-20 md:py-28" style={{ background: palette.bg }}>
+        <div className="max-w-[1440px] mx-auto px-5 sm:px-6 lg:px-12">
           <FadeIn>
-            <div className="flex items-end justify-between mb-12 sm:mb-16">
+            <div className="flex items-end justify-between mb-10 sm:mb-16">
               <div>
                 <p className="text-xs tracking-[0.3em] uppercase mb-3 font-normal" style={{ color: palette.accent }}>Insights</p>
-                <h2 className="text-3xl md:text-4xl font-extralight" style={{ fontFamily: font.heading, letterSpacing: "0.04em" }}>The Journal</h2>
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-extralight" style={{ fontFamily: font.heading, letterSpacing: "0.04em" }}>The Journal</h2>
               </div>
               <a href="#" className="hidden sm:flex items-center gap-2 text-[13px] tracking-[0.12em] uppercase font-light transition-opacity hover:opacity-60" style={{ color: palette.accent }}>
                 All Articles <ArrowUpRight className="w-4 h-4" />
@@ -606,8 +606,8 @@ const Home2LandingPage = () => {
       </section>
 
       {/* ─── NEWSLETTER ─── */}
-      <section className="py-20 md:py-28" style={{ background: palette.bgAlt }}>
-        <div className="max-w-xl mx-auto px-6 text-center">
+      <section className="py-14 sm:py-20 md:py-28" style={{ background: palette.bgAlt }}>
+        <div className="max-w-xl mx-auto px-5 sm:px-6 text-center">
           <FadeIn>
             <p className="text-xs tracking-[0.3em] uppercase mb-4 font-normal" style={{ color: palette.accent }}>Stay Informed</p>
             <h2 className="text-2xl md:text-3xl font-extralight mb-3" style={{ fontFamily: font.heading, letterSpacing: "0.04em" }}>The Private List</h2>
@@ -632,8 +632,8 @@ const Home2LandingPage = () => {
 
       {/* ─── FOOTER ─── */}
       <footer style={{ background: palette.footerBg }}>
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-12 py-16 md:py-24">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-8">
+        <div className="max-w-[1440px] mx-auto px-5 sm:px-6 lg:px-12 py-12 sm:py-16 md:py-24">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-8">
             <div>
               <span className="text-xl tracking-[0.4em] font-light block mb-1" style={{ fontFamily: font.brand, color: "#fff" }}>{BRAND}</span>
               <span className="text-[9px] tracking-[0.4em] uppercase font-light block mb-5" style={{ color: "rgba(255,255,255,0.35)" }}>{BRAND_SUB}</span>
