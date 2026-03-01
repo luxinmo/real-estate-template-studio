@@ -30,9 +30,9 @@ const OFF_MARKET = [
 ];
 
 const NEW_DEVELOPMENTS = [
-  { image: prop1, name: "Marea Residences", location: "Estepona, Málaga", priceFrom: "From €485,000", units: 64, completion: "Q2 2027" },
-  { image: prop2, name: "The View Marbella", location: "Benahavís", priceFrom: "From €1,200,000", units: 24, completion: "Q4 2026" },
-  { image: prop3, name: "One Green Way", location: "San Roque, Cádiz", priceFrom: "From €890,000", units: 42, completion: "Q1 2028" },
+  { image: prop1, name: "Marea Residences", location: "Estepona, Málaga", priceFrom: "€485,000", priceTo: "€1,250,000", totalUnits: 64, available: 18, sold: 46, completion: "Q2 2027", typologies: ["1 Bed", "2 Bed", "3 Bed", "Penthouse"], developer: "Sierra Blanca Estates" },
+  { image: prop2, name: "The View Marbella", location: "Benahavís", priceFrom: "€1,200,000", priceTo: "€3,800,000", totalUnits: 24, available: 7, sold: 17, completion: "Q4 2026", typologies: ["2 Bed", "3 Bed", "4 Bed Duplex"], developer: "Karl Lagerfeld Villas" },
+  { image: prop3, name: "One Green Way", location: "San Roque, Cádiz", priceFrom: "€890,000", priceTo: "€2,100,000", totalUnits: 42, available: 29, sold: 13, completion: "Q1 2028", typologies: ["2 Bed", "3 Bed", "Townhouse"], developer: "Neinor Homes" },
 ];
 
 const NEW_DEV_STATS = [
@@ -398,32 +398,68 @@ const Home2LandingPage = () => {
           </FadeIn>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-            {NEW_DEVELOPMENTS.map((d, i) => (
-              <FadeIn key={i} delay={i * 0.1}>
-                <div className="group cursor-pointer" style={{ background: palette.white }}>
-                  <div className="relative overflow-hidden aspect-[16/10]">
-                    <img src={d.image} alt={d.name} className="w-full h-full object-cover transition-transform duration-[1.2s] group-hover:scale-[1.05]" />
-                    <div className="absolute top-4 left-4 px-3 py-1.5" style={{ background: palette.accent }}>
-                      <span className="text-xs tracking-[0.15em] uppercase font-light text-white">New Build</span>
+            {NEW_DEVELOPMENTS.map((d, i) => {
+              const soldPct = Math.round((d.sold / d.totalUnits) * 100);
+              return (
+                <FadeIn key={i} delay={i * 0.1}>
+                  <div className="group cursor-pointer overflow-hidden" style={{ background: palette.white }}>
+                    {/* Image */}
+                    <div className="relative overflow-hidden aspect-[16/10]">
+                      <img src={d.image} alt={d.name} className="w-full h-full object-cover transition-transform duration-[1.2s] group-hover:scale-[1.05]" />
+                      <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 50%)" }} />
+                      {/* Badges */}
+                      <div className="absolute top-4 left-4 flex items-center gap-2">
+                        <span className="px-3 py-1.5 text-[10px] tracking-[0.18em] uppercase font-normal text-white" style={{ background: palette.accent }}>{d.completion}</span>
+                        {d.available <= 10 && (
+                          <span className="px-3 py-1.5 text-[10px] tracking-[0.18em] uppercase font-normal text-white" style={{ background: "#C0392B" }}>Last Units</span>
+                        )}
+                      </div>
+                      {/* Bottom overlay info */}
+                      <div className="absolute bottom-0 left-0 right-0 p-5">
+                        <p className="text-[11px] tracking-[0.12em] uppercase font-light mb-1" style={{ color: "rgba(255,255,255,0.6)" }}>{d.developer}</p>
+                        <h3 className="text-xl font-light tracking-wide text-white" style={{ fontFamily: font.heading }}>{d.name}</h3>
+                      </div>
                     </div>
-                    <div className="absolute top-4 right-4 px-3 py-1.5" style={{ background: "rgba(255,255,255,0.9)", backdropFilter: "blur(8px)" }}>
-                      <span className="text-xs font-light" style={{ color: palette.text }}>{d.completion}</span>
+
+                    {/* Content */}
+                    <div className="p-5 space-y-4">
+                      {/* Location */}
+                      <div className="flex items-center gap-1.5">
+                        <MapPin className="w-3.5 h-3.5" style={{ color: palette.textLight }} />
+                        <p className="text-[11px] tracking-[0.12em] uppercase font-light" style={{ color: palette.textLight }}>{d.location}</p>
+                      </div>
+
+                      {/* Price range */}
+                      <div>
+                        <p className="text-[10px] tracking-[0.15em] uppercase font-normal mb-1" style={{ color: palette.textMuted }}>Price Range</p>
+                        <p className="text-lg font-light" style={{ fontFamily: font.heading, color: palette.text }}>
+                          {d.priceFrom} <span className="text-sm font-light mx-1" style={{ color: palette.textLight }}>—</span> {d.priceTo}
+                        </p>
+                      </div>
+
+                      {/* Typologies */}
+                      <div className="flex flex-wrap gap-1.5">
+                        {d.typologies.map(t => (
+                          <span key={t} className="px-2.5 py-1 text-[10px] tracking-[0.1em] uppercase font-normal" style={{ background: palette.bg, color: palette.textMuted, border: `1px solid ${palette.border}` }}>{t}</span>
+                        ))}
+                      </div>
+
+                      {/* Availability bar */}
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <p className="text-[10px] tracking-[0.15em] uppercase font-normal" style={{ color: palette.textMuted }}>Availability</p>
+                          <p className="text-[11px] font-normal" style={{ color: palette.accent }}>{d.available} of {d.totalUnits} available</p>
+                        </div>
+                        <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ background: palette.border }}>
+                          <div className="h-full rounded-full transition-all duration-700" style={{ width: `${soldPct}%`, background: soldPct > 70 ? "#C0392B" : palette.accent }} />
+                        </div>
+                        <p className="text-[10px] font-light mt-1.5 text-right" style={{ color: palette.textLight }}>{soldPct}% sold</p>
+                      </div>
                     </div>
                   </div>
-                  <div className="p-5 space-y-2">
-                    <div className="flex items-center gap-1.5">
-                      <MapPin className="w-3.5 h-3.5" style={{ color: palette.textLight }} />
-                      <p className="text-xs tracking-[0.1em] uppercase font-light" style={{ color: palette.textLight }}>{d.location}</p>
-                    </div>
-                    <h3 className="text-lg font-light tracking-wide" style={{ fontFamily: font.heading }}>{d.name}</h3>
-                    <div className="flex items-center justify-between pt-1">
-                      <p className="text-base font-normal" style={{ color: palette.accent }}>{d.priceFrom}</p>
-                      <span className="text-sm font-light" style={{ color: palette.textMuted }}>{d.units} units</span>
-                    </div>
-                  </div>
-                </div>
-              </FadeIn>
-            ))}
+                </FadeIn>
+              );
+            })}
           </div>
 
           <FadeIn delay={0.3}>
