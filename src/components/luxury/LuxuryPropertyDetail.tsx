@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Bed, Bath, Maximize, MapPin, Heart, Share2, ChevronLeft, ChevronRight, X, Check, Car, Waves, Trees, Fence, Wind, Sun, Wifi, ShieldCheck, Phone, Mail, ArrowRight, ArrowLeft, ChevronDown, Play, View } from "lucide-react";
 import LuxuryPhoneInput from "./LuxuryPhoneInput";
 import LuxuryMortgageCalculator from "./LuxuryMortgageCalculator";
-import LuxuryPurchaseTaxCalculator from "./LuxuryPurchaseTaxCalculator";
+// import LuxuryPurchaseTaxCalculator from "./LuxuryPurchaseTaxCalculator";
 import LuxuryNearbyPlaces from "./LuxuryNearbyPlaces";
 import heroImg from "@/assets/luxury-hero.jpg";
 import prop1 from "@/assets/luxury-property-1.jpg";
@@ -222,8 +222,8 @@ const LuxuryPropertyDetail = () => {
             {/* Mortgage Calculator */}
             <LuxuryMortgageCalculator />
 
-            {/* Purchase Tax Calculator */}
-            <LuxuryPurchaseTaxCalculator />
+            {/* Purchase Tax Calculator - temporarily hidden */}
+            {/* <LuxuryPurchaseTaxCalculator /> */}
           </div>
 
           {/* Right: Advisor sticky sidebar */}
