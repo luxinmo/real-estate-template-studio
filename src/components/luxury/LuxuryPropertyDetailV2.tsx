@@ -5,7 +5,7 @@ import {
   Clock, Shield, Sparkles, ChevronDown,
 } from "lucide-react";
 import LuxuryPhoneInput from "./LuxuryPhoneInput";
-import LuxuryMortgageCalculator from "./LuxuryMortgageCalculator";
+import LuxuryMortgageCalculatorV2 from "./LuxuryMortgageCalculatorV2";
 import LuxuryNearbyPlaces from "./LuxuryNearbyPlaces";
 import heroImg from "@/assets/luxury-hero.jpg";
 import prop1 from "@/assets/luxury-property-1.jpg";
@@ -80,25 +80,28 @@ const LuxuryPropertyDetailV2 = () => {
   return (
     <div className="flex-1 overflow-auto bg-[#FAFAF9] font-sans text-luxury-black">
 
-      {/* ─── NAV ─── */}
-      <nav className="sticky top-0 z-50 bg-[#FAFAF9]/80 backdrop-blur-md border-b border-luxury-black/5">
-        <div className="max-w-[1400px] mx-auto flex items-center justify-between px-6 lg:px-10 h-[52px]">
-          <a href="/" className="text-[14px] tracking-[0.4em] text-luxury-black/80 font-extralight uppercase">{BRAND}</a>
-          <div className="hidden md:flex items-center gap-8">
-            {["Properties", "Rentals", "About", "Contact"].map((l) => (
-              <a key={l} href="#" className="text-[12px] tracking-[0.2em] uppercase text-luxury-black/50 hover:text-luxury-black transition-colors duration-300 font-light">{l}</a>
-            ))}
-          </div>
-          <button className="md:hidden text-luxury-black/50">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M4 6h16M4 12h16M4 18h16" /></svg>
-          </button>
-        </div>
-      </nav>
-
       {/* ─── IMMERSIVE HERO ─── */}
       <section className="relative h-[55vh] md:h-[65vh] overflow-hidden cursor-pointer" onClick={() => openLightbox(0)}>
         <img src={PROPERTY.images[0]} alt="Property hero" className="w-full h-full object-cover" />
+        {/* Top gradient — ensures nav readability even on white/cloudy skies */}
+        <div className="absolute inset-x-0 top-0 h-[140px] bg-gradient-to-b from-luxury-black/60 via-luxury-black/25 to-transparent pointer-events-none" />
+        {/* Bottom gradient for text */}
         <div className="absolute inset-0 bg-gradient-to-t from-luxury-black/70 via-luxury-black/20 to-transparent" />
+
+        {/* ─── NAV (over image) ─── */}
+        <nav className="absolute top-0 inset-x-0 z-50">
+          <div className="max-w-[1400px] mx-auto flex items-center justify-between px-6 lg:px-10 h-[56px]">
+            <a href="/" className="text-[14px] tracking-[0.4em] text-white/90 font-extralight uppercase">{BRAND}</a>
+            <div className="hidden md:flex items-center gap-8">
+              {["Properties", "Rentals", "About", "Contact"].map((l) => (
+                <a key={l} href="#" className="text-[12px] tracking-[0.2em] uppercase text-white/65 hover:text-white transition-colors duration-300 font-light">{l}</a>
+              ))}
+            </div>
+            <button className="md:hidden text-white/70">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M4 6h16M4 12h16M4 18h16" /></svg>
+            </button>
+          </div>
+        </nav>
 
         {/* Hero overlay content */}
         <div className="absolute bottom-0 left-0 right-0 px-6 lg:px-10 pb-8 max-w-[1400px] mx-auto">
@@ -254,7 +257,7 @@ const LuxuryPropertyDetailV2 = () => {
 
             {/* Nearby & Mortgage */}
             <LuxuryNearbyPlaces />
-            <LuxuryMortgageCalculator />
+            <LuxuryMortgageCalculatorV2 />
           </div>
 
           {/* Sidebar */}
