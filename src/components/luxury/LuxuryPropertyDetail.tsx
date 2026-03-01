@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Bed, Bath, Maximize, MapPin, Heart, Share2, ChevronLeft, ChevronRight, X, Check, Car, Waves, Trees, Fence, Wind, Sun, Wifi, ShieldCheck, Phone, Mail, ArrowRight, ArrowLeft, ChevronDown, Play, View } from "lucide-react";
+import { Bed, Bath, Maximize, MapPin, Heart, Share2, ChevronLeft, ChevronRight, X, Check, Car, Waves, Trees, Fence, Wind, Sun, Wifi, ShieldCheck, Phone, Mail, ArrowRight, ArrowLeft, ChevronDown, Play, View, FileDown } from "lucide-react";
 import LuxuryPhoneInput from "./LuxuryPhoneInput";
 import LuxuryMortgageCalculator from "./LuxuryMortgageCalculator";
 // import LuxuryPurchaseTaxCalculator from "./LuxuryPurchaseTaxCalculator";
@@ -143,7 +143,7 @@ const LuxuryPropertyDetail = () => {
       {/* ─── HEADER INFO ─── */}
       <section className="max-w-[1400px] mx-auto px-6 lg:px-10 pt-7 pb-5">
         {/* Title first for editorial hierarchy */}
-        <h1 className="text-[22px] md:text-[26px] font-light text-luxury-black leading-snug tracking-[0.01em] mb-2">{PROPERTY.title}</h1>
+        <h1 className="text-[22px] md:text-[26px] font-light text-luxury-black leading-snug tracking-[0.04em] mb-2 uppercase">{PROPERTY.title}</h1>
         
         <div className="flex items-center gap-3 mb-5">
           <span className="text-[12px] tracking-[0.15em] uppercase text-luxury-black/60 font-light">Ref: {PROPERTY.ref}</span>
@@ -154,15 +154,18 @@ const LuxuryPropertyDetail = () => {
         <div className="flex items-start justify-between gap-4 mb-5">
           <div className="flex items-baseline gap-2.5 flex-wrap">
             <p className="text-[32px] md:text-[38px] font-extralight text-luxury-black tracking-tight">{PROPERTY.price}</p>
-            <span className="text-[16px] text-luxury-black/45 line-through font-light">{PROPERTY.originalPrice}</span>
+            <span className="text-[16px] text-luxury-black/60 line-through font-light">{PROPERTY.originalPrice}</span>
             <span className="text-[12px] font-medium text-red-600/80 bg-red-50 px-2 py-0.5 tracking-wide">-{PROPERTY.discount}%</span>
           </div>
           <div className="flex gap-2">
-            <button onClick={() => setLiked(!liked)} className={`w-9 h-9 border flex items-center justify-center transition-all duration-300 ${liked ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-300 text-luxury-black/35 hover:border-luxury-black/40"}`}>
+            <button onClick={() => setLiked(!liked)} className={`w-9 h-9 border flex items-center justify-center transition-all duration-300 ${liked ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-300 text-luxury-black/60 hover:border-luxury-black/40"}`}>
               <Heart className="w-4 h-4" fill={liked ? "currentColor" : "none"} />
             </button>
-            <button className="w-9 h-9 border border-neutral-300 text-luxury-black/35 hover:border-luxury-black/40 flex items-center justify-center transition-all duration-300">
+            <button className="w-9 h-9 border border-neutral-300 text-luxury-black/60 hover:border-luxury-black/40 flex items-center justify-center transition-all duration-300">
               <Share2 className="w-4 h-4" />
+            </button>
+            <button className="w-9 h-9 border border-neutral-300 text-luxury-black/60 hover:border-luxury-black/40 flex items-center justify-center transition-all duration-300" title="Download PDF">
+              <FileDown className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -179,7 +182,7 @@ const LuxuryPropertyDetail = () => {
             <div key={i} className="flex items-center gap-2 text-[14px] text-luxury-black/85">
               <s.icon className="w-4 h-4 text-luxury-black/50" strokeWidth={1.3} />
               <span className="font-normal">{s.value}</span>
-              <span className="text-luxury-black/55 text-[13px] font-light">{s.label}</span>
+              <span className="text-luxury-black/70 text-[13px] font-light">{s.label}</span>
             </div>
           ))}
         </div>
@@ -193,7 +196,7 @@ const LuxuryPropertyDetail = () => {
             {/* Description */}
             <div className="pt-6 border-t border-neutral-100">
               <p className="text-[12px] tracking-[0.25em] uppercase text-luxury-black/60 font-light mb-4">Description</p>
-              <div className="text-[15px] leading-[1.85] text-luxury-black/80 font-light whitespace-pre-line">
+              <div className="text-[15px] leading-[1.85] text-luxury-black/90 font-light whitespace-pre-line">
                 {PROPERTY.description}
               </div>
             </div>
@@ -203,7 +206,7 @@ const LuxuryPropertyDetail = () => {
               <p className="text-[12px] tracking-[0.25em] uppercase text-luxury-black/60 font-light mb-4">Features & Amenities</p>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-5 gap-y-3">
                 {PROPERTY.features.map((f, i) => (
-                  <div key={i} className="flex items-center gap-2 text-[14px] text-luxury-black/80 font-light">
+                  <div key={i} className="flex items-center gap-2 text-[14px] text-luxury-black/90 font-light">
                     <Check className="w-3.5 h-3.5 text-luxury-black/50" strokeWidth={1.5} />
                     {f}
                   </div>
@@ -214,7 +217,7 @@ const LuxuryPropertyDetail = () => {
             {/* Map */}
             <div className="pt-6 border-t border-neutral-100">
               <p className="text-[12px] tracking-[0.25em] uppercase text-luxury-black/60 font-light mb-3">Location</p>
-              <p className="text-[14px] text-luxury-black/65 font-light mb-4">{PROPERTY.breadcrumb.join(" · ")}</p>
+              <p className="text-[14px] text-luxury-black/80 font-light mb-4">{PROPERTY.breadcrumb.join(" · ")}</p>
               <div className="bg-neutral-50 h-[240px] flex items-center justify-center text-luxury-black/35 text-[14px] font-light">
                 <MapPin className="w-5 h-5 mr-1.5" /> Interactive Map
               </div>
@@ -288,16 +291,32 @@ const LuxuryPropertyDetail = () => {
         </div>
       </section>
 
+      {/* ─── RECENTLY VIEWED ─── */}
+      <section className="max-w-[1400px] mx-auto px-6 lg:px-10 py-6 border-t border-neutral-100">
+        <p className="text-[14px] font-normal text-luxury-black mb-4">Visto recientemente</p>
+        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
+          {[...SIMILAR, ...SIMILAR].slice(0, 5).map((p, i) => (
+            <a key={i} href="#" className="shrink-0 w-[160px] group">
+              <div className="relative overflow-hidden aspect-[4/3] mb-1.5">
+                <img src={p.image} alt={p.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
+              </div>
+              <p className="text-[13px] text-luxury-black/90 font-light leading-snug line-clamp-2">{p.name}</p>
+              <p className="text-[13px] font-normal text-luxury-black mt-0.5">{p.price}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+
       {/* ─── NEWSLETTER ─── */}
       <section className="py-12 bg-neutral-50/50">
         <div className="max-w-lg mx-auto px-6 text-center">
           <p className="text-[12px] tracking-[0.35em] uppercase text-luxury-black/60 mb-3 font-light">Stay Informed</p>
           <h2 className="text-[24px] font-extralight text-luxury-black tracking-[0.02em]">The Private List</h2>
-          <p className="text-[14px] text-luxury-black/65 font-light mt-3 mb-7 leading-relaxed">
+          <p className="text-[14px] text-luxury-black/80 font-light mt-3 mb-7 leading-relaxed">
             Receive exclusive off-market listings and invitations to private viewings — delivered discreetly to your inbox.
           </p>
           <form className="flex flex-col sm:flex-row gap-2.5" onSubmit={(e) => e.preventDefault()}>
-            <input type="email" placeholder="Your email address" className="flex-1 border border-neutral-200 bg-white px-4 py-3 text-[14px] text-luxury-black placeholder:text-luxury-black/25 focus:outline-none focus:border-luxury-black/30 transition-colors duration-300" />
+            <input type="email" placeholder="Your email address" className="flex-1 border border-neutral-200 bg-white px-4 py-3 text-[14px] text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/30 transition-colors duration-300" />
             <button type="submit" className="bg-luxury-black text-white text-[12px] tracking-[0.18em] uppercase px-7 py-3 hover:bg-luxury-black/85 transition-all duration-300 font-light whitespace-nowrap">Subscribe</button>
           </form>
         </div>
