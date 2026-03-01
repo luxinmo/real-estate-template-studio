@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { format } from "date-fns";
 import {
   Bed, Bath, Maximize, MapPin, Heart, Share2, ChevronLeft, ChevronRight,
   X, Check, Car, Fence, Phone, Mail, ArrowLeft, Play, View, FileDown,
-  Clock, Shield, Sparkles, ChevronDown,
+  Clock, Shield, Sparkles, ChevronDown, CalendarDays,
 } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
 import LuxuryPhoneInput from "./LuxuryPhoneInput";
 import LuxuryMortgageCalculatorV3 from "./LuxuryMortgageCalculatorV3";
 import LuxuryNearbyPlaces from "./LuxuryNearbyPlaces";
@@ -71,6 +75,9 @@ const LuxuryPropertyDetailV2 = () => {
   const [lightbox, setLightbox] = useState<number | null>(null);
   const [liked, setLiked] = useState(false);
   const [expandDesc, setExpandDesc] = useState(false);
+  const [wantVisit, setWantVisit] = useState(false);
+  const [visitDate, setVisitDate] = useState<Date | undefined>();
+  const [visitTime, setVisitTime] = useState("");
 
   const openLightbox = (i: number) => setLightbox(i);
   const closeLightbox = () => setLightbox(null);
@@ -262,7 +269,7 @@ const LuxuryPropertyDetailV2 = () => {
 
           {/* Sidebar */}
           <div className="w-full lg:w-[360px] shrink-0">
-            <div className="lg:sticky lg:top-[68px] space-y-5">
+            <div className="lg:sticky lg:top-[16px] space-y-5">
 
               {/* Advisor card */}
               <div className="bg-white p-7 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.06)]">
@@ -275,6 +282,64 @@ const LuxuryPropertyDetailV2 = () => {
                   <input type="email" placeholder="Email address" className="w-full bg-neutral-50 border-0 px-4 py-3 text-[14px] text-luxury-black placeholder:text-luxury-black/55 focus:outline-none focus:ring-1 focus:ring-luxury-gold/40 transition-all" />
                   <LuxuryPhoneInput />
                   <textarea placeholder="I'm interested in this property..." rows={3} className="w-full bg-neutral-50 border-0 px-4 py-3 text-[14px] text-luxury-black placeholder:text-luxury-black/55 focus:outline-none focus:ring-1 focus:ring-luxury-gold/40 transition-all resize-none" />
+
+                  {/* Request visit toggle */}
+                  <label className="flex items-center gap-2 cursor-pointer select-none py-1">
+                    <input
+                      type="checkbox"
+                      checked={wantVisit}
+                      onChange={(e) => setWantVisit(e.target.checked)}
+                      className="accent-luxury-gold"
+                    />
+                    <span className="text-[13px] text-luxury-black/80 font-medium flex items-center gap-1.5">
+                      <CalendarDays className="w-3.5 h-3.5 text-luxury-gold/80" />
+                      I'd like to schedule a visit
+                    </span>
+                  </label>
+
+                  {/* Visit date & time — shown when checked */}
+                  {wantVisit && (
+                    <div className="space-y-2 bg-neutral-50 p-3 rounded-sm">
+                      <p className="text-[12px] tracking-[0.1em] uppercase text-luxury-black/55 font-medium mb-1">Preferred Date & Time</p>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <button
+                            type="button"
+                            className={cn(
+                              "w-full flex items-center gap-2 bg-white border border-luxury-black/10 px-4 py-2.5 text-[14px] text-left transition-all hover:border-luxury-gold/40",
+                              !visitDate && "text-luxury-black/45"
+                            )}
+                          >
+                            <CalendarDays className="w-4 h-4 text-luxury-gold/70 shrink-0" />
+                            {visitDate ? format(visitDate, "PPP") : "Select a date"}
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={visitDate}
+                            onSelect={setVisitDate}
+                            disabled={(date) => date < new Date()}
+                            initialFocus
+                            className={cn("p-3 pointer-events-auto")}
+                          />
+                        </PopoverContent>
+                      </Popover>
+
+                      <select
+                        value={visitTime}
+                        onChange={(e) => setVisitTime(e.target.value)}
+                        className="w-full bg-white border border-luxury-black/10 px-4 py-2.5 text-[14px] text-luxury-black appearance-none cursor-pointer focus:outline-none focus:border-luxury-gold/40 transition-all"
+                      >
+                        <option value="" disabled>Select a time</option>
+                        {["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30",
+                          "13:00", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00"].map((t) => (
+                          <option key={t} value={t}>{t}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+
                   <label className="flex items-start gap-2 cursor-pointer">
                     <input type="checkbox" className="mt-1 accent-luxury-gold" />
                     <span className="text-[12px] text-luxury-black/80 font-normal leading-relaxed">
@@ -282,7 +347,7 @@ const LuxuryPropertyDetailV2 = () => {
                     </span>
                   </label>
                   <button type="submit" className="flex items-center justify-center gap-2 bg-luxury-black text-white text-[12px] tracking-[0.18em] uppercase py-3.5 w-full hover:bg-luxury-charcoal transition-all duration-300 font-medium">
-                    <Mail className="w-4 h-4" /> Send Enquiry
+                    <Mail className="w-4 h-4" /> {wantVisit ? "Request Visit" : "Send Enquiry"}
                   </button>
                 </form>
 
