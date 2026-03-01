@@ -77,29 +77,29 @@ const LuxuryPropertyDetail = () => {
 
       {/* ─── NAV ─── */}
       <nav className="sticky top-0 z-50 bg-luxury-black">
-        <div className="max-w-[1400px] mx-auto flex items-center justify-between px-6 lg:px-10 h-[64px]">
-          <a href="/" className="font-serif text-2xl tracking-[0.25em] text-white font-light">{BRAND_NAME}</a>
-          <div className="hidden md:flex items-center gap-8">
+        <div className="max-w-[1400px] mx-auto flex items-center justify-between px-6 lg:px-10 h-[56px]">
+          <a href="/" className="text-[15px] tracking-[0.35em] text-white/90 font-light uppercase">{BRAND_NAME}</a>
+          <div className="hidden md:flex items-center gap-7">
             {["Properties", "Rentals", "About", "Contact"].map((l) => (
-              <a key={l} href="#" className="text-base tracking-[0.18em] uppercase text-white/60 hover:text-white transition-colors duration-300">{l}</a>
+              <a key={l} href="#" className="text-[13px] tracking-[0.18em] uppercase text-white/50 hover:text-white transition-colors duration-300 font-light">{l}</a>
             ))}
           </div>
-          <button className="md:hidden text-white/70">
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" /></svg>
+          <button className="md:hidden text-white/60">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" /></svg>
           </button>
         </div>
       </nav>
 
       {/* ─── BREADCRUMB BAR ─── */}
-      <div className="max-w-[1400px] mx-auto px-4 lg:px-10 pt-5 pb-3 flex items-center justify-between">
-        <a href="#" className="flex items-center gap-2 text-base text-luxury-black/60 hover:text-luxury-black transition-colors font-light">
-          <ArrowLeft className="w-4.5 h-4.5" /> Back to listings
+      <div className="max-w-[1400px] mx-auto px-4 lg:px-10 pt-4 pb-2.5 flex items-center justify-between">
+        <a href="#" className="flex items-center gap-1.5 text-[13px] text-luxury-black/50 hover:text-luxury-black transition-colors font-light tracking-wide">
+          <ArrowLeft className="w-3.5 h-3.5" /> Back to listings
         </a>
-        <nav className="hidden sm:flex items-center gap-1.5 text-base text-luxury-black/50 font-light">
+        <nav className="hidden sm:flex items-center gap-1 text-[13px] text-luxury-black/40 font-light">
           {PROPERTY.breadcrumb.map((crumb, i) => (
-            <span key={i} className="flex items-center gap-1.5">
-              {i > 0 && <ChevronRight className="w-3.5 h-3.5 text-luxury-black/30" />}
-              <a href="#" className={`hover:text-luxury-black transition-colors ${i === PROPERTY.breadcrumb.length - 1 ? "text-luxury-black/80" : ""}`}>{crumb}</a>
+            <span key={i} className="flex items-center gap-1">
+              {i > 0 && <ChevronRight className="w-3 h-3 text-luxury-black/25" />}
+              <a href="#" className={`hover:text-luxury-black transition-colors ${i === PROPERTY.breadcrumb.length - 1 ? "text-luxury-black/65" : ""}`}>{crumb}</a>
             </span>
           ))}
         </nav>
@@ -107,21 +107,21 @@ const LuxuryPropertyDetail = () => {
 
       {/* ─── GALLERY GRID ─── */}
       <section className="max-w-[1400px] mx-auto px-4 lg:px-10">
-        <div className="relative grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-1.5 h-[300px] md:h-[440px] lg:h-[500px]">
+        <div className="relative grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-1 h-[280px] md:h-[400px] lg:h-[460px]">
           {/* Main image */}
           <div className="md:col-span-2 md:row-span-2 relative overflow-hidden cursor-pointer group" onClick={() => openLightbox(0)}>
-            <img src={PROPERTY.images[0]} alt="Main" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-            <div className="absolute bottom-4 left-4 flex gap-2">
+            <img src={PROPERTY.images[0]} alt="Main" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
+            <div className="absolute bottom-3 left-3 flex gap-1.5">
               {PROPERTY.hasVideo && (
                 <a href={PROPERTY.videoUrl} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}
-                  className="flex items-center gap-1.5 bg-luxury-black/70 backdrop-blur-sm text-white text-sm tracking-wide px-4 py-2.5 hover:bg-luxury-black/90 transition-all">
-                  <Play className="w-4 h-4" fill="currentColor" /> Video
+                  className="flex items-center gap-1 bg-luxury-black/60 backdrop-blur-sm text-white text-[12px] tracking-[0.08em] uppercase px-3 py-2 hover:bg-luxury-black/80 transition-all">
+                  <Play className="w-3 h-3" fill="currentColor" /> Video
                 </a>
               )}
               {PROPERTY.hasVirtualTour && (
                 <a href={PROPERTY.virtualTourUrl} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}
-                  className="flex items-center gap-1.5 bg-white/80 backdrop-blur-sm text-luxury-black text-sm tracking-wide px-4 py-2.5 hover:bg-white transition-all">
-                  <View className="w-4 h-4" /> 360° Tour
+                  className="flex items-center gap-1 bg-white/75 backdrop-blur-sm text-luxury-black text-[12px] tracking-[0.08em] uppercase px-3 py-2 hover:bg-white transition-all">
+                  <View className="w-3 h-3" /> 360°
                 </a>
               )}
             </div>
@@ -129,10 +129,10 @@ const LuxuryPropertyDetail = () => {
           {/* Secondary images */}
           {PROPERTY.images.slice(1, 5).map((img, i) => (
             <div key={i} className="hidden md:block relative overflow-hidden cursor-pointer group" onClick={() => openLightbox(i + 1)}>
-              <img src={img} alt={`Photo ${i + 2}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              <img src={img} alt={`Photo ${i + 2}`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
               {i === 3 && PROPERTY.images.length > 5 && (
-                <div className="absolute inset-0 bg-luxury-black/50 flex items-center justify-center">
-                  <span className="text-white text-lg tracking-wide font-light">+{PROPERTY.images.length - 5} photos</span>
+                <div className="absolute inset-0 bg-luxury-black/45 flex items-center justify-center">
+                  <span className="text-white text-[14px] tracking-[0.1em] font-light">+{PROPERTY.images.length - 5} photos</span>
                 </div>
               )}
             </div>
@@ -141,66 +141,70 @@ const LuxuryPropertyDetail = () => {
       </section>
 
       {/* ─── HEADER INFO ─── */}
-      <section className="max-w-[1400px] mx-auto px-6 lg:px-10 pt-10 pb-8">
-        <div className="flex items-start justify-between gap-4 mb-4">
-          <div>
-            <div className="flex items-baseline gap-3 flex-wrap">
-              <p className="text-5xl md:text-6xl font-light text-luxury-black font-serif tracking-tight">{PROPERTY.price}</p>
-              <span className="text-2xl text-luxury-black/35 line-through font-light">{PROPERTY.originalPrice}</span>
-              <span className="text-base font-medium text-red-500 bg-red-50 px-2.5 py-1">-{PROPERTY.discount}%</span>
-            </div>
+      <section className="max-w-[1400px] mx-auto px-6 lg:px-10 pt-7 pb-5">
+        {/* Title first for editorial hierarchy */}
+        <h1 className="text-[22px] md:text-[26px] font-light text-luxury-black leading-snug tracking-[0.01em] mb-2">{PROPERTY.title}</h1>
+        
+        <div className="flex items-center gap-3 mb-5">
+          <span className="text-[12px] tracking-[0.15em] uppercase text-luxury-black/40 font-light">Ref: {PROPERTY.ref}</span>
+          <span className="w-px h-3 bg-luxury-black/15" />
+          <span className="text-[12px] tracking-[0.12em] uppercase text-luxury-black/40 font-light">{PROPERTY.breadcrumb.slice(-2).join(" · ")}</span>
+        </div>
+
+        <div className="flex items-start justify-between gap-4 mb-5">
+          <div className="flex items-baseline gap-2.5 flex-wrap">
+            <p className="text-[32px] md:text-[38px] font-extralight text-luxury-black tracking-tight">{PROPERTY.price}</p>
+            <span className="text-[16px] text-luxury-black/30 line-through font-light">{PROPERTY.originalPrice}</span>
+            <span className="text-[12px] font-medium text-red-600/80 bg-red-50 px-2 py-0.5 tracking-wide">-{PROPERTY.discount}%</span>
           </div>
-          <div className="flex gap-2.5">
-            <button onClick={() => setLiked(!liked)} className={`w-11 h-11 border flex items-center justify-center transition-all duration-300 ${liked ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-300 text-luxury-black/40 hover:border-luxury-black/40"}`}>
-              <Heart className="w-5 h-5" fill={liked ? "currentColor" : "none"} />
+          <div className="flex gap-2">
+            <button onClick={() => setLiked(!liked)} className={`w-9 h-9 border flex items-center justify-center transition-all duration-300 ${liked ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-300 text-luxury-black/35 hover:border-luxury-black/40"}`}>
+              <Heart className="w-4 h-4" fill={liked ? "currentColor" : "none"} />
             </button>
-            <button className="w-11 h-11 border border-neutral-300 text-luxury-black/40 hover:border-luxury-black/40 flex items-center justify-center transition-all duration-300">
-              <Share2 className="w-5 h-5" />
+            <button className="w-9 h-9 border border-neutral-300 text-luxury-black/35 hover:border-luxury-black/40 flex items-center justify-center transition-all duration-300">
+              <Share2 className="w-4 h-4" />
             </button>
           </div>
         </div>
 
-        <h1 className="text-3xl md:text-4xl font-light text-luxury-black leading-snug mb-3">{PROPERTY.title}</h1>
-        <span className="text-base tracking-[0.1em] uppercase text-luxury-black/40 mb-8 block">Ref: {PROPERTY.ref}</span>
-
         {/* Specs strip */}
-        <div className="flex flex-wrap gap-7 border-t border-b border-neutral-200 py-5">
+        <div className="flex flex-wrap gap-5 border-t border-b border-neutral-200/70 py-3.5">
           {[
-            { icon: Bed, label: "Bedrooms", value: PROPERTY.beds },
-            { icon: Bath, label: "Bathrooms", value: PROPERTY.baths },
+            { icon: Bed, label: "Beds", value: PROPERTY.beds },
+            { icon: Bath, label: "Baths", value: PROPERTY.baths },
             { icon: Maximize, label: "Built", value: `${PROPERTY.sqm} m²` },
             { icon: Fence, label: "Plot", value: `${PROPERTY.plot} m²` },
             { icon: Car, label: "Garage", value: PROPERTY.garage },
           ].map((s, i) => (
-            <div key={i} className="flex items-center gap-3 text-lg text-luxury-black/80">
-              <s.icon className="w-5.5 h-5.5 text-luxury-black/50" strokeWidth={1.3} />
-              <span className="font-light">{s.value}</span>
-              <span className="text-luxury-black/50 text-base">{s.label}</span>
+            <div key={i} className="flex items-center gap-2 text-[14px] text-luxury-black/70">
+              <s.icon className="w-4 h-4 text-luxury-black/40" strokeWidth={1.3} />
+              <span className="font-normal">{s.value}</span>
+              <span className="text-luxury-black/40 text-[13px] font-light">{s.label}</span>
             </div>
           ))}
         </div>
       </section>
 
       {/* ─── CONTENT + SIDEBAR ─── */}
-      <section className="max-w-[1400px] mx-auto px-6 lg:px-10 pb-12">
-        <div className="flex flex-col lg:flex-row gap-12">
+      <section className="max-w-[1400px] mx-auto px-6 lg:px-10 pb-10">
+        <div className="flex flex-col lg:flex-row gap-10">
           {/* Left: main content */}
-          <div className="flex-1 min-w-0 space-y-12">
+          <div className="flex-1 min-w-0 space-y-8">
             {/* Description */}
-            <div className="pt-10 border-t border-neutral-100">
-              <h2 className="text-4xl font-light text-luxury-black font-serif tracking-tight mb-8">About This Property</h2>
-              <div className="text-lg leading-[1.9] text-luxury-black/75 font-light whitespace-pre-line">
+            <div className="pt-6 border-t border-neutral-100">
+              <p className="text-[12px] tracking-[0.25em] uppercase text-luxury-black/40 font-light mb-4">Description</p>
+              <div className="text-[15px] leading-[1.85] text-luxury-black/65 font-light whitespace-pre-line">
                 {PROPERTY.description}
               </div>
             </div>
 
             {/* Features */}
-            <div className="pt-10 border-t border-neutral-100">
-              <h2 className="text-4xl font-light text-luxury-black font-serif tracking-tight mb-8">Features & Amenities</h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-5">
+            <div className="pt-6 border-t border-neutral-100">
+              <p className="text-[12px] tracking-[0.25em] uppercase text-luxury-black/40 font-light mb-4">Features & Amenities</p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-5 gap-y-3">
                 {PROPERTY.features.map((f, i) => (
-                  <div key={i} className="flex items-center gap-3 text-lg text-luxury-black/75 font-light">
-                    <Check className="w-5 h-5 text-luxury-black/50" strokeWidth={1.5} />
+                  <div key={i} className="flex items-center gap-2 text-[14px] text-luxury-black/65 font-light">
+                    <Check className="w-3.5 h-3.5 text-luxury-black/35" strokeWidth={1.5} />
                     {f}
                   </div>
                 ))}
@@ -208,11 +212,11 @@ const LuxuryPropertyDetail = () => {
             </div>
 
             {/* Map */}
-            <div className="pt-10 border-t border-neutral-100">
-              <h2 className="text-4xl font-light text-luxury-black font-serif tracking-tight mb-5">Explore the Area</h2>
-              <p className="text-lg text-luxury-black/65 font-light mb-5">{PROPERTY.breadcrumb.join(", ")}</p>
-              <div className="bg-neutral-100 h-[300px] flex items-center justify-center text-luxury-black/25 text-lg">
-                <MapPin className="w-7 h-7 mr-2" /> Interactive Map
+            <div className="pt-6 border-t border-neutral-100">
+              <p className="text-[12px] tracking-[0.25em] uppercase text-luxury-black/40 font-light mb-3">Location</p>
+              <p className="text-[14px] text-luxury-black/50 font-light mb-4">{PROPERTY.breadcrumb.join(" · ")}</p>
+              <div className="bg-neutral-50 h-[240px] flex items-center justify-center text-luxury-black/20 text-[14px] font-light">
+                <MapPin className="w-5 h-5 mr-1.5" /> Interactive Map
               </div>
             </div>
 
@@ -227,32 +231,32 @@ const LuxuryPropertyDetail = () => {
           </div>
 
           {/* Right: Advisor sticky sidebar */}
-          <div className="w-full lg:w-[380px] shrink-0">
-            <div className="lg:sticky lg:top-[80px]">
-              <div className="border border-neutral-200 p-7">
-                <p className="text-base tracking-[0.2em] uppercase text-luxury-black/55 mb-4">Your Advisor</p>
-                <h3 className="text-xl font-medium text-luxury-black mb-1">{PROPERTY.agent.name}</h3>
-                <p className="text-lg text-luxury-black/55 font-light mb-6">{PROPERTY.agent.role}</p>
+          <div className="w-full lg:w-[340px] shrink-0">
+            <div className="lg:sticky lg:top-[72px]">
+              <div className="border border-neutral-200/80 p-6">
+                <p className="text-[11px] tracking-[0.25em] uppercase text-luxury-black/45 mb-3 font-light">Your Advisor</p>
+                <h3 className="text-[16px] font-normal text-luxury-black mb-0.5">{PROPERTY.agent.name}</h3>
+                <p className="text-[14px] text-luxury-black/45 font-light mb-5">{PROPERTY.agent.role}</p>
 
                 {/* Contact Form */}
-                <form className="space-y-3.5 mb-6" onSubmit={(e) => e.preventDefault()}>
-                  <input type="text" placeholder="Name" className="w-full border border-neutral-300 bg-white px-4 py-3.5 text-base text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/40 transition-colors duration-300" />
-                  <input type="email" placeholder="Email" className="w-full border border-neutral-300 bg-white px-4 py-3.5 text-base text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/40 transition-colors duration-300" />
+                <form className="space-y-2.5 mb-5" onSubmit={(e) => e.preventDefault()}>
+                  <input type="text" placeholder="Name" className="w-full border border-neutral-200 bg-white px-3.5 py-2.5 text-[14px] text-luxury-black placeholder:text-luxury-black/30 focus:outline-none focus:border-luxury-black/30 transition-colors duration-300" />
+                  <input type="email" placeholder="Email" className="w-full border border-neutral-200 bg-white px-3.5 py-2.5 text-[14px] text-luxury-black placeholder:text-luxury-black/30 focus:outline-none focus:border-luxury-black/30 transition-colors duration-300" />
                   <LuxuryPhoneInput />
-                  <textarea placeholder="I'm interested in this property..." rows={3} className="w-full border border-neutral-300 bg-white px-4 py-3.5 text-base text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/40 transition-colors duration-300 resize-none" />
-                  <label className="flex items-start gap-2.5 cursor-pointer">
-                    <input type="checkbox" className="mt-1 accent-luxury-black" />
-                    <span className="text-sm text-luxury-black/55 font-light leading-relaxed">
-                      I accept the <a href="#" className="underline hover:text-luxury-black transition-colors">terms and conditions</a> and the <a href="#" className="underline hover:text-luxury-black transition-colors">privacy policy</a>.
+                  <textarea placeholder="I'm interested in this property..." rows={3} className="w-full border border-neutral-200 bg-white px-3.5 py-2.5 text-[14px] text-luxury-black placeholder:text-luxury-black/30 focus:outline-none focus:border-luxury-black/30 transition-colors duration-300 resize-none" />
+                  <label className="flex items-start gap-2 cursor-pointer">
+                    <input type="checkbox" className="mt-0.5 accent-luxury-black" />
+                    <span className="text-[12px] text-luxury-black/45 font-light leading-relaxed">
+                      I accept the <a href="#" className="underline hover:text-luxury-black transition-colors">terms</a> and <a href="#" className="underline hover:text-luxury-black transition-colors">privacy policy</a>.
                     </span>
                   </label>
-                  <button type="submit" className="flex items-center justify-center gap-2 bg-luxury-black text-white text-base tracking-[0.15em] uppercase py-4.5 w-full hover:bg-luxury-black/85 transition-all duration-300">
-                    <Mail className="w-5 h-5" /> Send Message
+                  <button type="submit" className="flex items-center justify-center gap-1.5 bg-luxury-black text-white text-[13px] tracking-[0.15em] uppercase py-3 w-full hover:bg-luxury-black/85 transition-all duration-300 font-light">
+                    <Mail className="w-4 h-4" /> Send Message
                   </button>
                 </form>
 
-                <a href={`tel:${PROPERTY.agent.phone}`} className="flex items-center justify-center gap-2 border border-luxury-black/20 text-luxury-black/70 text-base tracking-[0.15em] uppercase py-4.5 w-full hover:bg-luxury-black hover:text-white transition-all duration-300">
-                  <Phone className="w-5 h-5" /> Call Now
+                <a href={`tel:${PROPERTY.agent.phone}`} className="flex items-center justify-center gap-1.5 border border-luxury-black/15 text-luxury-black/55 text-[13px] tracking-[0.15em] uppercase py-3 w-full hover:bg-luxury-black hover:text-white transition-all duration-300 font-light">
+                  <Phone className="w-4 h-4" /> Call Now
                 </a>
               </div>
             </div>
@@ -261,22 +265,22 @@ const LuxuryPropertyDetail = () => {
       </section>
 
       {/* ─── SIMILAR PROPERTIES ─── */}
-      <section className="max-w-[1400px] mx-auto px-6 lg:px-10 py-12 border-t border-neutral-100">
-        <h2 className="text-4xl font-light text-luxury-black font-serif tracking-tight mb-8">Similar Properties Nearby</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <section className="max-w-[1400px] mx-auto px-6 lg:px-10 py-10 border-t border-neutral-100">
+        <p className="text-[12px] tracking-[0.25em] uppercase text-luxury-black/40 font-light mb-6">Similar Properties</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {SIMILAR.map((p, i) => (
             <a key={i} href="#" className="group">
               <div className="relative overflow-hidden aspect-[4/3]">
-                <img src={p.image} alt={p.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                <img src={p.image} alt={p.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
               </div>
-              <div className="pt-4 space-y-2">
-                <p className="text-2xl font-normal text-luxury-black/80">{p.price}</p>
-                <h3 className="text-xl font-light text-luxury-black">{p.name}</h3>
-                <p className="text-base text-luxury-black/55 font-light flex items-center gap-1"><MapPin className="w-4.5 h-4.5" /> {p.location}</p>
-                <div className="flex items-center gap-4 pt-1.5 text-base text-luxury-black/55 font-light">
-                  <span className="flex items-center gap-1"><Bed className="w-5 h-5" /> {p.beds}</span>
-                  <span className="flex items-center gap-1"><Bath className="w-5 h-5" /> {p.baths}</span>
-                  <span className="flex items-center gap-1"><Maximize className="w-5 h-5" /> {p.sqm} m²</span>
+              <div className="pt-3 space-y-1">
+                <p className="text-[18px] font-light text-luxury-black/80 tracking-tight">{p.price}</p>
+                <h3 className="text-[15px] font-light text-luxury-black leading-snug">{p.name}</h3>
+                <p className="text-[13px] text-luxury-black/45 font-light flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {p.location}</p>
+                <div className="flex items-center gap-3 pt-1 text-[13px] text-luxury-black/45 font-light">
+                  <span className="flex items-center gap-1"><Bed className="w-3.5 h-3.5" /> {p.beds}</span>
+                  <span className="flex items-center gap-1"><Bath className="w-3.5 h-3.5" /> {p.baths}</span>
+                  <span className="flex items-center gap-1"><Maximize className="w-3.5 h-3.5" /> {p.sqm} m²</span>
                 </div>
               </div>
             </a>
@@ -285,26 +289,26 @@ const LuxuryPropertyDetail = () => {
       </section>
 
       {/* ─── NEWSLETTER ─── */}
-      <section className="py-16 bg-neutral-50/60">
-        <div className="max-w-xl mx-auto px-6 text-center">
-          <p className="text-base tracking-[0.35em] uppercase text-luxury-black/55 mb-4">Stay Informed</p>
-          <h2 className="text-4xl font-light text-luxury-black font-serif tracking-tight">The Private List</h2>
-          <p className="text-lg text-luxury-black/65 font-light mt-4 mb-10 leading-relaxed">
+      <section className="py-12 bg-neutral-50/50">
+        <div className="max-w-lg mx-auto px-6 text-center">
+          <p className="text-[11px] tracking-[0.35em] uppercase text-luxury-black/40 mb-3 font-light">Stay Informed</p>
+          <h2 className="text-[24px] font-extralight text-luxury-black tracking-[0.02em]">The Private List</h2>
+          <p className="text-[14px] text-luxury-black/50 font-light mt-3 mb-7 leading-relaxed">
             Receive exclusive off-market listings and invitations to private viewings — delivered discreetly to your inbox.
           </p>
-          <form className="flex flex-col sm:flex-row gap-3" onSubmit={(e) => e.preventDefault()}>
-            <input type="email" placeholder="Your email address" className="flex-1 border border-neutral-300 bg-white px-5 py-4.5 text-lg text-luxury-black placeholder:text-luxury-black/30 focus:outline-none focus:border-luxury-black/40 transition-colors duration-300" />
-            <button type="submit" className="bg-luxury-black text-white text-base tracking-[0.15em] uppercase px-9 py-4.5 hover:bg-luxury-black/85 transition-all duration-300 whitespace-nowrap">Subscribe</button>
+          <form className="flex flex-col sm:flex-row gap-2.5" onSubmit={(e) => e.preventDefault()}>
+            <input type="email" placeholder="Your email address" className="flex-1 border border-neutral-200 bg-white px-4 py-3 text-[14px] text-luxury-black placeholder:text-luxury-black/25 focus:outline-none focus:border-luxury-black/30 transition-colors duration-300" />
+            <button type="submit" className="bg-luxury-black text-white text-[12px] tracking-[0.18em] uppercase px-7 py-3 hover:bg-luxury-black/85 transition-all duration-300 font-light whitespace-nowrap">Subscribe</button>
           </form>
         </div>
       </section>
 
       {/* ─── FOOTER ─── */}
       <footer className="bg-luxury-black">
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-14">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-5">
-            <span className="text-xl tracking-[0.25em] text-white/40 font-light font-serif">{BRAND_NAME}</span>
-            <p className="text-base text-white/20 tracking-wider font-light">© 2025 {BRAND_NAME}. All rights reserved.</p>
+        <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-10">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <span className="text-[14px] tracking-[0.3em] text-white/30 font-light uppercase">{BRAND_NAME}</span>
+            <p className="text-[12px] text-white/15 tracking-wider font-light">© 2025 {BRAND_NAME}. All rights reserved.</p>
           </div>
         </div>
       </footer>
@@ -312,16 +316,16 @@ const LuxuryPropertyDetail = () => {
       {/* ─── LIGHTBOX ─── */}
       {lightbox !== null && (
         <div className="fixed inset-0 z-[100] bg-luxury-black/95 flex items-center justify-center" onClick={closeLightbox}>
-          <button onClick={closeLightbox} className="absolute top-5 right-5 text-white/50 hover:text-white transition-colors"><X className="w-7 h-7" /></button>
-          <button onClick={(e) => { e.stopPropagation(); prevSlide(); }} className="absolute left-4 md:left-8 text-white/40 hover:text-white transition-colors"><ChevronLeft className="w-9 h-9" /></button>
-          <button onClick={(e) => { e.stopPropagation(); nextSlide(); }} className="absolute right-4 md:right-8 text-white/40 hover:text-white transition-colors"><ChevronRight className="w-9 h-9" /></button>
+          <button onClick={closeLightbox} className="absolute top-4 right-4 text-white/40 hover:text-white transition-colors"><X className="w-6 h-6" /></button>
+          <button onClick={(e) => { e.stopPropagation(); prevSlide(); }} className="absolute left-3 md:left-6 text-white/30 hover:text-white transition-colors"><ChevronLeft className="w-8 h-8" /></button>
+          <button onClick={(e) => { e.stopPropagation(); nextSlide(); }} className="absolute right-3 md:right-6 text-white/30 hover:text-white transition-colors"><ChevronRight className="w-8 h-8" /></button>
           <img
             src={PROPERTY.images[lightbox]}
             alt={`Photo ${lightbox + 1}`}
             className="max-w-[90vw] max-h-[85vh] object-contain"
             onClick={(e) => e.stopPropagation()}
           />
-          <p className="absolute bottom-5 text-white/30 text-base font-light">{lightbox + 1} / {PROPERTY.images.length}</p>
+          <p className="absolute bottom-4 text-white/25 text-[13px] font-light tracking-wide">{lightbox + 1} / {PROPERTY.images.length}</p>
         </div>
       )}
     </div>
