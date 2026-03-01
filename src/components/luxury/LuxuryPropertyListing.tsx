@@ -508,7 +508,7 @@ const PropertyCard = ({ property }: { property: typeof PROPERTIES[0] }) => {
 
         {/* Price */}
         <div className="mt-5 pt-4 border-t border-neutral-100">
-          <p className="text-xl md:text-2xl font-light text-luxury-black font-serif tracking-tight">{property.price}</p>
+          <p className="text-xl md:text-2xl font-light text-luxury-black tracking-tight">{property.price}</p>
         </div>
       </div>
     </a>
@@ -543,7 +543,7 @@ const LuxuryPropertyListing = () => {
           <div className="lg:hidden" />
 
           <a href="/" className="flex flex-col items-center justify-center">
-            <span className="font-serif text-lg md:text-xl tracking-[0.3em] font-light text-luxury-black">{BRAND_NAME}</span>
+            <span className="text-lg md:text-xl tracking-[0.3em] font-light text-luxury-black">{BRAND_NAME}</span>
             <span className="text-[7px] tracking-[0.35em] uppercase font-light text-luxury-black/40">Real Estate</span>
           </a>
 
@@ -638,7 +638,7 @@ const LuxuryPropertyListing = () => {
         {/* Results header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-xl md:text-2xl font-light text-luxury-black font-serif tracking-tight">Luxury Homes in Ibiza & Costa Blanca</h1>
+            <h1 className="text-xl md:text-2xl font-light text-luxury-black tracking-tight">Luxury Homes in Ibiza & Costa Blanca</h1>
             <p className="text-[13px] text-luxury-black/55 font-light mt-2 max-w-3xl leading-relaxed">
               Discover the finest selection of luxury villas, penthouses, fincas and new-build properties across Ibiza and the Costa Blanca. From beachfront estates with panoramic sea views to exclusive golf-side residences, explore hand-picked homes curated for the most discerning buyers.
             </p>
@@ -682,7 +682,7 @@ const LuxuryPropertyListing = () => {
 
       {/* ─── POPULAR LOCATIONS ─── */}
       <section className="max-w-[1400px] mx-auto px-6 lg:px-10 py-10 border-t border-neutral-100">
-        <h2 className="text-xl font-light text-luxury-black font-serif tracking-tight mb-6">Explore Popular Locations</h2>
+        <h2 className="text-xl font-light text-luxury-black tracking-tight mb-6">Explore Popular Locations</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-8 gap-y-3">
           {[
             "Ibiza Town", "Santa Eulalia", "San José", "Es Cubells",
@@ -703,7 +703,7 @@ const LuxuryPropertyListing = () => {
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div>
-              <h2 className="text-xl md:text-2xl font-light text-luxury-black font-serif tracking-tight">Get Luxury Trends & Tips</h2>
+              <h2 className="text-xl md:text-2xl font-light text-luxury-black tracking-tight">Get Luxury Trends & Tips</h2>
               <p className="text-[13px] text-luxury-black/55 font-light mt-2 leading-relaxed">
                 Receive our top luxury picks and tips from our experts delivered to your inbox each week.
               </p>
@@ -727,7 +727,7 @@ const LuxuryPropertyListing = () => {
       <footer className="bg-luxury-black">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-10">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <span className="text-sm tracking-[0.25em] text-white/40 font-light font-serif">{BRAND_NAME}</span>
+            <span className="text-sm tracking-[0.25em] text-white/40 font-light">{BRAND_NAME}</span>
             <p className="text-[10px] text-white/20 tracking-wider font-light">© 2025 {BRAND_NAME}. All rights reserved.</p>
           </div>
         </div>
