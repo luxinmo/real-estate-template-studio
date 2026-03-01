@@ -20,6 +20,7 @@ const PROPERTIES = [
   { image: prop1, name: "The Skyline Penthouse", location: "Manhattan, New York", price: "€12,500,000", beds: 5, baths: 4, sqm: 420, ref: "D4522" },
   { image: prop2, name: "Villa Blanca Sur Mer", location: "Costa Brava, Spain", price: "€8,900,000", beds: 6, baths: 5, sqm: 680, ref: "D3871" },
   { image: prop3, name: "Alpine Glass Retreat", location: "Zermatt, Switzerland", price: "€15,200,000", beds: 7, baths: 6, sqm: 950, ref: "D5104" },
+  { image: heroImg, name: "Casa del Mar Estate", location: "Ibiza, Spain", price: "€9,750,000", beds: 6, baths: 5, sqm: 520, ref: "D6283" },
 ];
 
 const OFF_MARKET = [
@@ -339,7 +340,7 @@ const Home2LandingPage = () => {
             </div>
           </FadeIn>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
             {PROPERTIES.map((p, i) => (
               <FadeIn key={i} delay={i * 0.12}>
                 <div className="group cursor-pointer">
