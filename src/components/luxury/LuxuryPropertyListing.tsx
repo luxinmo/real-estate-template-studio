@@ -462,10 +462,10 @@ const PropertyCard = ({ property }: { property: typeof PROPERTIES[0] }) => {
         </div>
 
         <p className="text-[12px] tracking-[0.14em] uppercase text-luxury-black/60 mb-1">{property.location}</p>
+        <p className="text-[13px] text-luxury-black/55 font-light mb-1.5">Detached houses <span className="mx-1 text-luxury-black/30">|</span> <span className="italic">{property.style}</span> <span className="mx-1 text-luxury-black/30">|</span> <span className="font-mono text-luxury-black/45 tracking-wide text-[11px]">REF-{String(property.id).padStart(4, "0")}</span></p>
         <h2 className="text-[17px] md:text-[19px] font-medium text-luxury-black leading-snug mb-1.5 group-hover:text-luxury-black/75 transition-colors duration-300">
           {property.title}
         </h2>
-        <p className="text-[13px] text-luxury-black/55 font-light mb-1">Detached houses <span className="mx-1 text-luxury-black/30">|</span> <span className="italic">{property.style}</span> <span className="mx-1 text-luxury-black/30">|</span> <span className="font-mono text-luxury-black/45 tracking-wide text-[11px]">REF-{String(property.id).padStart(4, "0")}</span></p>
         <p className="text-[14px] text-luxury-black/60 font-light leading-relaxed mb-5 line-clamp-2">
           {property.excerpt}
         </p>
