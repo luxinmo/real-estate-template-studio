@@ -216,25 +216,25 @@ const LuxuryPropertyDetailV2 = () => {
 
             {/* Description */}
             <div>
-              <p className="text-[13px] tracking-[0.25em] uppercase text-luxury-gold/80 font-light mb-4">About This Property</p>
-              <div className={`text-[15px] leading-[2] text-luxury-black/85 font-light whitespace-pre-line ${!expandDesc ? "line-clamp-6" : ""}`}>
+              <p className="text-[13px] tracking-[0.22em] uppercase text-luxury-gold/90 font-normal mb-4">About This Property</p>
+              <div className={`text-[15px] leading-[1.95] text-luxury-black font-normal whitespace-pre-line ${!expandDesc ? "line-clamp-6" : ""}`}>
                 {PROPERTY.description}
               </div>
               <button
                 onClick={() => setExpandDesc(!expandDesc)}
-                className="flex items-center gap-1 mt-3 text-[12px] tracking-[0.15em] uppercase text-luxury-black/60 hover:text-luxury-black font-light transition-colors"
+                className="flex items-center gap-1 mt-3 text-[12px] tracking-[0.12em] uppercase text-luxury-black/85 hover:text-luxury-black font-medium transition-colors"
               >
                 {expandDesc ? "Show less" : "Read more"} <ChevronDown className={`w-3.5 h-3.5 transition-transform ${expandDesc ? "rotate-180" : ""}`} />
               </button>
             </div>
 
             {/* Features */}
-            <div className="border-t border-luxury-black/6 pt-8">
-              <p className="text-[13px] tracking-[0.25em] uppercase text-luxury-gold/80 font-light mb-5">Features & Amenities</p>
+            <div className="border-t border-luxury-black/10 pt-8">
+              <p className="text-[13px] tracking-[0.22em] uppercase text-luxury-gold/90 font-normal mb-5">Features & Amenities</p>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-3">
                 {PROPERTY.features.map((f, i) => (
-                  <div key={i} className="flex items-center gap-2 text-[15px] text-luxury-black/90 font-light">
-                    <Check className="w-3.5 h-3.5 text-luxury-gold/60" strokeWidth={1.8} />
+                  <div key={i} className="flex items-center gap-2 text-[15px] text-luxury-black font-normal">
+                    <Check className="w-3.5 h-3.5 text-luxury-gold/80" strokeWidth={2} />
                     {f}
                   </div>
                 ))}
@@ -242,12 +242,12 @@ const LuxuryPropertyDetailV2 = () => {
             </div>
 
             {/* Map */}
-            <div className="border-t border-luxury-black/6 pt-8">
-              <p className="text-[13px] tracking-[0.25em] uppercase text-luxury-gold/80 font-light mb-3">Location</p>
-              <p className="text-[14px] text-luxury-black/70 font-light mb-4 flex items-center gap-1.5">
-                <MapPin className="w-3.5 h-3.5 text-luxury-gold/60" /> {PROPERTY.breadcrumb.join(" · ")}
+            <div className="border-t border-luxury-black/10 pt-8">
+              <p className="text-[13px] tracking-[0.22em] uppercase text-luxury-gold/90 font-normal mb-3">Location</p>
+              <p className="text-[14px] text-luxury-black/85 font-normal mb-4 flex items-center gap-1.5">
+                <MapPin className="w-3.5 h-3.5 text-luxury-gold/75" /> {PROPERTY.breadcrumb.join(" · ")}
               </p>
-              <div className="bg-luxury-black/[0.03] h-[260px] flex items-center justify-center text-luxury-black/30 text-[14px] font-light">
+              <div className="bg-luxury-black/[0.05] h-[260px] flex items-center justify-center text-luxury-black/60 text-[14px] font-normal">
                 <MapPin className="w-5 h-5 mr-1.5" /> Interactive Map
               </div>
             </div>
@@ -263,27 +263,27 @@ const LuxuryPropertyDetailV2 = () => {
 
               {/* Advisor card */}
               <div className="bg-white p-7 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.06)]">
-                <p className="text-[13px] tracking-[0.25em] uppercase text-luxury-gold/80 font-light mb-4">Your Private Advisor</p>
-                <h3 className="text-[17px] font-normal text-luxury-black mb-0.5 tracking-wide">{PROPERTY.agent.name}</h3>
-                <p className="text-[13px] text-luxury-black/55 font-light mb-6">{PROPERTY.agent.role}</p>
+                <p className="text-[13px] tracking-[0.22em] uppercase text-luxury-gold/90 font-normal mb-4">Your Private Advisor</p>
+                <h3 className="text-[17px] font-medium text-luxury-black mb-0.5 tracking-wide">{PROPERTY.agent.name}</h3>
+                <p className="text-[13px] text-luxury-black/80 font-normal mb-6">{PROPERTY.agent.role}</p>
 
                 <form className="space-y-3 mb-5" onSubmit={(e) => e.preventDefault()}>
-                  <input type="text" placeholder="Full name" className="w-full bg-neutral-50 border-0 px-4 py-3 text-[14px] text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:ring-1 focus:ring-luxury-gold/30 transition-all" />
-                  <input type="email" placeholder="Email address" className="w-full bg-neutral-50 border-0 px-4 py-3 text-[14px] text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:ring-1 focus:ring-luxury-gold/30 transition-all" />
+                  <input type="text" placeholder="Full name" className="w-full bg-neutral-50 border-0 px-4 py-3 text-[14px] text-luxury-black placeholder:text-luxury-black/55 focus:outline-none focus:ring-1 focus:ring-luxury-gold/40 transition-all" />
+                  <input type="email" placeholder="Email address" className="w-full bg-neutral-50 border-0 px-4 py-3 text-[14px] text-luxury-black placeholder:text-luxury-black/55 focus:outline-none focus:ring-1 focus:ring-luxury-gold/40 transition-all" />
                   <LuxuryPhoneInput />
-                  <textarea placeholder="I'm interested in this property..." rows={3} className="w-full bg-neutral-50 border-0 px-4 py-3 text-[14px] text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:ring-1 focus:ring-luxury-gold/30 transition-all resize-none" />
+                  <textarea placeholder="I'm interested in this property..." rows={3} className="w-full bg-neutral-50 border-0 px-4 py-3 text-[14px] text-luxury-black placeholder:text-luxury-black/55 focus:outline-none focus:ring-1 focus:ring-luxury-gold/40 transition-all resize-none" />
                   <label className="flex items-start gap-2 cursor-pointer">
                     <input type="checkbox" className="mt-1 accent-luxury-gold" />
-                    <span className="text-[12px] text-luxury-black/60 font-light leading-relaxed">
+                    <span className="text-[12px] text-luxury-black/80 font-normal leading-relaxed">
                       I accept the <a href="#" className="underline hover:text-luxury-black">terms</a> and <a href="#" className="underline hover:text-luxury-black">privacy policy</a>.
                     </span>
                   </label>
-                  <button type="submit" className="flex items-center justify-center gap-2 bg-luxury-black text-white text-[12px] tracking-[0.2em] uppercase py-3.5 w-full hover:bg-luxury-charcoal transition-all duration-300 font-light">
+                  <button type="submit" className="flex items-center justify-center gap-2 bg-luxury-black text-white text-[12px] tracking-[0.18em] uppercase py-3.5 w-full hover:bg-luxury-charcoal transition-all duration-300 font-medium">
                     <Mail className="w-4 h-4" /> Send Enquiry
                   </button>
                 </form>
 
-                <a href={`tel:${PROPERTY.agent.phone}`} className="flex items-center justify-center gap-2 text-luxury-black/70 text-[12px] tracking-[0.18em] uppercase py-3.5 w-full hover:bg-neutral-50 transition-all duration-300 font-light border border-luxury-black/10">
+                <a href={`tel:${PROPERTY.agent.phone}`} className="flex items-center justify-center gap-2 text-luxury-black/90 text-[12px] tracking-[0.15em] uppercase py-3.5 w-full hover:bg-neutral-50 transition-all duration-300 font-medium border border-luxury-black/15">
                   <Phone className="w-4 h-4" /> Call Directly
                 </a>
               </div>
