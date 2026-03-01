@@ -216,7 +216,7 @@ const LuxuryPropertyDetailV2 = () => {
 
             {/* Description */}
             <div>
-              <p className="text-[11px] tracking-[0.3em] uppercase text-luxury-gold/80 font-light mb-4">About This Property</p>
+              <p className="text-[13px] tracking-[0.25em] uppercase text-luxury-gold/80 font-light mb-4">About This Property</p>
               <div className={`text-[15px] leading-[2] text-luxury-black/85 font-light whitespace-pre-line ${!expandDesc ? "line-clamp-6" : ""}`}>
                 {PROPERTY.description}
               </div>
@@ -230,10 +230,10 @@ const LuxuryPropertyDetailV2 = () => {
 
             {/* Features */}
             <div className="border-t border-luxury-black/6 pt-8">
-              <p className="text-[11px] tracking-[0.3em] uppercase text-luxury-gold/80 font-light mb-5">Features & Amenities</p>
+              <p className="text-[13px] tracking-[0.25em] uppercase text-luxury-gold/80 font-light mb-5">Features & Amenities</p>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-3">
                 {PROPERTY.features.map((f, i) => (
-                  <div key={i} className="flex items-center gap-2 text-[14px] text-luxury-black/85 font-light">
+                  <div key={i} className="flex items-center gap-2 text-[15px] text-luxury-black/90 font-light">
                     <Check className="w-3.5 h-3.5 text-luxury-gold/60" strokeWidth={1.8} />
                     {f}
                   </div>
@@ -243,7 +243,7 @@ const LuxuryPropertyDetailV2 = () => {
 
             {/* Map */}
             <div className="border-t border-luxury-black/6 pt-8">
-              <p className="text-[11px] tracking-[0.3em] uppercase text-luxury-gold/80 font-light mb-3">Location</p>
+              <p className="text-[13px] tracking-[0.25em] uppercase text-luxury-gold/80 font-light mb-3">Location</p>
               <p className="text-[14px] text-luxury-black/70 font-light mb-4 flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-luxury-gold/60" /> {PROPERTY.breadcrumb.join(" · ")}
               </p>
@@ -263,7 +263,7 @@ const LuxuryPropertyDetailV2 = () => {
 
               {/* Advisor card */}
               <div className="bg-white p-7 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.06)]">
-                <p className="text-[11px] tracking-[0.3em] uppercase text-luxury-gold/80 font-light mb-4">Your Private Advisor</p>
+                <p className="text-[13px] tracking-[0.25em] uppercase text-luxury-gold/80 font-light mb-4">Your Private Advisor</p>
                 <h3 className="text-[17px] font-normal text-luxury-black mb-0.5 tracking-wide">{PROPERTY.agent.name}</h3>
                 <p className="text-[13px] text-luxury-black/55 font-light mb-6">{PROPERTY.agent.role}</p>
 
@@ -288,16 +288,6 @@ const LuxuryPropertyDetailV2 = () => {
                 </a>
               </div>
 
-              {/* Energy label */}
-              <div className="bg-white p-5 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.06)] flex items-center justify-between">
-                <div>
-                  <p className="text-[11px] tracking-[0.2em] uppercase text-luxury-black/45 font-light">Energy Rating</p>
-                  <p className="text-[14px] text-luxury-black/80 font-light mt-0.5">Class {PROPERTY.energyClass}</p>
-                </div>
-                <div className="w-10 h-10 bg-emerald-500/10 text-emerald-600 flex items-center justify-center text-[16px] font-medium">
-                  {PROPERTY.energyClass}
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -306,7 +296,7 @@ const LuxuryPropertyDetailV2 = () => {
       {/* ─── SIMILAR PROPERTIES ─── */}
       <section className="bg-white py-12">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
-          <p className="text-[11px] tracking-[0.3em] uppercase text-luxury-gold/80 font-light mb-7">You May Also Like</p>
+          <p className="text-[13px] tracking-[0.25em] uppercase text-luxury-gold/80 font-light mb-7">You May Also Like</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {SIMILAR.map((p, i) => (
               <a key={i} href="#" className="group">
