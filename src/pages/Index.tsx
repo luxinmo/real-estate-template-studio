@@ -4,6 +4,7 @@ import HeaderBar from "@/components/HeaderBar";
 import { ContactsListPage, AddContactPage, ContactDetailPage } from "@/components/contacts";
 import { CountriesPage, ProvincesPage, RegionsPage, MunicipalitiesPage, MunicipalityDetailPage, BoroughFormPage } from "@/components/locations";
 import { FuentesPage, MapeoPage, HistorialPage, SchedulerPage, PendientesPage } from "@/components/importer";
+import { CmsPagesListPage, CmsPageEditorPage, CmsBlogListPage, CmsBlogEditorPage } from "@/components/cms";
 import PropertiesPage from "@/components/PropertiesPage";
 import PropertyDetailPage from "@/components/PropertyDetailPage";
 import AddPropertyPage from "@/components/AddPropertyPage";
@@ -19,7 +20,8 @@ type View =
   | "agencies" | "users" | "company" | "settings" | "components"
   | "loc-countries" | "loc-provinces" | "loc-regions" | "loc-municipalities" | "loc-municipality-detail" | "loc-borough-form"
   | "imp-fuentes" | "imp-mapeo" | "imp-historial" | "imp-scheduler" | "imp-pendientes"
-  | "luxury-landing" | "home-2" | "card-designer";
+  | "luxury-landing" | "home-2" | "card-designer"
+  | "cms-pages" | "cms-page-editor" | "cms-blog" | "cms-blog-editor";
 
 const PlaceholderPage = ({ title }: { title: string }) => (
   <div className="flex-1 overflow-auto">
@@ -34,6 +36,7 @@ const Index = () => {
   const [view, setView] = useState<View>("properties");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedContactId, setSelectedContactId] = useState<string>("1");
+  const [cmsEditId, setCmsEditId] = useState<string | null>(null);
 
   // Location drill-down
   const [locCountryId, setLocCountryId] = useState("");
@@ -51,6 +54,8 @@ const Index = () => {
     if (view.startsWith("loc-")) return "locations";
     if (view === "imp-mapeo") return "imp-fuentes";
     if (view.startsWith("imp-")) return view;
+    if (view === "cms-page-editor") return "cms-pages";
+    if (view === "cms-blog-editor") return "cms-blog";
     return view;
   })();
 
@@ -153,6 +158,13 @@ const Index = () => {
         {view === "card-designer" && <CardDesignerPage />}
         {view === "luxury-landing" && <LuxuryLandingPage />}
         {view === "home-2" && <Home2LandingPage />}
+
+        {/* CMS */}
+        {view === "cms-pages" && <CmsPagesListPage onEdit={(id) => { setCmsEditId(id); setView("cms-page-editor"); }} onNew={() => { setCmsEditId(null); setView("cms-page-editor"); }} />}
+        {view === "cms-page-editor" && <CmsPageEditorPage pageId={cmsEditId} onBack={() => setView("cms-pages")} />}
+        {view === "cms-blog" && <CmsBlogListPage onEdit={(id) => { setCmsEditId(id); setView("cms-blog-editor"); }} onNew={() => { setCmsEditId(null); setView("cms-blog-editor"); }} />}
+        {view === "cms-blog-editor" && <CmsBlogEditorPage postId={cmsEditId} onBack={() => setView("cms-blog")} />}
+
         {view === "users" && <UsersPage />}
         {view === "company" && <PlaceholderPage title="Empresa" />}
         {view === "settings" && <PlaceholderPage title="Ajustes" />}

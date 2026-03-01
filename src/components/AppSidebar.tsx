@@ -1,4 +1,4 @@
-import { Building2, LayoutGrid, Home, Users, Building, UserCircle, Briefcase, Settings, X, Component, MapPin, FileDown, FolderClock, Timer, AlertTriangle, Gem, CreditCard } from "lucide-react";
+import { Building2, LayoutGrid, Home, Users, Building, UserCircle, Briefcase, Settings, X, Component, MapPin, FileDown, FolderClock, Timer, AlertTriangle, Gem, CreditCard, Globe, FileText, BookOpen } from "lucide-react";
 
 const topItems = [
   { icon: LayoutGrid, label: "Dashboard", view: "dashboard" },
@@ -10,6 +10,11 @@ const topItems = [
   { icon: Gem, label: "Home 2", view: "home-2" },
   { icon: Component, label: "Componentes", view: "components" },
   { icon: CreditCard, label: "Card Designer", view: "card-designer" },
+];
+
+const webItems = [
+  { icon: FileText, label: "Páginas", view: "cms-pages" },
+  { icon: BookOpen, label: "Blog", view: "cms-blog" },
 ];
 
 const importerItems = [
@@ -118,6 +123,9 @@ const AppSidebar = ({ currentView, onNavigate, open, onClose }: AppSidebarProps)
               </button>
             );
           })}
+          <div className="!my-3 mx-3 border-t border-sidebar-custom-border" />
+          <p className="px-3 mb-1 text-[10px] font-semibold uppercase tracking-widest text-sidebar-custom-fg/50">Web / CMS</p>
+          {webItems.map(renderItem)}
           <div className="!my-3 mx-3 border-t border-sidebar-custom-border" />
           {bottomItems.map(renderItem)}
         </nav>

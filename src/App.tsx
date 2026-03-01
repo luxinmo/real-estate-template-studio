@@ -11,6 +11,8 @@ import LuxuryPropertyDetailV3 from "./components/luxury/LuxuryPropertyDetailV3";
 import LuxuryPropertyDetailV4 from "./components/luxury/LuxuryPropertyDetailV4";
 import LuxuryPropertyListing from "./components/luxury/LuxuryPropertyListing";
 import BlogListingPage from "./components/luxury/BlogListingPage";
+import BlogDetailPage from "./components/luxury/BlogDetailPage";
+import SystemPage from "./components/luxury/SystemPage";
 import Home2PropertiesPage from "./components/home-2/Home2PropertiesPage";
 import PropertyPdfV1 from "./components/luxury/pdf/PropertyPdfV1";
 import PropertyPdfV2 from "./components/luxury/pdf/PropertyPdfV2";
@@ -33,6 +35,8 @@ const App = () => (
           <Route path="/pdf-v1/:id" element={<PropertyPdfV1 />} />
           <Route path="/pdf-v2/:id" element={<PropertyPdfV2 />} />
           <Route path="/blog" element={<BlogListingPage />} />
+          <Route path="/blog/:slug" element={<BlogDetailPage />} />
+          <Route path="/page/:slug" element={<SystemPage />} />
           <Route path="/home2/properties" element={<Home2PropertiesPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
