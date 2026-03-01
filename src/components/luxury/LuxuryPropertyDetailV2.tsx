@@ -11,8 +11,6 @@ import { cn } from "@/lib/utils";
 import LuxuryPhoneInput from "./LuxuryPhoneInput";
 import LuxuryMortgageCalculatorV3 from "./LuxuryMortgageCalculatorV3";
 import LuxuryNearbyPlaces from "./LuxuryNearbyPlaces";
-import SimilarCompetingProperties from "./SimilarCompetingProperties";
-import type { SimilarProperty } from "./SimilarCompetingProperties";
 import heroImg from "@/assets/luxury-hero.jpg";
 import prop1 from "@/assets/luxury-property-1.jpg";
 import prop2 from "@/assets/luxury-property-2.jpg";
@@ -67,10 +65,10 @@ Upstairs, four additional en-suite bedrooms each enjoy their own terrace and sea
   },
 };
 
-const SIMILAR: SimilarProperty[] = [
-  { image: prop1, title: "Beachfront Villa Es Cubells", location: "Es Cubells, Ibiza", price: "€6,200,000", beds: 6, baths: 5, sqm: 580, badge: "Luxury" },
-  { image: prop2, title: "Modern Penthouse Marina Botafoch", location: "Marina Botafoch, Ibiza", price: "€3,100,000", beds: 3, baths: 3, sqm: 210, badge: "Top Interest" },
-  { image: prop3, title: "Traditional Finca San Carlos", location: "San Carlos, Ibiza", price: "€5,800,000", beds: 7, baths: 6, sqm: 750, badge: "Similar" },
+const SIMILAR = [
+  { image: prop1, name: "Beachfront Villa Es Cubells", location: "Es Cubells, Ibiza", price: "€6,200,000", beds: 6, baths: 5, sqm: 580 },
+  { image: prop2, name: "Modern Penthouse Marina Botafoch", location: "Marina Botafoch, Ibiza", price: "€3,100,000", beds: 3, baths: 3, sqm: 210 },
+  { image: prop3, name: "Traditional Finca San Carlos", location: "San Carlos, Ibiza", price: "€5,800,000", beds: 7, baths: 6, sqm: 750 },
 ];
 
 const BRAND = "PRESTIGE ESTATES";
@@ -376,7 +374,33 @@ const LuxuryPropertyDetailV2 = () => {
       </section>
 
       {/* ─── SIMILAR PROPERTIES ─── */}
-      <SimilarCompetingProperties properties={SIMILAR} />
+      <section className="bg-white py-12">
+        <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
+          <p className="text-[13px] tracking-[0.25em] uppercase text-luxury-gold/80 font-light mb-7">You May Also Like</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {SIMILAR.map((p, i) => (
+              <a key={i} href="#" className="group">
+                <div className="relative overflow-hidden aspect-[3/2]">
+                  <img src={p.image} alt={p.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-luxury-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                </div>
+                <div className="pt-4 space-y-1.5">
+                  <p className="text-[22px] font-extralight text-luxury-black tracking-tight">{p.price}</p>
+                  <h3 className="text-[14px] font-normal text-luxury-black leading-snug uppercase tracking-[0.03em]">{p.name}</h3>
+                  <p className="text-[12px] text-luxury-black/55 font-light flex items-center gap-1 tracking-wide">
+                    <MapPin className="w-3 h-3" /> {p.location}
+                  </p>
+                  <div className="flex items-center gap-4 pt-1.5 text-[12px] text-luxury-black/50 font-light tracking-wide">
+                    <span className="flex items-center gap-1"><Bed className="w-3.5 h-3.5" /> {p.beds}</span>
+                    <span className="flex items-center gap-1"><Bath className="w-3.5 h-3.5" /> {p.baths}</span>
+                    <span className="flex items-center gap-1"><Maximize className="w-3.5 h-3.5" /> {p.sqm} m²</span>
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* ─── RECENTLY VIEWED ─── */}
       <section className="max-w-[1400px] mx-auto px-6 lg:px-10 py-8">
@@ -385,9 +409,9 @@ const LuxuryPropertyDetailV2 = () => {
           {[...SIMILAR, ...SIMILAR].slice(0, 5).map((p, i) => (
             <a key={i} href="#" className="shrink-0 w-[150px] group">
               <div className="relative overflow-hidden aspect-[4/3] mb-1.5">
-                <img src={p.image} alt={p.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                <img src={p.image} alt={p.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
               </div>
-              <p className="text-[12px] text-luxury-black/85 font-light leading-snug line-clamp-2">{p.title}</p>
+              <p className="text-[12px] text-luxury-black/85 font-light leading-snug line-clamp-2">{p.name}</p>
               <p className="text-[13px] font-normal text-luxury-black mt-0.5">{p.price}</p>
             </a>
           ))}
