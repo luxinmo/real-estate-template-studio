@@ -134,7 +134,7 @@ const PropertiesPage = ({ onViewProperty, onAddProperty }: { onViewProperty?: ()
   const currentSortLabel = sortOptions.find(o => o.value === sortBy)?.label ?? "Ordenar";
 
   return (
-    <div className="flex-1 overflow-auto pb-20 xl:pb-0">
+    <div className="flex-1 overflow-auto pb-20 xl:pb-0" style={{ fontFamily: "'Jost', sans-serif" }}>
       {/* Header */}
       <div className="px-4 sm:px-8 pt-6 sm:pt-8 pb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
