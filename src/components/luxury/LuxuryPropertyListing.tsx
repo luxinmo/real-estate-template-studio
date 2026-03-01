@@ -456,19 +456,20 @@ const PropertyCard = ({ property }: { property: typeof PROPERTIES[0] }) => {
       <div className="md:col-span-7 flex flex-col justify-between p-5 md:p-6 lg:p-8">
         <div>
           <div className="flex items-center justify-between mb-2.5">
-            <div className="flex items-center gap-3">
-              <span className="text-[11px] tracking-[0.15em] uppercase border border-luxury-black/20 text-luxury-black/55 px-2.5 py-1 font-medium">{property.tag}</span>
-              <span className="text-[13px] text-luxury-black/45 font-light">Detached houses <span className="mx-1 text-luxury-black/25">|</span> <span className="italic">{property.style}</span></span>
-            </div>
+            <span className="text-[11px] tracking-[0.15em] uppercase border border-luxury-black/20 text-luxury-black/55 px-2.5 py-1 font-medium">{property.tag}</span>
             <button onClick={(e) => { e.preventDefault(); }} className="text-luxury-black/30 hover:text-luxury-black transition-colors">
               <Mail className="w-4.5 h-4.5" />
             </button>
           </div>
 
-          <p className="text-[12px] tracking-[0.14em] uppercase text-luxury-black/45 mb-2">{property.location}</p>
-          <h2 className="text-[17px] md:text-[19px] font-medium text-luxury-black leading-snug mb-3 group-hover:text-luxury-black/75 transition-colors duration-300">
+          <p className="text-[12px] tracking-[0.14em] uppercase text-luxury-black/45 mb-1">{property.location}</p>
+          <h2 className="text-[17px] md:text-[19px] font-medium text-luxury-black leading-snug mb-1.5 group-hover:text-luxury-black/75 transition-colors duration-300">
             {property.title}
           </h2>
+          <p className="text-[13px] text-luxury-black/40 font-light mb-3">Detached houses <span className="mx-1 text-luxury-black/20">|</span> <span className="italic">{property.style}</span></p>
+          <p className="text-[14px] text-luxury-black/50 font-light leading-relaxed mb-4 line-clamp-2">
+            {property.excerpt}
+          </p>
           <p className="text-[14px] text-luxury-black/50 font-light leading-relaxed mb-4 line-clamp-2">
             {property.excerpt}
           </p>
