@@ -462,71 +462,68 @@ const Home2LandingPage = () => {
       {/* ═══ OFF-MARKET COLLECTION ═══ */}
       <section className="py-14 sm:py-20 md:py-28" style={{ background: palette.offMarketBg }}>
         <div className="max-w-[1440px] mx-auto px-5 sm:px-6 lg:px-12">
-          <FadeIn>
-            <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-14 gap-6">
-              <div>
-                <div className="flex items-center gap-2.5 mb-4">
-                  <div className="w-5 h-[1px]" style={{ background: palette.offMarketAccent }} />
-                  <p className="text-xs tracking-[0.3em] uppercase font-normal" style={{ color: palette.offMarketAccent }}>Private & Confidential</p>
-                </div>
-                <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extralight leading-[1.1]" style={{ fontFamily: font.heading, color: "#fff", letterSpacing: "0.06em" }}>
-                  Off-Market<br />Collection
-                </h2>
-                <p className="text-[15px] leading-[1.9] font-light mt-5 max-w-lg" style={{ color: "rgba(255,255,255,0.5)" }}>
-                  Exclusive properties available only through our private network. These listings are not advertised publicly — access is reserved for qualified buyers.
-                </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-0 items-stretch">
+            {/* Image side */}
+            <FadeIn className="relative overflow-hidden min-h-[320px] md:min-h-[520px]">
+              <img src={prop3} alt="Off-market property" className="absolute inset-0 w-full h-full object-cover" />
+              <div className="absolute inset-0" style={{ background: "linear-gradient(to right, transparent 30%, rgba(30,28,26,0.95) 100%)" }} />
+              <div className="absolute inset-0 md:hidden" style={{ background: "linear-gradient(to bottom, transparent 40%, rgba(30,28,26,0.9) 100%)" }} />
+              <div className="absolute top-5 left-5 flex items-center gap-1.5 px-3 py-1.5" style={{ background: "rgba(30,28,26,0.7)", backdropFilter: "blur(12px)" }}>
+                <EyeOff className="w-3.5 h-3.5" style={{ color: palette.offMarketAccent }} />
+                <span className="text-xs tracking-[0.15em] uppercase font-normal" style={{ color: palette.offMarketAccent }}>Off-Market</span>
               </div>
-              <a href="#" className="flex items-center gap-2 text-[13px] tracking-[0.18em] uppercase font-light transition-all duration-300 hover:bg-white/5 shrink-0 px-7 py-3.5" style={{ color: palette.offMarketAccent, border: `1px solid ${palette.offMarketAccent}50` }}>
-                <Lock className="w-4 h-4" />
-                Request Access
-              </a>
-            </div>
-          </FadeIn>
+            </FadeIn>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-4 sm:gap-5 lg:gap-6">
-            {OFF_MARKET.map((p, i) => (
-              <FadeIn key={i} delay={i * 0.08} className="sm:col-span-1 md:col-span-6">
-                <div className="group cursor-pointer">
-                  <div className="relative overflow-hidden" style={{ aspectRatio: "16/10" }}>
-                    <img src={p.image} alt={p.name} className="w-full h-full object-cover transition-transform duration-[1.2s] group-hover:scale-[1.05]" />
-                    <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(to top, rgba(30,28,26,0.75) 0%, rgba(30,28,26,0) 55%)" }} />
-                    <div className="absolute top-4 left-4 flex items-center gap-1.5 px-3 py-1.5" style={{ background: "rgba(30,28,26,0.7)", backdropFilter: "blur(12px)" }}>
-                      <EyeOff className="w-3.5 h-3.5" style={{ color: palette.offMarketAccent }} />
-                      <span className="text-xs tracking-[0.15em] uppercase font-normal" style={{ color: palette.offMarketAccent }}>Off-Market</span>
-                    </div>
-                    <div className="absolute bottom-0 left-0 right-0 p-5">
-                      <p className="text-xs tracking-[0.12em] uppercase font-light mb-1" style={{ color: "rgba(255,255,255,0.55)" }}>{p.location}</p>
-                      <h3 className="text-lg md:text-xl font-light tracking-wide text-white" style={{ fontFamily: font.heading }}>{p.name}</h3>
-                      <div className="flex items-center justify-between mt-2">
-                        <p className="text-base md:text-lg font-normal" style={{ color: palette.offMarketAccent }}>{p.price}</p>
-                        <div className="flex items-center gap-3 text-xs font-light" style={{ color: "rgba(255,255,255,0.5)" }}>
-                          <span>{p.beds} Beds</span>
-                          <span>{p.baths} Baths</span>
-                          <span>{p.sqm} m²</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-600 flex items-center justify-center" style={{ background: "rgba(30,28,26,0.4)" }}>
-                      <span className="text-xs tracking-[0.2em] uppercase text-white border border-white/30 px-6 py-3 font-light flex items-center gap-2">
-                        <Eye className="w-4 h-4" /> Private Viewing
-                      </span>
-                    </div>
+            {/* Content side */}
+            <FadeIn delay={0.15} className="flex flex-col justify-center px-6 sm:px-10 md:px-14 lg:px-20 py-12 md:py-16">
+              <div className="flex items-center gap-2.5 mb-6">
+                <div className="w-5 h-[1px]" style={{ background: palette.offMarketAccent }} />
+                <p className="text-xs tracking-[0.3em] uppercase font-normal" style={{ color: palette.offMarketAccent }}>Private & Confidential</p>
+              </div>
+
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-extralight leading-[1.1] mb-6" style={{ fontFamily: font.heading, color: "#fff", letterSpacing: "0.06em" }}>
+                Off-Market<br />Collection
+              </h2>
+
+              <p className="text-[15px] leading-[1.9] font-light mb-4" style={{ color: "rgba(255,255,255,0.55)" }}>
+                No todas las propiedades están disponibles públicamente. Nuestra colección off-market reúne inmuebles exclusivos que solo se muestran a compradores verificados a través de nuestra red privada.
+              </p>
+
+              <p className="text-[14px] leading-[1.8] font-light mb-8" style={{ color: "rgba(255,255,255,0.4)" }}>
+                Regístrese para solicitar acceso y un asesor personal se pondrá en contacto con usted para presentarle propiedades seleccionadas según sus preferencias y presupuesto.
+              </p>
+
+              <div className="flex flex-col sm:flex-row items-start gap-4 mb-8">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ border: `1px solid ${palette.offMarketAccent}40` }}>
+                    <Lock className="w-4 h-4" style={{ color: palette.offMarketAccent }} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-light text-white">Acceso restringido</p>
+                    <p className="text-xs font-light" style={{ color: "rgba(255,255,255,0.4)" }}>Solo compradores verificados</p>
                   </div>
                 </div>
-              </FadeIn>
-            ))}
-          </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ border: `1px solid ${palette.offMarketAccent}40` }}>
+                    <Shield className="w-4 h-4" style={{ color: palette.offMarketAccent }} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-light text-white">Asesor personal</p>
+                    <p className="text-xs font-light" style={{ color: "rgba(255,255,255,0.4)" }}>Le contactaremos directamente</p>
+                  </div>
+                </div>
+              </div>
 
-          <FadeIn delay={0.4}>
-            <div className="mt-14 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
-              <p className="text-sm font-light" style={{ color: "rgba(255,255,255,0.45)" }}>
-                <span style={{ color: palette.offMarketAccent }} className="font-normal">120+</span> off-market properties currently available through our private network
-              </p>
-              <a href="#" className="flex items-center gap-1.5 text-[13px] tracking-[0.12em] uppercase font-light transition-opacity hover:opacity-60" style={{ color: palette.offMarketAccent }}>
-                Learn More <ArrowUpRight className="w-4 h-4" />
+              <a href="#" className="inline-flex items-center justify-center gap-2.5 text-[13px] tracking-[0.18em] uppercase font-light px-8 py-4 transition-all duration-500 hover:opacity-90 self-start" style={{ background: palette.offMarketAccent, color: palette.offMarketBg }}>
+                <Lock className="w-4 h-4" />
+                Solicitar acceso
               </a>
-            </div>
-          </FadeIn>
+
+              <p className="text-xs font-light mt-6" style={{ color: "rgba(255,255,255,0.3)" }}>
+                <span style={{ color: palette.offMarketAccent }} className="font-normal">120+</span> propiedades off-market disponibles actualmente
+              </p>
+            </FadeIn>
+          </div>
         </div>
       </section>
 
