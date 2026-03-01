@@ -118,34 +118,34 @@ const PriceDropdown = ({ priceMin, priceMax, hidePOR, onMinChange, onMaxChange, 
         Price {hasValue && "●"} <ChevronDown className="w-3.5 h-3.5" />
       </button>
       {open && (
-        <div className="absolute top-full left-0 mt-2 bg-white border border-neutral-200 rounded-sm shadow-lg w-[380px] p-5 z-50">
-          <div className="flex gap-3 mb-3">
+        <div className="absolute top-full left-0 mt-2 bg-white border border-neutral-200 rounded-lg shadow-xl w-[400px] p-6 z-50">
+          <div className="flex gap-4 mb-4">
             <div className="flex-1">
-              <label className="text-[10px] uppercase tracking-wider text-luxury-black/40 mb-1.5 block">Min price</label>
-              <input type="text" value={priceMin} onChange={(e) => onMinChange(e.target.value)} placeholder="€ No Min" className="w-full border border-neutral-200 px-3 py-2.5 text-[13px] text-luxury-black focus:outline-none focus:border-luxury-black/30" />
-              <div className="flex flex-wrap gap-1.5 mt-2">
+              <label className="text-[11px] uppercase tracking-wider text-luxury-black/65 font-medium mb-2 block">Min price</label>
+              <input type="text" value={priceMin} onChange={(e) => onMinChange(e.target.value)} placeholder="€ No Min" className="w-full border border-neutral-300 rounded-md px-3 py-2.5 text-[14px] text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/40 focus:ring-1 focus:ring-luxury-black/10" />
+              <div className="flex flex-wrap gap-2 mt-2.5">
                 {PRICE_PRESETS.slice(0, 3).map(p => (
-                  <button key={p.value} onClick={() => onMinChange(p.value)} className={`text-[10px] px-2 py-0.5 rounded-full border transition-colors ${priceMin === p.value ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-200 text-luxury-black/50 hover:border-luxury-black/30"}`}>
+                  <button key={p.value} onClick={() => onMinChange(p.value)} className={`text-[12px] px-3 py-1 rounded-full border transition-colors font-light ${priceMin === p.value ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-300 text-luxury-black/65 hover:border-luxury-black/40"}`}>
                     {p.label}
                   </button>
                 ))}
               </div>
             </div>
             <div className="flex-1">
-              <label className="text-[10px] uppercase tracking-wider text-luxury-black/40 mb-1.5 block">Max price</label>
-              <input type="text" value={priceMax} onChange={(e) => onMaxChange(e.target.value)} placeholder="€ No Max" className="w-full border border-neutral-200 px-3 py-2.5 text-[13px] text-luxury-black focus:outline-none focus:border-luxury-black/30" />
-              <div className="flex flex-wrap gap-1.5 mt-2">
+              <label className="text-[11px] uppercase tracking-wider text-luxury-black/65 font-medium mb-2 block">Max price</label>
+              <input type="text" value={priceMax} onChange={(e) => onMaxChange(e.target.value)} placeholder="€ No Max" className="w-full border border-neutral-300 rounded-md px-3 py-2.5 text-[14px] text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/40 focus:ring-1 focus:ring-luxury-black/10" />
+              <div className="flex flex-wrap gap-2 mt-2.5">
                 {PRICE_PRESETS.slice(2).map(p => (
-                  <button key={p.value} onClick={() => onMaxChange(p.value)} className={`text-[10px] px-2 py-0.5 rounded-full border transition-colors ${priceMax === p.value ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-200 text-luxury-black/50 hover:border-luxury-black/30"}`}>
+                  <button key={p.value} onClick={() => onMaxChange(p.value)} className={`text-[12px] px-3 py-1 rounded-full border transition-colors font-light ${priceMax === p.value ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-300 text-luxury-black/65 hover:border-luxury-black/40"}`}>
                     {p.label}
                   </button>
                 ))}
               </div>
             </div>
           </div>
-          <label className="flex items-center gap-2.5 cursor-pointer mt-2">
+          <label className="flex items-center gap-2.5 cursor-pointer mt-1 pt-3 border-t border-neutral-100">
             <input type="checkbox" checked={hidePOR} onChange={() => onHidePORChange(!hidePOR)} className="w-4 h-4 border-neutral-300 rounded-sm accent-luxury-black" />
-            <span className="text-[13px] text-luxury-black/70">Hide "Price on Request" listings</span>
+            <span className="text-[14px] text-luxury-black/75">Hide "Price on Request" listings</span>
           </label>
         </div>
       )}
@@ -278,26 +278,26 @@ const FilterSidebar = ({ open, onClose, filters, onChange }: { open: boolean; on
       <div className="fixed inset-0 bg-luxury-black/30 z-40" onClick={onClose} />
       <aside className="fixed top-0 left-0 h-full w-[340px] bg-white z-50 overflow-y-auto border-r border-neutral-200 shadow-lg animate-in slide-in-from-left duration-300">
         <div className="flex items-center justify-between p-5 border-b border-neutral-200">
-          <h2 className="text-[15px] font-medium text-luxury-black">Filters</h2>
+          <h2 className="text-[17px] font-medium text-luxury-black">Filters</h2>
           <button onClick={onClose} className="text-luxury-black/50 hover:text-luxury-black transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <div className="p-5 space-y-7">
+        <div className="p-6 space-y-8">
           {/* Property type with subtypes */}
           <div>
-            <h3 className="text-[13px] font-medium text-luxury-black mb-3">Property type</h3>
-            <div className="space-y-2.5">
+            <h3 className="text-[15px] font-medium text-luxury-black mb-4">Property type</h3>
+            <div className="space-y-3">
               {TYPE_OPTIONS_WITH_SUBTYPES.map((t) => (
                 <div key={t.label}>
                   <label className="flex items-center justify-between cursor-pointer group">
-                    <div className="flex items-center gap-2.5">
-                      <input type="checkbox" checked={filters.types.includes(t.label)} onChange={() => toggleType(t.label)} className="w-4 h-4 border-neutral-300 rounded-sm accent-luxury-black" />
-                      <span className="text-[13px] text-luxury-black/70 group-hover:text-luxury-black transition-colors">{t.label}</span>
+                    <div className="flex items-center gap-3">
+                      <input type="checkbox" checked={filters.types.includes(t.label)} onChange={() => toggleType(t.label)} className="w-[18px] h-[18px] border-neutral-300 rounded accent-luxury-black" />
+                      <span className="text-[15px] text-luxury-black/80 group-hover:text-luxury-black transition-colors">{t.label}</span>
                     </div>
                     {t.subtypes && (
-                      <span className="text-[11px] text-luxury-black/35 flex items-center gap-1">All subtypes <ChevronDown className="w-3 h-3" /></span>
+                      <span className="text-[12px] text-luxury-black/45 flex items-center gap-1">All subtypes <ChevronDown className="w-3 h-3" /></span>
                     )}
                   </label>
                 </div>
@@ -307,14 +307,14 @@ const FilterSidebar = ({ open, onClose, filters, onChange }: { open: boolean; on
 
           {/* Price range */}
           <div>
-            <h3 className="text-[13px] font-medium text-luxury-black mb-3">Price range</h3>
-            <div className="flex gap-3 mb-2">
-              <input type="text" value={filters.priceMin} onChange={(e) => onChange({ ...filters, priceMin: e.target.value })} placeholder="€ No Min" className="w-full border border-neutral-200 px-3 py-2 text-[12px] text-luxury-black focus:outline-none focus:border-luxury-black/30" />
-              <input type="text" value={filters.priceMax} onChange={(e) => onChange({ ...filters, priceMax: e.target.value })} placeholder="€ No Max" className="w-full border border-neutral-200 px-3 py-2 text-[12px] text-luxury-black focus:outline-none focus:border-luxury-black/30" />
+            <h3 className="text-[15px] font-medium text-luxury-black mb-4">Price range</h3>
+            <div className="flex gap-3 mb-3">
+              <input type="text" value={filters.priceMin} onChange={(e) => onChange({ ...filters, priceMin: e.target.value })} placeholder="€ No Min" className="w-full border border-neutral-300 rounded-md px-3 py-2.5 text-[14px] text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/40" />
+              <input type="text" value={filters.priceMax} onChange={(e) => onChange({ ...filters, priceMax: e.target.value })} placeholder="€ No Max" className="w-full border border-neutral-300 rounded-md px-3 py-2.5 text-[14px] text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/40" />
             </div>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-2">
               {PRICE_PRESETS.map(p => (
-                <button key={p.value} onClick={() => onChange({ ...filters, priceMin: filters.priceMin === p.value ? "" : p.value })} className={`text-[10px] px-2 py-0.5 rounded-full border transition-colors ${filters.priceMin === p.value ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-200 text-luxury-black/50 hover:border-luxury-black/30"}`}>
+                <button key={p.value} onClick={() => onChange({ ...filters, priceMin: filters.priceMin === p.value ? "" : p.value })} className={`text-[12px] px-3 py-1 rounded-full border transition-colors ${filters.priceMin === p.value ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-300 text-luxury-black/60 hover:border-luxury-black/40"}`}>
                   {p.label}+
                 </button>
               ))}
@@ -323,20 +323,20 @@ const FilterSidebar = ({ open, onClose, filters, onChange }: { open: boolean; on
 
           {/* Living area */}
           <div>
-            <h3 className="text-[13px] font-medium text-luxury-black mb-3">Living area</h3>
+            <h3 className="text-[15px] font-medium text-luxury-black mb-4">Living area</h3>
             <div className="flex gap-3">
-              <input type="text" value={filters.areaMin} onChange={(e) => onChange({ ...filters, areaMin: e.target.value })} placeholder="No Min" className="w-full border border-neutral-200 px-3 py-2 text-[12px] text-luxury-black focus:outline-none focus:border-luxury-black/30" />
-              <input type="text" value={filters.areaMax} onChange={(e) => onChange({ ...filters, areaMax: e.target.value })} placeholder="No Max" className="w-full border border-neutral-200 px-3 py-2 text-[12px] text-luxury-black focus:outline-none focus:border-luxury-black/30" />
+              <input type="text" value={filters.areaMin} onChange={(e) => onChange({ ...filters, areaMin: e.target.value })} placeholder="No Min" className="w-full border border-neutral-300 rounded-md px-3 py-2.5 text-[14px] text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/40" />
+              <input type="text" value={filters.areaMax} onChange={(e) => onChange({ ...filters, areaMax: e.target.value })} placeholder="No Max" className="w-full border border-neutral-300 rounded-md px-3 py-2.5 text-[14px] text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/40" />
             </div>
-            <span className="text-[10px] text-luxury-black/35 mt-1 block">m²</span>
+            <span className="text-[11px] text-luxury-black/45 mt-1.5 block">m²</span>
           </div>
 
           {/* Bedrooms */}
           <div>
-            <h3 className="text-[13px] font-medium text-luxury-black mb-3">Bedrooms</h3>
-            <div className="flex gap-1.5">
+            <h3 className="text-[15px] font-medium text-luxury-black mb-4">Bedrooms</h3>
+            <div className="flex gap-2">
               {BED_OPTIONS.map((b) => (
-                <button key={b} onClick={() => onChange({ ...filters, beds: b })} className={`px-3.5 py-1.5 text-[12px] border transition-all duration-200 ${filters.beds === b ? "bg-luxury-black text-white border-luxury-black" : "border-neutral-200 text-luxury-black/60 hover:border-luxury-black/30"}`}>
+                <button key={b} onClick={() => onChange({ ...filters, beds: b })} className={`px-4 py-2 text-[14px] border rounded-md transition-all duration-200 ${filters.beds === b ? "bg-luxury-black text-white border-luxury-black" : "border-neutral-300 text-luxury-black/65 hover:border-luxury-black/40"}`}>
                   {b}
                 </button>
               ))}
@@ -345,10 +345,10 @@ const FilterSidebar = ({ open, onClose, filters, onChange }: { open: boolean; on
 
           {/* Bathrooms */}
           <div>
-            <h3 className="text-[13px] font-medium text-luxury-black mb-3">Bathrooms</h3>
-            <div className="flex gap-1.5">
+            <h3 className="text-[15px] font-medium text-luxury-black mb-4">Bathrooms</h3>
+            <div className="flex gap-2">
               {BATH_OPTIONS.map((b) => (
-                <button key={b} onClick={() => onChange({ ...filters, baths: b })} className={`px-3.5 py-1.5 text-[12px] border transition-all duration-200 ${filters.baths === b ? "bg-luxury-black text-white border-luxury-black" : "border-neutral-200 text-luxury-black/60 hover:border-luxury-black/30"}`}>
+                <button key={b} onClick={() => onChange({ ...filters, baths: b })} className={`px-4 py-2 text-[14px] border rounded-md transition-all duration-200 ${filters.baths === b ? "bg-luxury-black text-white border-luxury-black" : "border-neutral-300 text-luxury-black/65 hover:border-luxury-black/40"}`}>
                   {b}
                 </button>
               ))}
@@ -357,12 +357,12 @@ const FilterSidebar = ({ open, onClose, filters, onChange }: { open: boolean; on
 
           {/* Amenities */}
           <div>
-            <h3 className="text-[13px] font-medium text-luxury-black mb-3">Amenities</h3>
-            <div className="space-y-2.5">
+            <h3 className="text-[15px] font-medium text-luxury-black mb-4">Amenities</h3>
+            <div className="space-y-3">
               {AMENITY_SIDEBAR.map((a) => (
-                <label key={a} className="flex items-center gap-2.5 cursor-pointer group">
-                  <input type="checkbox" checked={filters.amenities.includes(a)} onChange={() => toggleAmenity(a)} className="w-4 h-4 border-neutral-300 rounded-sm accent-luxury-black" />
-                  <span className="text-[13px] text-luxury-black/70 group-hover:text-luxury-black transition-colors">{a}</span>
+                <label key={a} className="flex items-center gap-3 cursor-pointer group">
+                  <input type="checkbox" checked={filters.amenities.includes(a)} onChange={() => toggleAmenity(a)} className="w-[18px] h-[18px] border-neutral-300 rounded accent-luxury-black" />
+                  <span className="text-[15px] text-luxury-black/75 group-hover:text-luxury-black transition-colors">{a}</span>
                 </label>
               ))}
             </div>
@@ -370,9 +370,9 @@ const FilterSidebar = ({ open, onClose, filters, onChange }: { open: boolean; on
         </div>
 
         {/* Footer */}
-        <div className="sticky bottom-0 border-t border-neutral-200 bg-white p-4 flex gap-3">
-          <button onClick={() => onChange(defaultFilters)} className="text-[12px] text-luxury-black/50 hover:text-luxury-black transition-colors font-light">Clear all</button>
-          <button onClick={onClose} className="flex-1 bg-luxury-black text-white text-[12px] tracking-[0.1em] uppercase py-2.5 hover:bg-luxury-black/85 transition-all duration-300">
+        <div className="sticky bottom-0 border-t border-neutral-200 bg-white p-5 flex gap-4 items-center">
+          <button onClick={() => onChange(defaultFilters)} className="text-[13px] text-luxury-black/50 hover:text-luxury-black transition-colors font-light">Clear all</button>
+          <button onClick={onClose} className="flex-1 bg-luxury-black text-white text-[13px] tracking-[0.1em] uppercase py-3 rounded-md hover:bg-luxury-black/85 transition-all duration-300 font-medium">
             Show results
           </button>
         </div>
