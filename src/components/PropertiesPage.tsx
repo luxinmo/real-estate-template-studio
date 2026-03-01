@@ -3,6 +3,7 @@ import { Plus, ArrowUpDown, Download, Globe, GlobeIcon, Share2, Printer, Tag, X,
 import { Button } from "@/components/ui/button";
 import PropertyCard, { PropertyData } from "@/components/properties/PropertyCard";
 import PropertySearchFilters, { FilterState, defaultFilters } from "@/components/properties/PropertySearchFilters";
+import NearbyPromotionBlock from "@/components/properties/NearbyPromotionBlock";
 import PropertyFilterSidebar, { SidebarFilters, defaultSidebarFilters } from "@/components/properties/PropertyFilterSidebar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -201,14 +202,16 @@ const PropertiesPage = ({ onViewProperty, onAddProperty }: { onViewProperty?: ()
       <div className="px-4 sm:px-8 pb-10 flex justify-center gap-6">
         {/* Property List — centered */}
         <div className="w-full max-w-4xl space-y-4">
-          {sortedProperties.map((p) => (
-            <PropertyCard
-              key={p.id}
-              property={p}
-              onClick={onViewProperty}
-              selected={selectedIds.has(p.id)}
-              onSelect={toggleSelect}
-            />
+          {sortedProperties.map((p, index) => (
+            <div key={p.id} className="space-y-4">
+              <PropertyCard
+                property={p}
+                onClick={onViewProperty}
+                selected={selectedIds.has(p.id)}
+                onSelect={toggleSelect}
+              />
+              {index === 1 && <NearbyPromotionBlock />}
+            </div>
           ))}
         </div>
 
