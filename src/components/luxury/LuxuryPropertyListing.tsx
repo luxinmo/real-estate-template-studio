@@ -90,7 +90,7 @@ const TypeDropdown = ({ selected, onToggle }: { selected: string[]; onToggle: (v
   return (
     <div ref={ref} className="relative shrink-0">
       <button onClick={() => setOpen(!open)} className={`flex items-center gap-1 border text-[14px] px-4 py-2 rounded-full transition-all duration-200 shrink-0 ${selected.length > 0 ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-200 text-luxury-black/65 hover:border-luxury-black/30"}`}>
-        Type {selected.length > 0 && <span className="bg-white text-luxury-black text-[11px] w-4 h-4 rounded-full flex items-center justify-center font-medium">{selected.length}</span>} <ChevronDown className="w-3.5 h-3.5" />
+        Type {selected.length > 0 && <span className="bg-white text-luxury-black text-[12px] w-4 h-4 rounded-full flex items-center justify-center font-medium">{selected.length}</span>} <ChevronDown className="w-3.5 h-3.5" />
       </button>
       {open && (
         <div className="absolute top-full left-0 mt-2 bg-white border border-neutral-200 rounded-sm shadow-lg w-[300px] py-2 z-50">
@@ -121,7 +121,7 @@ const PriceDropdown = ({ priceMin, priceMax, hidePOR, onMinChange, onMaxChange, 
         <div className="absolute top-full left-0 mt-2 bg-white border border-neutral-200 rounded-lg shadow-xl w-[400px] p-6 z-50">
           <div className="flex gap-4 mb-4">
             <div className="flex-1">
-              <label className="text-[11px] uppercase tracking-wider text-luxury-black/65 font-medium mb-2 block">Min price</label>
+              <label className="text-[12px] uppercase tracking-wider text-luxury-black/65 font-medium mb-2 block">Min price</label>
               <input type="text" value={priceMin} onChange={(e) => onMinChange(e.target.value)} placeholder="€ No Min" className="w-full border border-neutral-300 rounded-md px-3 py-2.5 text-[14px] text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/40 focus:ring-1 focus:ring-luxury-black/10" />
               <div className="flex flex-wrap gap-2 mt-2.5">
                 {PRICE_PRESETS.slice(0, 3).map(p => (
@@ -132,7 +132,7 @@ const PriceDropdown = ({ priceMin, priceMax, hidePOR, onMinChange, onMaxChange, 
               </div>
             </div>
             <div className="flex-1">
-              <label className="text-[11px] uppercase tracking-wider text-luxury-black/65 font-medium mb-2 block">Max price</label>
+              <label className="text-[12px] uppercase tracking-wider text-luxury-black/65 font-medium mb-2 block">Max price</label>
               <input type="text" value={priceMax} onChange={(e) => onMaxChange(e.target.value)} placeholder="€ No Max" className="w-full border border-neutral-300 rounded-md px-3 py-2.5 text-[14px] text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/40 focus:ring-1 focus:ring-luxury-black/10" />
               <div className="flex flex-wrap gap-2 mt-2.5">
                 {PRICE_PRESETS.slice(2).map(p => (
@@ -158,7 +158,7 @@ const BedsDropdown = ({ selected, onChange }: { selected: string; onChange: (v: 
   return (
     <div ref={ref} className="relative shrink-0">
       <button onClick={() => setOpen(!open)} className={`flex items-center gap-1 border text-[14px] px-4 py-2 rounded-full transition-all duration-200 ${selected !== "Any" ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-200 text-luxury-black/65 hover:border-luxury-black/30"}`}>
-        Beds {selected !== "Any" && <span className="text-[11px]">{selected}</span>} <ChevronDown className="w-3.5 h-3.5" />
+        Beds {selected !== "Any" && <span className="text-[12px]">{selected}</span>} <ChevronDown className="w-3.5 h-3.5" />
       </button>
       {open && (
         <div className="absolute top-full left-0 mt-2 bg-white border border-neutral-200 rounded-sm shadow-lg w-[320px] p-5 z-50">
@@ -180,12 +180,12 @@ const AmenitiesDropdown = ({ selected, onToggle }: { selected: string[]; onToggl
   return (
     <div ref={ref} className="relative shrink-0">
       <button onClick={() => setOpen(!open)} className={`flex items-center gap-1 border text-[14px] px-4 py-2 rounded-full transition-all duration-200 ${selected.length > 0 ? "border-luxury-black bg-luxury-black text-white" : "border-neutral-200 text-luxury-black/65 hover:border-luxury-black/30"}`}>
-        Amenities {selected.length > 0 && <span className="bg-white text-luxury-black text-[11px] w-4 h-4 rounded-full flex items-center justify-center font-medium">{selected.length}</span>} <ChevronDown className="w-3.5 h-3.5" />
+        Amenities {selected.length > 0 && <span className="bg-white text-luxury-black text-[12px] w-4 h-4 rounded-full flex items-center justify-center font-medium">{selected.length}</span>} <ChevronDown className="w-3.5 h-3.5" />
       </button>
       {open && (
         <div className="absolute top-full right-0 mt-2 bg-white border border-neutral-200 rounded-sm shadow-lg w-[480px] max-h-[420px] overflow-y-auto p-5 z-50">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-[11px] text-luxury-black/40 uppercase tracking-wide">Select amenities</span>
+            <span className="text-[12px] text-luxury-black/40 uppercase tracking-wide">Select amenities</span>
             {selected.length > 0 && <button onClick={() => selected.forEach(s => onToggle(s))} className="text-[12px] text-luxury-black/50 hover:text-luxury-black">Clear</button>}
           </div>
           {AMENITY_GROUPS.map((group) => (
@@ -297,7 +297,7 @@ const FilterSidebar = ({ open, onClose, filters, onChange }: { open: boolean; on
                       <span className="text-[15px] text-luxury-black/80 group-hover:text-luxury-black transition-colors">{t.label}</span>
                     </div>
                     {t.subtypes && (
-                      <span className="text-[12px] text-luxury-black/45 flex items-center gap-1">All subtypes <ChevronDown className="w-3 h-3" /></span>
+                      <span className="text-[13px] text-luxury-black/45 flex items-center gap-1">All subtypes <ChevronDown className="w-3 h-3" /></span>
                     )}
                   </label>
                 </div>
@@ -328,7 +328,7 @@ const FilterSidebar = ({ open, onClose, filters, onChange }: { open: boolean; on
               <input type="text" value={filters.areaMin} onChange={(e) => onChange({ ...filters, areaMin: e.target.value })} placeholder="No Min" className="w-full border border-neutral-300 rounded-md px-3 py-2.5 text-[14px] text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/40" />
               <input type="text" value={filters.areaMax} onChange={(e) => onChange({ ...filters, areaMax: e.target.value })} placeholder="No Max" className="w-full border border-neutral-300 rounded-md px-3 py-2.5 text-[14px] text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:border-luxury-black/40" />
             </div>
-            <span className="text-[11px] text-luxury-black/45 mt-1.5 block">m²</span>
+            <span className="text-[12px] text-luxury-black/45 mt-1.5 block">m²</span>
           </div>
 
           {/* Bedrooms */}
@@ -441,12 +441,12 @@ const PropertyCard = ({ property }: { property: typeof PROPERTIES[0] }) => {
       <div className="md:col-span-5 relative overflow-hidden aspect-[16/10] md:aspect-auto md:h-full min-h-[220px]">
         <img src={property.image} alt={property.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 absolute inset-0" />
         {property.tag === "NEW BUILD" && (
-          <span className="absolute top-3 left-3 bg-luxury-black/60 backdrop-blur-sm text-white text-[10px] tracking-[0.12em] uppercase font-medium px-2.5 py-1">
+          <span className="absolute top-3 left-3 bg-luxury-black/60 backdrop-blur-sm text-white text-[12px] tracking-[0.12em] uppercase font-medium px-2.5 py-1">
             New Build
           </span>
         )}
         {property.gallery.length > 1 && (
-          <span className="absolute bottom-3 right-3 bg-luxury-black/60 text-white text-[10px] px-2 py-1 font-light">
+          <span className="absolute bottom-3 right-3 bg-luxury-black/60 text-white text-[12px] px-2 py-1 font-light">
             1/{property.gallery.length}
           </span>
         )}
@@ -455,14 +455,14 @@ const PropertyCard = ({ property }: { property: typeof PROPERTIES[0] }) => {
       {/* Info */}
       <div className="md:col-span-7 flex flex-col p-5 md:p-6 lg:p-8">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-[11px] tracking-[0.15em] uppercase border border-luxury-black/30 text-luxury-black/70 px-2.5 py-1 font-medium">{property.tag}</span>
+          <span className="text-[12px] tracking-[0.15em] uppercase border border-luxury-black/30 text-luxury-black/70 px-2.5 py-1 font-medium">{property.tag}</span>
           <button onClick={(e) => { e.preventDefault(); }} className="text-luxury-black/30 hover:text-luxury-black transition-colors">
             <Mail className="w-4.5 h-4.5" />
           </button>
         </div>
 
-        <p className="text-[12px] tracking-[0.14em] uppercase text-luxury-black/60 mb-1">{property.location}</p>
-        <p className="text-[13px] text-luxury-black/55 font-light mb-1.5">Detached houses <span className="mx-1 text-luxury-black/30">|</span> <span className="italic">{property.style}</span> <span className="mx-1 text-luxury-black/30">|</span> <span className="font-mono text-luxury-black/45 tracking-wide text-[11px]">REF-{String(property.id).padStart(4, "0")}</span></p>
+        <p className="text-[13px] tracking-[0.14em] uppercase text-luxury-black/60 mb-1">{property.location}</p>
+        <p className="text-[13px] text-luxury-black/55 font-light mb-1.5">Detached houses <span className="mx-1 text-luxury-black/30">|</span> <span className="italic">{property.style}</span> <span className="mx-1 text-luxury-black/30">|</span> <span className="font-mono text-luxury-black/45 tracking-wide text-[12px]">REF-{String(property.id).padStart(4, "0")}</span></p>
         <h2 className="text-[17px] md:text-[19px] font-medium text-luxury-black leading-snug mb-1.5 group-hover:text-luxury-black/75 transition-colors duration-300">
           {property.title}
         </h2>
@@ -473,20 +473,20 @@ const PropertyCard = ({ property }: { property: typeof PROPERTIES[0] }) => {
         {/* Specs */}
         <div className="flex items-center gap-7 mb-5">
           <div className="text-center">
-            <p className="text-[11px] tracking-[0.1em] uppercase text-luxury-black/50 mb-0.5">Beds</p>
+            <p className="text-[12px] tracking-[0.1em] uppercase text-luxury-black/50 mb-0.5">Beds</p>
             <p className="text-[16px] text-luxury-black font-light">{property.beds}</p>
           </div>
           <div className="text-center">
-            <p className="text-[11px] tracking-[0.1em] uppercase text-luxury-black/50 mb-0.5">Baths</p>
+            <p className="text-[12px] tracking-[0.1em] uppercase text-luxury-black/50 mb-0.5">Baths</p>
             <p className="text-[16px] text-luxury-black font-light">{property.baths}</p>
           </div>
           <div className="text-center">
-            <p className="text-[11px] tracking-[0.1em] uppercase text-luxury-black/50 mb-0.5">Built</p>
+            <p className="text-[12px] tracking-[0.1em] uppercase text-luxury-black/50 mb-0.5">Built</p>
             <p className="text-[16px] text-luxury-black font-light">{property.sqm} m²</p>
           </div>
           {property.plot && (
             <div className="text-center">
-              <p className="text-[11px] tracking-[0.1em] uppercase text-luxury-black/50 mb-0.5">Plot</p>
+              <p className="text-[12px] tracking-[0.1em] uppercase text-luxury-black/50 mb-0.5">Plot</p>
               <p className="text-[16px] text-luxury-black font-light">{property.plot.toLocaleString()} m²</p>
             </div>
           )}
@@ -540,7 +540,7 @@ const LuxuryPropertyListing = () => {
 
           <a href="/" className="flex flex-col items-center justify-center">
             <span className="text-lg md:text-xl tracking-[0.3em] font-light text-luxury-black">{BRAND_NAME}</span>
-            <span className="text-[7px] tracking-[0.35em] uppercase font-light text-luxury-black/40">Real Estate</span>
+            <span className="text-[10px] tracking-[0.35em] uppercase font-light text-luxury-black/40">Real Estate</span>
           </a>
 
           <div className="flex items-center justify-end gap-8">
@@ -624,7 +624,7 @@ const LuxuryPropertyListing = () => {
             ))}
             <button
               onClick={() => setFilters(defaultFilters)}
-              className="text-[11px] text-luxury-black/40 hover:text-luxury-black/70 underline transition-colors ml-1"
+              className="text-[12px] text-luxury-black/40 hover:text-luxury-black/70 underline transition-colors ml-1"
             >
               Clear all
             </button>
@@ -674,7 +674,7 @@ const LuxuryPropertyListing = () => {
               <ChevronDown className="w-4 h-4 -rotate-90" />
             </button>
           </div>
-          <p className="text-[12px] text-luxury-black/40 font-light">1–6 of {PROPERTIES.length} homes for sale</p>
+          <p className="text-[13px] text-luxury-black/40 font-light">1–6 of {PROPERTIES.length} homes for sale</p>
         </div>
       </main>
 
@@ -708,12 +708,12 @@ const LuxuryPropertyListing = () => {
             </div>
             <div>
               <form className="flex flex-col gap-3" onSubmit={(e) => e.preventDefault()}>
-                <input type="email" placeholder="Your email address" className="w-full border border-neutral-300 px-4 py-3 text-[13px] text-luxury-black placeholder:text-luxury-black/30 focus:outline-none focus:border-luxury-black/40 transition-colors" />
-                <button type="submit" className="bg-luxury-black text-white text-[12px] tracking-[0.1em] uppercase py-3 w-full hover:bg-luxury-black/85 transition-all duration-300">
+                <input type="email" placeholder="Your email address" className="w-full border border-neutral-300 px-4 py-3 text-[14px] text-luxury-black placeholder:text-luxury-black/30 focus:outline-none focus:border-luxury-black/40 transition-colors" />
+                <button type="submit" className="bg-luxury-black text-white text-[13px] tracking-[0.1em] uppercase py-3 w-full hover:bg-luxury-black/85 transition-all duration-300">
                   Subscribe to Newsletter
                 </button>
               </form>
-              <p className="text-[10px] text-luxury-black/35 mt-2 font-light uppercase tracking-wide">
+              <p className="text-[12px] text-luxury-black/35 mt-2 font-light uppercase tracking-wide">
                 By sharing your email, you agree to our <a href="#" className="underline">Terms of Use</a> and <a href="#" className="underline">Privacy</a>.
               </p>
             </div>
@@ -726,7 +726,7 @@ const LuxuryPropertyListing = () => {
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-10">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <span className="text-sm tracking-[0.25em] text-white/40 font-light">{BRAND_NAME}</span>
-            <p className="text-[10px] text-white/20 tracking-wider font-light">© 2025 {BRAND_NAME}. All rights reserved.</p>
+            <p className="text-[12px] text-white/20 tracking-wider font-light">© 2025 {BRAND_NAME}. All rights reserved.</p>
           </div>
         </div>
       </footer>
