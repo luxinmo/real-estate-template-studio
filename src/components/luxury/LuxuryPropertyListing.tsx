@@ -532,12 +532,12 @@ const LuxuryPropertyListing = () => {
       {/* ─── NAVBAR ─── */}
       <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm">
         <div className="max-w-[1400px] mx-auto grid grid-cols-3 items-center px-6 lg:px-10 h-[68px]">
-          <div className="hidden lg:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-10">
             <button className="text-luxury-black/50 hover:text-luxury-black transition-colors duration-300">
               <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.2}><circle cx="12" cy="12" r="10" /><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
             </button>
             {NAV_LEFT.map((l) => (
-              <a key={l} href={l === "Home" ? "/" : l === "Properties" ? "/properties" : "#"} className="text-[11px] tracking-[0.18em] uppercase font-normal text-luxury-black/60 hover:text-luxury-black transition-colors duration-300">{l}</a>
+              <a key={l} href={l === "Home" ? "/" : l === "Properties" ? "/properties" : "#"} className="text-[13px] tracking-[0.14em] uppercase font-light text-luxury-black/55 hover:text-luxury-black transition-colors duration-300">{l}</a>
             ))}
           </div>
           <div className="lg:hidden" />
@@ -548,9 +548,9 @@ const LuxuryPropertyListing = () => {
           </a>
 
           <div className="flex items-center justify-end gap-8">
-            <div className="hidden lg:flex items-center gap-8">
+            <div className="hidden lg:flex items-center gap-10">
               {NAV_RIGHT.map((l) => (
-                <a key={l} href="#" className="text-[11px] tracking-[0.18em] uppercase font-normal text-luxury-black/60 hover:text-luxury-black transition-colors duration-300">{l}</a>
+                <a key={l} href="#" className="text-[13px] tracking-[0.14em] uppercase font-light text-luxury-black/55 hover:text-luxury-black transition-colors duration-300">{l}</a>
               ))}
             </div>
             <button className="lg:hidden text-luxury-black/70">
@@ -564,12 +564,12 @@ const LuxuryPropertyListing = () => {
       <div className="sticky top-[68px] z-40 bg-white border-b border-neutral-200">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
           {/* Breadcrumb */}
-          <div className="flex items-center gap-1.5 pt-3 pb-2 text-[13px] text-luxury-black/45 font-light">
+          <div className="flex items-center gap-2 pt-3.5 pb-2.5 text-[14px] text-luxury-black/40 font-light">
             <a href="/" className="hover:text-luxury-black transition-colors">Home</a>
-            <ChevronRight className="w-3 h-3" />
+            <ChevronRight className="w-3.5 h-3.5" />
             <a href="/properties" className="hover:text-luxury-black transition-colors">Properties</a>
-            <ChevronRight className="w-3 h-3" />
-            <span className="text-luxury-black/70">Ibiza & Costa Blanca</span>
+            <ChevronRight className="w-3.5 h-3.5" />
+            <span className="text-luxury-black/65">Ibiza & Costa Blanca</span>
           </div>
 
           {/* Search + filter chips row */}
@@ -638,11 +638,11 @@ const LuxuryPropertyListing = () => {
         {/* Results header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-xl md:text-2xl font-light text-luxury-black tracking-tight">Luxury Homes in Ibiza & Costa Blanca</h1>
-            <p className="text-[13px] text-luxury-black/55 font-light mt-2 max-w-3xl leading-relaxed">
+            <h1 className="text-2xl md:text-3xl font-extralight text-luxury-black tracking-[0.02em] leading-snug">Luxury Homes in Ibiza & Costa Blanca</h1>
+            <p className="text-[14px] sm:text-[15px] text-luxury-black/50 font-light mt-3 max-w-3xl leading-relaxed">
               Discover the finest selection of luxury villas, penthouses, fincas and new-build properties across Ibiza and the Costa Blanca. From beachfront estates with panoramic sea views to exclusive golf-side residences, explore hand-picked homes curated for the most discerning buyers.
             </p>
-            <p className="text-[12px] text-luxury-black/45 font-light mt-2">{PROPERTIES.length} properties found</p>
+            <p className="text-[13px] text-luxury-black/40 font-light mt-3">{PROPERTIES.length} properties found</p>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-[12px] text-luxury-black/45 font-light">Sort:</span>
