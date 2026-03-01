@@ -78,10 +78,10 @@ const LuxuryPropertyDetailV2 = () => {
   const prevSlide = () => setLightbox((p) => (p !== null ? (p - 1 + PROPERTY.images.length) % PROPERTY.images.length : 0));
 
   return (
-    <div className="flex-1 overflow-auto bg-luxury-cream font-sans text-luxury-black">
+    <div className="flex-1 overflow-auto bg-[#FAFAF9] font-sans text-luxury-black">
 
       {/* ─── NAV ─── */}
-      <nav className="sticky top-0 z-50 bg-luxury-cream/80 backdrop-blur-md border-b border-luxury-black/5">
+      <nav className="sticky top-0 z-50 bg-[#FAFAF9]/80 backdrop-blur-md border-b border-luxury-black/5">
         <div className="max-w-[1400px] mx-auto flex items-center justify-between px-6 lg:px-10 h-[52px]">
           <a href="/" className="text-[14px] tracking-[0.4em] text-luxury-black/80 font-extralight uppercase">{BRAND}</a>
           <div className="hidden md:flex items-center gap-8">
@@ -268,10 +268,10 @@ const LuxuryPropertyDetailV2 = () => {
                 <p className="text-[13px] text-luxury-black/55 font-light mb-6">{PROPERTY.agent.role}</p>
 
                 <form className="space-y-3 mb-5" onSubmit={(e) => e.preventDefault()}>
-                  <input type="text" placeholder="Full name" className="w-full bg-luxury-cream/60 border-0 px-4 py-3 text-[14px] text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:ring-1 focus:ring-luxury-gold/30 transition-all" />
-                  <input type="email" placeholder="Email address" className="w-full bg-luxury-cream/60 border-0 px-4 py-3 text-[14px] text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:ring-1 focus:ring-luxury-gold/30 transition-all" />
+                  <input type="text" placeholder="Full name" className="w-full bg-neutral-50 border-0 px-4 py-3 text-[14px] text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:ring-1 focus:ring-luxury-gold/30 transition-all" />
+                  <input type="email" placeholder="Email address" className="w-full bg-neutral-50 border-0 px-4 py-3 text-[14px] text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:ring-1 focus:ring-luxury-gold/30 transition-all" />
                   <LuxuryPhoneInput />
-                  <textarea placeholder="I'm interested in this property..." rows={3} className="w-full bg-luxury-cream/60 border-0 px-4 py-3 text-[14px] text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:ring-1 focus:ring-luxury-gold/30 transition-all resize-none" />
+                  <textarea placeholder="I'm interested in this property..." rows={3} className="w-full bg-neutral-50 border-0 px-4 py-3 text-[14px] text-luxury-black placeholder:text-luxury-black/35 focus:outline-none focus:ring-1 focus:ring-luxury-gold/30 transition-all resize-none" />
                   <label className="flex items-start gap-2 cursor-pointer">
                     <input type="checkbox" className="mt-1 accent-luxury-gold" />
                     <span className="text-[12px] text-luxury-black/60 font-light leading-relaxed">
@@ -283,7 +283,7 @@ const LuxuryPropertyDetailV2 = () => {
                   </button>
                 </form>
 
-                <a href={`tel:${PROPERTY.agent.phone}`} className="flex items-center justify-center gap-2 text-luxury-black/70 text-[12px] tracking-[0.18em] uppercase py-3.5 w-full hover:bg-luxury-cream transition-all duration-300 font-light border border-luxury-black/10">
+                <a href={`tel:${PROPERTY.agent.phone}`} className="flex items-center justify-center gap-2 text-luxury-black/70 text-[12px] tracking-[0.18em] uppercase py-3.5 w-full hover:bg-neutral-50 transition-all duration-300 font-light border border-luxury-black/10">
                   <Phone className="w-4 h-4" /> Call Directly
                 </a>
               </div>
