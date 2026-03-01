@@ -236,10 +236,10 @@ const Home2LandingPage = () => {
           </FadeIn>
           <FadeIn delay={0.3}>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 sm:px-0">
-              <button className="text-[12px] sm:text-[13px] tracking-[0.2em] uppercase font-light px-8 sm:px-10 py-3.5 sm:py-4 transition-all duration-500 hover:bg-white hover:text-[#1A1714]" style={{ background: "transparent", color: "#fff", border: "1px solid rgba(255,255,255,0.4)" }}>
-                All Properties
+              <button className="w-full sm:w-auto bg-white text-luxury-black text-[11px] tracking-[0.15em] uppercase font-medium px-8 py-3.5 hover:bg-white/90 transition-all duration-300 flex items-center justify-center gap-2">
+                All Properties <ArrowRight className="w-4 h-4" />
               </button>
-              <button className="text-[12px] sm:text-[13px] tracking-[0.2em] uppercase font-light px-8 sm:px-10 py-3.5 sm:py-4 transition-all duration-500 hover:bg-white hover:text-[#1A1714]" style={{ background: "transparent", color: "#fff", border: "1px solid rgba(255,255,255,0.4)" }}>
+              <button className="w-full sm:w-auto border border-white/40 text-white text-[11px] tracking-[0.15em] uppercase px-8 py-3.5 hover:bg-white hover:text-luxury-black transition-all duration-300 backdrop-blur-sm">
                 Sell With Us
               </button>
             </div>
