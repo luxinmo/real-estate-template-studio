@@ -470,9 +470,6 @@ const PropertyCard = ({ property }: { property: typeof PROPERTIES[0] }) => {
           <p className="text-[14px] text-luxury-black/50 font-light leading-relaxed mb-4 line-clamp-2">
             {property.excerpt}
           </p>
-          <p className="text-[14px] text-luxury-black/50 font-light leading-relaxed mb-4 line-clamp-2">
-            {property.excerpt}
-          </p>
 
           {/* Specs */}
           <div className="flex items-center gap-7 mb-4">
