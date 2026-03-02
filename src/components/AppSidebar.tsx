@@ -1,4 +1,4 @@
-import { Building2, LayoutGrid, Home, Users, Building, UserCircle, Briefcase, Settings, X, Component, MapPin, FileDown, FolderClock, Timer, AlertTriangle, Gem, CreditCard, Globe, FileText, BookOpen } from "lucide-react";
+import { Building2, LayoutGrid, Home, Users, Building, UserCircle, Briefcase, Settings, X, Component, MapPin, FileDown, FolderClock, Timer, AlertTriangle, CreditCard, FileText, BookOpen } from "lucide-react";
 
 const topItems = [
   { icon: LayoutGrid, label: "Dashboard", view: "dashboard" },
@@ -6,8 +6,6 @@ const topItems = [
   { icon: Users, label: "Contactos", view: "contacts" },
   { icon: Building, label: "Agencias", view: "agencies" },
   { icon: MapPin, label: "Locations", view: "locations" },
-  { icon: Gem, label: "Luxury Landing", view: "luxury-landing" },
-  { icon: Gem, label: "Home 2", view: "home-2" },
   { icon: Component, label: "Componentes", view: "components" },
   { icon: CreditCard, label: "Card Designer", view: "card-designer" },
 ];
