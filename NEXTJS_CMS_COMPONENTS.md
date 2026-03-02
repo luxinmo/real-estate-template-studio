@@ -3,6 +3,9 @@
 > 4 standalone components ready to copy-paste into any Next.js project.  
 > Dependencies: `lucide-react` only (+ React).  
 > All use Tailwind CSS utility classes — no `@apply`.
+>
+> **v2 — Multilingual support** added to both editors (ES, EN, DE, FR, RU, NL)
+> with per-language content fields and untranslated-language warnings.
 
 ---
 
@@ -178,19 +181,36 @@ export default function CmsPagesListPage({ onEdit, onNew }: Props) {
 
 ---
 
-## 2. PAGE EDITOR — `CmsPageEditorPage.tsx`
+## 2. PAGE EDITOR — `CmsPageEditorPage.tsx` (Multilingual)
 
 ```tsx
 "use client";
 
 import { useState, useRef, useCallback } from "react";
 import {
-  ArrowLeft, Save, Eye, X, Image as ImageIcon,
+  ArrowLeft, Save, Eye, X, Image as ImageIcon, AlertTriangle, Globe,
   Bold, Italic, Underline, Heading1, Heading2, Heading3,
   List, ListOrdered, Link as LinkIcon,
 } from "lucide-react";
 
+/* ───────── Languages ───────── */
+const LANGUAGES = [
+  { code: "es", label: "ES", name: "Español" },
+  { code: "en", label: "EN", name: "English" },
+  { code: "de", label: "DE", name: "Deutsch" },
+  { code: "fr", label: "FR", name: "Français" },
+  { code: "ru", label: "RU", name: "Русский" },
+  { code: "nl", label: "NL", name: "Nederlands" },
+];
+
 /* ───────── Types ───────── */
+interface LangContent {
+  title: string;
+  content: string;
+  metaTitle: string;
+  metaDescription: string;
+}
+
 interface CmsPage {
   id: string;
   title: string;
@@ -203,6 +223,13 @@ interface CmsPage {
   metaDescription: string;
   featuredImage: string | null;
 }
+
+const emptyLangContent = (): LangContent => ({
+  title: "",
+  content: "",
+  metaTitle: "",
+  metaDescription: "",
+});
 
 /* ───────── Mock data ───────── */
 const MOCK_PAGES: CmsPage[] = [
@@ -297,6 +324,98 @@ function RichTextEditor({
   );
 }
 
+/* ───────── Language Tab Bar ───────── */
+function LanguageTabs({
+  activeLang,
+  onChangeLang,
+  isTranslated,
+}: {
+  activeLang: string;
+  onChangeLang: (code: string) => void;
+  isTranslated: (code: string) => boolean;
+}) {
+  const untranslated = LANGUAGES.filter((l) => !isTranslated(l.code));
+
+  return (
+    <div className="mb-5">
+      <div className="flex items-center gap-1.5 flex-wrap">
+        <Globe className="h-4 w-4 text-gray-400 mr-1" />
+        {LANGUAGES.map((lang) => {
+          const isActive = activeLang === lang.code;
+          const translated = isTranslated(lang.code);
+          return (
+            <button
+              key={lang.code}
+              onClick={() => onChangeLang(lang.code)}
+              className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-medium transition-all ${
+                isActive
+                  ? "bg-gray-900 text-white shadow-sm"
+                  : translated
+                  ? "bg-gray-100 text-gray-900 hover:bg-gray-200"
+                  : "bg-gray-50 text-gray-400 hover:bg-gray-100 border border-dashed border-gray-300"
+              }`}
+              title={`${lang.name}${!translated ? " — Sin traducir" : ""}`}
+            >
+              {lang.label}
+              {!translated && !isActive && (
+                <span className="flex h-1.5 w-1.5 rounded-full bg-amber-500" />
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      {untranslated.length > 0 && (
+        <div className="mt-3 flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5">
+          <AlertTriangle className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
+          <div>
+            <p className="text-[12px] font-medium text-amber-800">
+              {untranslated.length} idioma{untranslated.length > 1 ? "s" : ""} sin traducir
+            </p>
+            <p className="text-[11px] text-amber-600 mt-0.5">
+              Faltan: {untranslated.map((l) => l.name).join(", ")}
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ───────── Language Status Card (Sidebar) ───────── */
+function LanguageStatusCard({
+  isTranslated,
+}: {
+  isTranslated: (code: string) => boolean;
+}) {
+  return (
+    <div className="rounded-lg border border-gray-200 bg-white p-4 space-y-3">
+      <h3 className="text-[13px] font-semibold text-gray-900 flex items-center gap-1.5">
+        <Globe className="h-3.5 w-3.5" /> Idiomas
+      </h3>
+      <div className="space-y-1.5">
+        {LANGUAGES.map((lang) => {
+          const translated = isTranslated(lang.code);
+          return (
+            <div key={lang.code} className="flex items-center justify-between">
+              <span className="text-[12px] text-gray-500">{lang.name}</span>
+              <span
+                className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${
+                  translated
+                    ? "bg-emerald-100 text-emerald-700"
+                    : "bg-amber-100 text-amber-700"
+                }`}
+              >
+                {translated ? "Traducido" : "Pendiente"}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 /* ───────── Component ───────── */
 interface Props {
   pageId?: string | null;
@@ -308,24 +427,47 @@ export default function CmsPageEditorPage({ pageId, onBack }: Props) {
     ? MOCK_PAGES.find((pg) => pg.id === pageId)
     : null;
 
-  const [title, setTitle] = useState(existing?.title ?? "");
+  const [activeLang, setActiveLang] = useState("es");
+  const [langData, setLangData] = useState<Record<string, LangContent>>(() => {
+    const init: Record<string, LangContent> = {};
+    LANGUAGES.forEach((l) => {
+      if (l.code === "es") {
+        init[l.code] = {
+          title: existing?.title ?? "",
+          content: existing?.content ?? "",
+          metaTitle: existing?.metaTitle ?? "",
+          metaDescription: existing?.metaDescription ?? "",
+        };
+      } else {
+        init[l.code] = emptyLangContent();
+      }
+    });
+    return init;
+  });
+
   const [slug, setSlug] = useState(existing?.slug ?? "");
   const [parentId, setParentId] = useState<string | null>(
     existing?.parentId ?? null
   );
   const [status, setStatus] = useState(existing?.status ?? "draft");
   const [scheduledAt, setScheduledAt] = useState(existing?.scheduledAt ?? "");
-  const [content, setContent] = useState(existing?.content ?? "");
   const [htmlMode, setHtmlMode] = useState(false);
-  const [metaTitle, setMetaTitle] = useState(existing?.metaTitle ?? "");
-  const [metaDesc, setMetaDesc] = useState(existing?.metaDescription ?? "");
   const [featuredImage, setFeaturedImage] = useState<string | null>(
     existing?.featuredImage ?? null
   );
 
+  const currentLang = langData[activeLang];
+
+  const updateLangField = (field: keyof LangContent, value: string) => {
+    setLangData((prev) => ({
+      ...prev,
+      [activeLang]: { ...prev[activeLang], [field]: value },
+    }));
+  };
+
   const handleTitleChange = (val: string) => {
-    setTitle(val);
-    if (!existing)
+    updateLangField("title", val);
+    if (!existing && activeLang === "es")
       setSlug(
         val
           .toLowerCase()
@@ -348,6 +490,8 @@ export default function CmsPageEditorPage({ pageId, onBack }: Props) {
   const parentPages = MOCK_PAGES.filter(
     (pg) => pg.id !== pageId && !pg.parentId
   );
+
+  const isLangTranslated = (code: string) => !!langData[code].title.trim();
 
   return (
     <div className="flex-1 overflow-auto">
@@ -373,16 +517,23 @@ export default function CmsPageEditorPage({ pageId, onBack }: Props) {
           </div>
         </div>
 
+        {/* Language Tabs */}
+        <LanguageTabs
+          activeLang={activeLang}
+          onChangeLang={setActiveLang}
+          isTranslated={isLangTranslated}
+        />
+
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6">
           {/* Main */}
           <div className="space-y-5">
             {/* Title */}
             <div>
               <label className="text-[12px] font-medium text-gray-700 mb-1.5 block">
-                Título
+                Título <span className="text-gray-400 uppercase text-[10px] ml-1">({activeLang})</span>
               </label>
               <input
-                value={title}
+                value={currentLang.title}
                 onChange={(e) => handleTitleChange(e.target.value)}
                 placeholder="Título de la página"
                 className="w-full rounded-md border border-gray-200 bg-white px-3 h-10 text-[13px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300"
@@ -442,7 +593,7 @@ export default function CmsPageEditorPage({ pageId, onBack }: Props) {
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label className="text-[12px] font-medium text-gray-700">
-                  Contenido
+                  Contenido <span className="text-gray-400 uppercase text-[10px] ml-1">({activeLang})</span>
                 </label>
                 <button
                   onClick={() => setHtmlMode(!htmlMode)}
@@ -453,14 +604,14 @@ export default function CmsPageEditorPage({ pageId, onBack }: Props) {
               </div>
               {htmlMode ? (
                 <textarea
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
+                  value={currentLang.content}
+                  onChange={(e) => updateLangField("content", e.target.value)}
                   className="w-full rounded-md border border-gray-200 bg-white px-3 py-2 font-mono text-[12px] text-gray-900 min-h-[400px] focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300"
                 />
               ) : (
                 <RichTextEditor
-                  value={content}
-                  onChange={setContent}
+                  value={currentLang.content}
+                  onChange={(v) => updateLangField("content", v)}
                   minHeight={400}
                 />
               )}
@@ -533,21 +684,26 @@ export default function CmsPageEditorPage({ pageId, onBack }: Props) {
               </div>
             </div>
 
+            {/* Language Status */}
+            <LanguageStatusCard isTranslated={isLangTranslated} />
+
             {/* SEO */}
             <div className="rounded-lg border border-gray-200 bg-white p-4 space-y-4">
-              <h3 className="text-[13px] font-semibold text-gray-900">SEO</h3>
+              <h3 className="text-[13px] font-semibold text-gray-900">
+                SEO <span className="text-gray-400 uppercase text-[10px] ml-1">({activeLang})</span>
+              </h3>
               <div>
                 <label className="text-[12px] font-medium text-gray-700 mb-1.5 block">
                   Meta título
                 </label>
                 <input
-                  value={metaTitle}
-                  onChange={(e) => setMetaTitle(e.target.value)}
+                  value={currentLang.metaTitle}
+                  onChange={(e) => updateLangField("metaTitle", e.target.value)}
                   placeholder="Título para buscadores"
                   className="w-full rounded-md border border-gray-200 bg-white px-3 h-9 text-[13px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
                 />
                 <p className="text-[11px] text-gray-400 mt-1">
-                  {metaTitle.length}/60 caracteres
+                  {currentLang.metaTitle.length}/60 caracteres
                 </p>
               </div>
               <div>
@@ -555,13 +711,13 @@ export default function CmsPageEditorPage({ pageId, onBack }: Props) {
                   Meta descripción
                 </label>
                 <textarea
-                  value={metaDesc}
-                  onChange={(e) => setMetaDesc(e.target.value)}
+                  value={currentLang.metaDescription}
+                  onChange={(e) => updateLangField("metaDescription", e.target.value)}
                   placeholder="Descripción para buscadores"
                   className="w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-[12px] text-gray-900 min-h-[80px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
                 />
                 <p className="text-[11px] text-gray-400 mt-1">
-                  {metaDesc.length}/160 caracteres
+                  {currentLang.metaDescription.length}/160 caracteres
                 </p>
               </div>
             </div>
@@ -761,7 +917,7 @@ export default function CmsBlogListPage({ onEdit, onNew }: Props) {
 
 ---
 
-## 4. BLOG EDITOR — `CmsBlogEditorPage.tsx`
+## 4. BLOG EDITOR — `CmsBlogEditorPage.tsx` (Multilingual)
 
 ```tsx
 "use client";
@@ -769,15 +925,34 @@ export default function CmsBlogListPage({ onEdit, onNew }: Props) {
 import { useState, useRef, useCallback } from "react";
 import {
   ArrowLeft, Save, Eye, X, Image as ImageIcon, Plus, Tag,
-  GripVertical, Trash2,
+  GripVertical, Trash2, AlertTriangle, Globe,
   Bold, Italic, Underline, Heading1, Heading2, Heading3,
   List, ListOrdered, Link as LinkIcon,
 } from "lucide-react";
+
+/* ───────── Languages ───────── */
+const LANGUAGES = [
+  { code: "es", label: "ES", name: "Español" },
+  { code: "en", label: "EN", name: "English" },
+  { code: "de", label: "DE", name: "Deutsch" },
+  { code: "fr", label: "FR", name: "Français" },
+  { code: "ru", label: "RU", name: "Русский" },
+  { code: "nl", label: "NL", name: "Nederlands" },
+];
 
 /* ───────── Types ───────── */
 interface FaqItem {
   question: string;
   answer: string;
+}
+
+interface LangContent {
+  title: string;
+  excerpt: string;
+  content: string;
+  metaTitle: string;
+  metaDescription: string;
+  faq: FaqItem[];
 }
 
 interface CmsBlogPost {
@@ -795,6 +970,15 @@ interface CmsBlogPost {
   category: string;
   faq?: FaqItem[];
 }
+
+const emptyLangContent = (): LangContent => ({
+  title: "",
+  excerpt: "",
+  content: "",
+  metaTitle: "",
+  metaDescription: "",
+  faq: [{ question: "", answer: "" }],
+});
 
 /* ───────── Mock data ───────── */
 const BLOG_CATEGORIES = [
@@ -903,6 +1087,98 @@ function RichTextEditor({
   );
 }
 
+/* ───────── Language Tab Bar ───────── */
+function LanguageTabs({
+  activeLang,
+  onChangeLang,
+  isTranslated,
+}: {
+  activeLang: string;
+  onChangeLang: (code: string) => void;
+  isTranslated: (code: string) => boolean;
+}) {
+  const untranslated = LANGUAGES.filter((l) => !isTranslated(l.code));
+
+  return (
+    <div className="mb-5">
+      <div className="flex items-center gap-1.5 flex-wrap">
+        <Globe className="h-4 w-4 text-gray-400 mr-1" />
+        {LANGUAGES.map((lang) => {
+          const isActive = activeLang === lang.code;
+          const translated = isTranslated(lang.code);
+          return (
+            <button
+              key={lang.code}
+              onClick={() => onChangeLang(lang.code)}
+              className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-medium transition-all ${
+                isActive
+                  ? "bg-gray-900 text-white shadow-sm"
+                  : translated
+                  ? "bg-gray-100 text-gray-900 hover:bg-gray-200"
+                  : "bg-gray-50 text-gray-400 hover:bg-gray-100 border border-dashed border-gray-300"
+              }`}
+              title={`${lang.name}${!translated ? " — Sin traducir" : ""}`}
+            >
+              {lang.label}
+              {!translated && !isActive && (
+                <span className="flex h-1.5 w-1.5 rounded-full bg-amber-500" />
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      {untranslated.length > 0 && (
+        <div className="mt-3 flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5">
+          <AlertTriangle className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
+          <div>
+            <p className="text-[12px] font-medium text-amber-800">
+              {untranslated.length} idioma{untranslated.length > 1 ? "s" : ""} sin traducir
+            </p>
+            <p className="text-[11px] text-amber-600 mt-0.5">
+              Faltan: {untranslated.map((l) => l.name).join(", ")}
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ───────── Language Status Card (Sidebar) ───────── */
+function LanguageStatusCard({
+  isTranslated,
+}: {
+  isTranslated: (code: string) => boolean;
+}) {
+  return (
+    <div className="rounded-lg border border-gray-200 bg-white p-4 space-y-3">
+      <h3 className="text-[13px] font-semibold text-gray-900 flex items-center gap-1.5">
+        <Globe className="h-3.5 w-3.5" /> Idiomas
+      </h3>
+      <div className="space-y-1.5">
+        {LANGUAGES.map((lang) => {
+          const translated = isTranslated(lang.code);
+          return (
+            <div key={lang.code} className="flex items-center justify-between">
+              <span className="text-[12px] text-gray-500">{lang.name}</span>
+              <span
+                className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${
+                  translated
+                    ? "bg-emerald-100 text-emerald-700"
+                    : "bg-amber-100 text-amber-700"
+                }`}
+              >
+                {translated ? "Traducido" : "Pendiente"}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 /* ───────── Component ───────── */
 interface Props {
   postId?: string | null;
@@ -914,13 +1190,30 @@ export default function CmsBlogEditorPage({ postId, onBack }: Props) {
     ? MOCK_BLOG_POSTS.find((p) => p.id === postId)
     : null;
 
-  const [title, setTitle] = useState(existing?.title ?? "");
+  const [activeLang, setActiveLang] = useState("es");
+  const [langData, setLangData] = useState<Record<string, LangContent>>(() => {
+    const init: Record<string, LangContent> = {};
+    LANGUAGES.forEach((l) => {
+      if (l.code === "es") {
+        init[l.code] = {
+          title: existing?.title ?? "",
+          excerpt: existing?.excerpt ?? "",
+          content: existing?.content ?? "",
+          metaTitle: "",
+          metaDescription: "",
+          faq: existing?.faq ?? [{ question: "", answer: "" }],
+        };
+      } else {
+        init[l.code] = emptyLangContent();
+      }
+    });
+    return init;
+  });
+
   const [slug, setSlug] = useState(existing?.slug ?? "");
   const [author, setAuthor] = useState(existing?.author ?? "");
   const [category, setCategory] = useState(existing?.category ?? "lifestyle");
   const [tags, setTags] = useState<string[]>(existing?.tags ?? []);
-  const [excerpt, setExcerpt] = useState(existing?.excerpt ?? "");
-  const [content, setContent] = useState(existing?.content ?? "");
   const [htmlMode, setHtmlMode] = useState(false);
   const [status, setStatus] = useState(existing?.status ?? "draft");
   const [scheduledAt, setScheduledAt] = useState(existing?.scheduledAt ?? "");
@@ -928,13 +1221,19 @@ export default function CmsBlogEditorPage({ postId, onBack }: Props) {
     existing?.featuredImage ?? null
   );
   const [tagInput, setTagInput] = useState("");
-  const [faqItems, setFaqItems] = useState<FaqItem[]>(
-    existing?.faq ?? [{ question: "", answer: "" }]
-  );
+
+  const currentLang = langData[activeLang];
+
+  const updateLangField = (field: keyof LangContent, value: any) => {
+    setLangData((prev) => ({
+      ...prev,
+      [activeLang]: { ...prev[activeLang], [field]: value },
+    }));
+  };
 
   const handleTitleChange = (val: string) => {
-    setTitle(val);
-    if (!existing)
+    updateLangField("title", val);
+    if (!existing && activeLang === "es")
       setSlug(
         val
           .toLowerCase()
@@ -962,6 +1261,11 @@ export default function CmsBlogEditorPage({ postId, onBack }: Props) {
 
   const removeTag = (tag: string) => setTags(tags.filter((t) => t !== tag));
 
+  const isLangTranslated = (code: string) => !!langData[code].title.trim();
+
+  const faqItems = currentLang.faq;
+  const setFaqItems = (items: FaqItem[]) => updateLangField("faq", items);
+
   return (
     <div className="flex-1 overflow-auto">
       <div className="px-4 sm:px-8 pt-5 pb-8">
@@ -986,16 +1290,23 @@ export default function CmsBlogEditorPage({ postId, onBack }: Props) {
           </div>
         </div>
 
+        {/* Language Tabs */}
+        <LanguageTabs
+          activeLang={activeLang}
+          onChangeLang={setActiveLang}
+          isTranslated={isLangTranslated}
+        />
+
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6">
           {/* Main */}
           <div className="space-y-5">
             {/* Title */}
             <div>
               <label className="text-[12px] font-medium text-gray-700 mb-1.5 block">
-                Título
+                Título <span className="text-gray-400 uppercase text-[10px] ml-1">({activeLang})</span>
               </label>
               <input
-                value={title}
+                value={currentLang.title}
                 onChange={(e) => handleTitleChange(e.target.value)}
                 placeholder="Título del artículo"
                 className="w-full rounded-md border border-gray-200 bg-white px-3 h-10 text-[13px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300"
@@ -1054,11 +1365,11 @@ export default function CmsBlogEditorPage({ postId, onBack }: Props) {
             {/* Excerpt */}
             <div>
               <label className="text-[12px] font-medium text-gray-700 mb-1.5 block">
-                Extracto
+                Extracto <span className="text-gray-400 uppercase text-[10px] ml-1">({activeLang})</span>
               </label>
               <textarea
-                value={excerpt}
-                onChange={(e) => setExcerpt(e.target.value)}
+                value={currentLang.excerpt}
+                onChange={(e) => updateLangField("excerpt", e.target.value)}
                 placeholder="Resumen breve del artículo..."
                 className="w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-[13px] text-gray-900 min-h-[80px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
               />
@@ -1068,7 +1379,7 @@ export default function CmsBlogEditorPage({ postId, onBack }: Props) {
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label className="text-[12px] font-medium text-gray-700">
-                  Contenido
+                  Contenido <span className="text-gray-400 uppercase text-[10px] ml-1">({activeLang})</span>
                 </label>
                 <button
                   onClick={() => setHtmlMode(!htmlMode)}
@@ -1079,14 +1390,14 @@ export default function CmsBlogEditorPage({ postId, onBack }: Props) {
               </div>
               {htmlMode ? (
                 <textarea
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
+                  value={currentLang.content}
+                  onChange={(e) => updateLangField("content", e.target.value)}
                   className="w-full rounded-md border border-gray-200 bg-white px-3 py-2 font-mono text-[12px] text-gray-900 min-h-[400px] focus:outline-none focus:ring-2 focus:ring-gray-900/10"
                 />
               ) : (
                 <RichTextEditor
-                  value={content}
-                  onChange={setContent}
+                  value={currentLang.content}
+                  onChange={(v) => updateLangField("content", v)}
                   minHeight={400}
                 />
               )}
@@ -1096,7 +1407,7 @@ export default function CmsBlogEditorPage({ postId, onBack }: Props) {
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label className="text-[12px] font-medium text-gray-700">
-                  Preguntas y Respuestas (FAQ)
+                  Preguntas y Respuestas (FAQ) <span className="text-gray-400 uppercase text-[10px] ml-1">({activeLang})</span>
                 </label>
                 <button
                   onClick={() =>
@@ -1239,7 +1550,7 @@ export default function CmsBlogEditorPage({ postId, onBack }: Props) {
                 {tags.map((tag) => (
                   <span
                     key={tag}
-                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] bg-gray-100 text-gray-500"
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] bg-gray-100 text-gray-600"
                   >
                     {tag}
                     <button
@@ -1261,12 +1572,12 @@ export default function CmsBlogEditorPage({ postId, onBack }: Props) {
                       addTag(tagInput);
                     }
                   }}
-                  placeholder="Añadir tag..."
                   className="flex-1 rounded-md border border-gray-200 bg-white px-3 h-8 text-[12px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
+                  placeholder="Añadir tag..."
                 />
                 <button
                   onClick={() => addTag(tagInput)}
-                  className="inline-flex items-center justify-center h-8 w-8 rounded-md border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition-colors"
+                  className="inline-flex items-center justify-center h-8 w-8 rounded-md border border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors"
                 >
                   <Plus className="h-3.5 w-3.5" />
                 </button>
@@ -1278,11 +1589,51 @@ export default function CmsBlogEditorPage({ postId, onBack }: Props) {
                     <button
                       key={t}
                       onClick={() => addTag(t)}
-                      className="text-[10px] px-2 py-0.5 rounded border border-gray-200 text-gray-400 hover:bg-gray-100 transition-colors"
+                      className="text-[10px] px-2 py-0.5 rounded border border-gray-200 text-gray-500 hover:bg-gray-100 transition-colors"
                     >
                       {t}
                     </button>
                   ))}
+              </div>
+            </div>
+
+            {/* Language Status */}
+            <LanguageStatusCard isTranslated={isLangTranslated} />
+
+            {/* SEO */}
+            <div className="rounded-lg border border-gray-200 bg-white p-4 space-y-4">
+              <h3 className="text-[13px] font-semibold text-gray-900">
+                SEO <span className="text-gray-400 uppercase text-[10px] ml-1">({activeLang})</span>
+              </h3>
+              <div>
+                <label className="text-[12px] font-medium text-gray-700 mb-1.5 block">
+                  Meta título
+                </label>
+                <input
+                  value={currentLang.metaTitle}
+                  onChange={(e) => updateLangField("metaTitle", e.target.value)}
+                  placeholder="Título para buscadores"
+                  className="w-full rounded-md border border-gray-200 bg-white px-3 h-9 text-[13px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
+                />
+                <p className="text-[11px] text-gray-400 mt-1">
+                  {currentLang.metaTitle.length}/60 caracteres
+                </p>
+              </div>
+              <div>
+                <label className="text-[12px] font-medium text-gray-700 mb-1.5 block">
+                  Meta descripción
+                </label>
+                <textarea
+                  value={currentLang.metaDescription}
+                  onChange={(e) =>
+                    updateLangField("metaDescription", e.target.value)
+                  }
+                  placeholder="Descripción para buscadores"
+                  className="w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-[12px] text-gray-900 min-h-[80px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
+                />
+                <p className="text-[11px] text-gray-400 mt-1">
+                  {currentLang.metaDescription.length}/160 caracteres
+                </p>
               </div>
             </div>
           </div>
@@ -1295,53 +1646,24 @@ export default function CmsBlogEditorPage({ postId, onBack }: Props) {
 
 ---
 
-## Usage Example (Next.js App Router)
+## Multilingual Architecture Notes
 
-```tsx
-// app/admin/cms/page.tsx
-"use client";
+### Key Design Decisions
 
-import { useState } from "react";
-import CmsPagesListPage from "@/components/cms/CmsPagesListPage";
-import CmsPageEditorPage from "@/components/cms/CmsPageEditorPage";
-import CmsBlogListPage from "@/components/cms/CmsBlogListPage";
-import CmsBlogEditorPage from "@/components/cms/CmsBlogEditorPage";
+1. **Per-language state**: Translatable fields (title, content, excerpt, FAQ, meta SEO) are stored in a `Record<string, LangContent>` object keyed by language code.
 
-export default function CmsAdminPage() {
-  const [view, setView] = useState<
-    "pages" | "page-editor" | "blog" | "blog-editor"
-  >("pages");
-  const [editId, setEditId] = useState<string | null>(null);
+2. **Shared fields**: Slug, status, author, category, tags, featured image, and hierarchy remain language-independent.
 
-  if (view === "page-editor")
-    return (
-      <CmsPageEditorPage
-        pageId={editId}
-        onBack={() => { setView("pages"); setEditId(null); }}
-      />
-    );
+3. **Translation detection**: A language is considered "translated" when its `title` field is non-empty. This drives:
+   - The amber dot indicator on untranslated language tabs
+   - The dashed border style on untranslated tabs
+   - The warning banner listing missing languages
+   - The sidebar status card showing Traducido/Pendiente per language
 
-  if (view === "blog")
-    return (
-      <CmsBlogListPage
-        onEdit={(id) => { setEditId(id); setView("blog-editor"); }}
-        onNew={() => { setEditId(null); setView("blog-editor"); }}
-      />
-    );
+4. **Language indicator on labels**: Each translatable field label shows the active language code (e.g., `Título (ES)`) to prevent confusion.
 
-  if (view === "blog-editor")
-    return (
-      <CmsBlogEditorPage
-        postId={editId}
-        onBack={() => { setView("blog"); setEditId(null); }}
-      />
-    );
+5. **Auto-slug generation**: Only triggers from the primary language (ES) to avoid overwriting the slug when editing other languages.
 
-  return (
-    <CmsPagesListPage
-      onEdit={(id) => { setEditId(id); setView("page-editor"); }}
-      onNew={() => { setEditId(null); setView("page-editor"); }}
-    />
-  );
-}
-```
+### Components extracted for reuse:
+- `LanguageTabs` — renders the language bar + warning banner
+- `LanguageStatusCard` — sidebar card with per-language translation status
