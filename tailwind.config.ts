@@ -13,8 +13,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ["Jost", "system-ui", "-apple-system", "sans-serif"],
-        serif: ["'Playfair Display'", "Georgia", "serif"],
-        cormorant: ["'Cormorant Garamond'", "Georgia", "serif"],
+        
       },
       colors: {
         border: "hsl(var(--border))",
@@ -73,22 +72,6 @@ export default {
           "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
-        },
-        luxury: {
-          black: "#0A0A0A",
-          charcoal: "#1A1A1A",
-          gold: "#C9A84C",
-          cream: "#F5F0E8",
-        },
-        omni47: {
-          cream: "hsl(var(--omni47-cream))",
-          navy: "hsl(var(--omni47-navy))",
-          gold: "hsl(var(--omni47-gold))",
-          "navy-light": "hsl(var(--omni47-navy-light))",
-          "gold-light": "hsl(var(--omni47-gold-light))",
-          "cream-dark": "hsl(var(--omni47-cream-dark))",
-          text: "hsl(var(--omni47-text))",
-          "text-muted": "hsl(var(--omni47-text-muted))",
         },
       },
       borderRadius: {

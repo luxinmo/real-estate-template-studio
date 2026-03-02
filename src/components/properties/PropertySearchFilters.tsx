@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { SlidersHorizontal, X, ChevronDown } from "lucide-react";
-import LocationSearchDropdown from "@/components/luxury/LocationSearchDropdown";
+import { Search } from "lucide-react";
 
 /* ─── Types ─── */
 export interface FilterState {
@@ -389,11 +389,14 @@ const PropertySearchFilters = ({ filters, onChange }: PropertySearchFiltersProps
       {/* Search + filter chips row */}
       <div className="flex items-center gap-3 flex-wrap">
         <div className="hidden md:flex items-center shrink-0">
-          <LocationSearchDropdown
-            selected={filters.locations}
-            onSelectedChange={(locs) => onChange({ ...filters, locations: locs })}
-            className="w-[420px]"
-          />
+          <div className="relative w-[420px]">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Search location…"
+              className="w-full border border-border rounded-full pl-9 pr-4 py-1.5 text-[12px] text-foreground bg-background focus:outline-none focus:border-foreground/30"
+            />
+          </div>
         </div>
 
         <div className="w-px h-5 bg-border hidden md:block shrink-0" />
