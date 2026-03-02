@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { SlidersHorizontal, X, ChevronDown } from "lucide-react";
-import LocationSearchDropdown from "@/components/luxury/LocationSearchDropdown";
+import LocationSearchDropdown from "@/components/properties/LocationSearchDropdown";
 
 /* ─── Types ─── */
 export interface FilterState {
