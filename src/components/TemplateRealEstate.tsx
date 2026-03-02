@@ -3,7 +3,7 @@ import ComponentBlock from "@/components/ComponentBlock";
 import property1 from "@/assets/property-1.jpg";
 import property2 from "@/assets/property-2.jpg";
 import property3 from "@/assets/property-3.jpg";
-const featuredBanner = property1;
+import featuredBanner from "@/assets/featured-banner.jpg";
 
 const properties = [
   { image: property1, price: "$2,450,000", location: "Palm Beach, FL", beds: 4, baths: 3, sqft: "3,200", badge: "New" },

@@ -8,8 +8,10 @@ import { CmsPagesListPage, CmsPageEditorPage, CmsBlogListPage, CmsBlogEditorPage
 import PropertiesPage from "@/components/PropertiesPage";
 import PropertyDetailPage from "@/components/PropertyDetailPage";
 import AddPropertyPage from "@/components/AddPropertyPage";
-import ComponentsPage from "@/components/ComponentsPage";
+import LuxuryLandingPage from "@/components/LuxuryLandingPage";
 import UsersPage from "@/components/UsersPage";
+import Home2LandingPage from "@/components/home-2/Home2LandingPage";
+import ComponentsPage from "@/components/ComponentsPage";
 import CardDesignerPage from "@/components/card-designer/CardDesignerPage";
 
 type View =
@@ -18,7 +20,7 @@ type View =
   | "agencies" | "users" | "company" | "settings" | "components"
   | "loc-countries" | "loc-provinces" | "loc-regions" | "loc-municipalities" | "loc-municipality-detail" | "loc-borough-form"
   | "imp-fuentes" | "imp-mapeo" | "imp-historial" | "imp-scheduler" | "imp-pendientes"
-  | "card-designer"
+  | "luxury-landing" | "home-2" | "card-designer"
   | "cms-pages" | "cms-page-editor" | "cms-blog" | "cms-blog-editor";
 
 const PlaceholderPage = ({ title }: { title: string }) => (
@@ -154,6 +156,8 @@ const Index = () => {
 
         {view === "components" && <ComponentsPage />}
         {view === "card-designer" && <CardDesignerPage />}
+        {view === "luxury-landing" && <LuxuryLandingPage />}
+        {view === "home-2" && <Home2LandingPage />}
 
         {/* CMS */}
         {view === "cms-pages" && <CmsPagesListPage onEdit={(id) => { setCmsEditId(id); setView("cms-page-editor"); }} onNew={() => { setCmsEditId(null); setView("cms-page-editor"); }} />}
