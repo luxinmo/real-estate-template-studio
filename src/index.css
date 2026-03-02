@@ -1,7 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600;700&display=swap');
 
 @tailwind base;
@@ -67,16 +64,6 @@
     --sidebar-accent: 240 4.8% 95.9%;
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-ring: 217.2 91.2% 59.8%;
-
-    /* OMNI47 Design Tokens */
-    --omni47-cream: 37 39% 94%;
-    --omni47-navy: 212 37% 17%;
-    --omni47-gold: 39 46% 61%;
-    --omni47-navy-light: 212 25% 35%;
-    --omni47-gold-light: 39 50% 75%;
-    --omni47-cream-dark: 37 25% 88%;
-    --omni47-text: 212 37% 17%;
-    --omni47-text-muted: 212 15% 45%;
   }
 }
 
