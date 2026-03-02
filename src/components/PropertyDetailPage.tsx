@@ -12,13 +12,11 @@ import MortgageCalculator from "@/components/property-detail/MortgageCalculator"
 import NearbyPlaces from "@/components/property-detail/NearbyPlaces";
 import PropertySidebar from "@/components/property-detail/PropertySidebar";
 
-import img1 from "@/assets/property-detail-1.jpg";
-import img2 from "@/assets/property-detail-2.jpg";
-import img3 from "@/assets/property-detail-3.jpg";
-import img4 from "@/assets/property-detail-4.jpg";
-import img5 from "@/assets/property-detail-5.jpg";
+import img1 from "@/assets/property-1.jpg";
+import img2 from "@/assets/property-2.jpg";
+import img3 from "@/assets/property-3.jpg";
 
-const images = [img1, img2, img3, img4, img5, img1, img2]; // simulate 7 photos
+const images = [img1, img2, img3, img1, img2, img3, img1]; // simulate 7 photos
 
 interface PropertyDetailPageProps {
   onBack: () => void;
