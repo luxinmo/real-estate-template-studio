@@ -1,6 +1,6 @@
 import { Mail } from "lucide-react";
 import type { CardDesignConfig } from "./CardDesignerPage";
-import propImg from "@/assets/luxury-hero.jpg";
+import propImg from "@/assets/property-1.jpg";
 
 const MOCK = {
   id: 1,
