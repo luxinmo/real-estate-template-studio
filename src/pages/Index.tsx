@@ -11,6 +11,7 @@ import AddPropertyPage from "@/components/AddPropertyPage";
 import UsersPage from "@/components/UsersPage";
 import ComponentsPage from "@/components/ComponentsPage";
 import CardDesignerPage from "@/components/card-designer/CardDesignerPage";
+import CompanyPage from "@/components/company/CompanyPage";
 
 type View =
   | "dashboard" | "properties" | "property-detail" | "add-property"
@@ -162,7 +163,7 @@ const Index = () => {
         {view === "cms-blog-editor" && <CmsBlogEditorPage postId={cmsEditId} onBack={() => setView("cms-blog")} />}
 
         {view === "users" && <UsersPage />}
-        {view === "company" && <PlaceholderPage title="Empresa" />}
+        {view === "company" && <CompanyPage />}
         {view === "settings" && <PlaceholderPage title="Ajustes" />}
       </div>
     </div>
