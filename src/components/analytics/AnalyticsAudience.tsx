@@ -1,5 +1,6 @@
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { countryBreakdown, languageBreakdown, trafficSources, deviceDistribution, newVsReturning } from "./mock-data";
+import { Flag } from "./flags";
 
 const AnalyticsAudience = () => {
   return (
@@ -34,7 +35,7 @@ const AnalyticsAudience = () => {
                 {countryBreakdown.map((c) => (
                   <tr key={c.code} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
                     <td className="px-5 py-3 text-foreground">
-                      <span className="mr-2">{c.flag}</span>{c.name}
+                      <span className="inline-flex items-center gap-2"><Flag code={c.code} />{c.name}</span>
                     </td>
                     <td className="px-5 py-3 text-right text-foreground font-medium tabular-nums">{c.sessions.toLocaleString()}</td>
                     <td className="px-5 py-3 text-right text-[#C9A96E] font-medium tabular-nums">{c.conversions}</td>

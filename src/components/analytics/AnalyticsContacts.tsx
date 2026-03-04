@@ -1,5 +1,6 @@
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { contactChannels, contactsTimeline, topProperties, conversionByCountry } from "./mock-data";
+import { Flag } from "./flags";
 
 const AnalyticsContacts = () => {
   const totalContacts = contactChannels.reduce((sum, c) => sum + c.count, 0);
@@ -77,7 +78,7 @@ const AnalyticsContacts = () => {
           <div className="space-y-2">
             {conversionByCountry.map((c) => (
               <div key={c.country} className="flex items-center gap-3">
-                <span className="text-sm">{c.flag}</span>
+                <Flag code={c.code} />
                 <span className="text-[12px] text-foreground flex-1">{c.country}</span>
                 <span className="text-[12px] text-muted-foreground tabular-nums">{c.contacts} contacts</span>
                 <span className="text-[12px] text-[#C9A96E] font-medium w-12 text-right">{c.rate}</span>

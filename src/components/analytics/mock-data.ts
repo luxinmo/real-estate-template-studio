@@ -220,15 +220,15 @@ export const languageBreakdown = [
 
 // ── Conversion by Country ──
 export const conversionByCountry = [
-  { country: "Germany", flag: "🇩🇪", contacts: 28, rate: "3.1%" },
-  { country: "United Kingdom", flag: "🇬🇧", contacts: 21, rate: "2.9%" },
-  { country: "Netherlands", flag: "🇳🇱", contacts: 15, rate: "3.1%" },
-  { country: "Belgium", flag: "🇧🇪", contacts: 9, rate: "2.9%" },
-  { country: "Spain", flag: "🇪🇸", contacts: 7, rate: "2.4%" },
-  { country: "France", flag: "🇫🇷", contacts: 6, rate: "3.0%" },
-  { country: "Sweden", flag: "🇸🇪", contacts: 5, rate: "3.2%" },
-  { country: "Norway", flag: "🇳🇴", contacts: 4, rate: "3.6%" },
-  { country: "Russia", flag: "🇷🇺", contacts: 2, rate: "2.6%" },
+  { country: "Germany", code: "DE", contacts: 28, rate: "3.1%" },
+  { country: "United Kingdom", code: "GB", contacts: 21, rate: "2.9%" },
+  { country: "Netherlands", code: "NL", contacts: 15, rate: "3.1%" },
+  { country: "Belgium", code: "BE", contacts: 9, rate: "2.9%" },
+  { country: "Spain", code: "ES", contacts: 7, rate: "2.4%" },
+  { country: "France", code: "FR", contacts: 6, rate: "3.0%" },
+  { country: "Sweden", code: "SE", contacts: 5, rate: "3.2%" },
+  { country: "Norway", code: "NO", contacts: 4, rate: "3.6%" },
+  { country: "Russia", code: "RU", contacts: 2, rate: "2.6%" },
 ];
 
 // ── Settings ──
