@@ -12,6 +12,7 @@ import UsersPage from "@/components/UsersPage";
 import ComponentsPage from "@/components/ComponentsPage";
 import CardDesignerPage from "@/components/card-designer/CardDesignerPage";
 import CompanyPage from "@/components/company/CompanyPage";
+import AgenciesPage from "@/components/agencies/AgenciesPage";
 
 type View =
   | "dashboard" | "properties" | "property-detail" | "add-property"
@@ -79,7 +80,7 @@ const Index = () => {
         {view === "contacts" && <ContactsListPage onAddContact={() => setView("add-contact")} onViewContact={(id) => { setSelectedContactId(id); setView("contact-detail"); }} />}
         {view === "add-contact" && <AddContactPage onBack={() => setView("contacts")} />}
         {view === "contact-detail" && <ContactDetailPage contactId={selectedContactId} onBack={() => setView("contacts")} onEdit={() => setView("add-contact")} />}
-        {view === "agencies" && <PlaceholderPage title="Agencias" />}
+        {view === "agencies" && <AgenciesPage />}
 
         {view === "loc-countries" && (
           <CountriesPage onSelectCountry={(id) => { setLocCountryId(id); setView("loc-provinces"); }} />
