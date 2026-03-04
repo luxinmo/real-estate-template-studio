@@ -13,11 +13,12 @@ import ComponentsPage from "@/components/ComponentsPage";
 import CardDesignerPage from "@/components/card-designer/CardDesignerPage";
 import CompanyPage from "@/components/company/CompanyPage";
 import AgenciesPage from "@/components/agencies/AgenciesPage";
+import AnalyticsDashboard from "@/components/analytics/AnalyticsDashboard";
 
 type View =
   | "dashboard" | "properties" | "property-detail" | "add-property"
   | "contacts" | "add-contact" | "contact-detail"
-  | "agencies" | "users" | "company" | "settings" | "components"
+  | "agencies" | "analytics" | "users" | "company" | "settings" | "components"
   | "loc-countries" | "loc-provinces" | "loc-regions" | "loc-municipalities" | "loc-municipality-detail" | "loc-borough-form"
   | "imp-fuentes" | "imp-mapeo" | "imp-historial" | "imp-scheduler" | "imp-pendientes"
   | "card-designer"
@@ -81,6 +82,7 @@ const Index = () => {
         {view === "add-contact" && <AddContactPage onBack={() => setView("contacts")} />}
         {view === "contact-detail" && <ContactDetailPage contactId={selectedContactId} onBack={() => setView("contacts")} onEdit={() => setView("add-contact")} />}
         {view === "agencies" && <AgenciesPage />}
+        {view === "analytics" && <AnalyticsDashboard />}
 
         {view === "loc-countries" && (
           <CountriesPage onSelectCountry={(id) => { setLocCountryId(id); setView("loc-provinces"); }} />
