@@ -1,5 +1,6 @@
 import { Monitor, Smartphone, Tablet } from "lucide-react";
 import { liveVisitors, countryBreakdown } from "./mock-data";
+import { Flag } from "./flags";
 
 const deviceIcons: Record<string, any> = { Desktop: Monitor, Mobile: Smartphone, Tablet: Tablet };
 
@@ -53,7 +54,7 @@ const AnalyticsLive = () => {
                 return (
                   <tr key={i} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
                     <td className="px-5 py-3 text-foreground">
-                      <span className="mr-2">{v.flag}</span>{v.country}
+                      <span className="inline-flex items-center gap-2"><Flag code={v.country} />{v.country}</span>
                     </td>
                     <td className="px-5 py-3 text-muted-foreground uppercase">{v.lang}</td>
                     <td className="px-5 py-3 text-muted-foreground">
@@ -92,7 +93,7 @@ const AnalyticsLive = () => {
           <div className="space-y-2.5">
             {countryBreakdown.slice(0, 5).map((c) => (
               <div key={c.code} className="flex items-center gap-2">
-                <span className="text-sm">{c.flag}</span>
+                <Flag code={c.code} />
                 <span className="text-[12px] text-foreground flex-1">{c.name}</span>
                 <span className="text-[12px] text-muted-foreground tabular-nums">{c.sessions}</span>
               </div>
