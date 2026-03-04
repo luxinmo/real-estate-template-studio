@@ -1,33 +1,102 @@
-import { Monitor, Smartphone, Tablet } from "lucide-react";
-import { liveVisitors, countryBreakdown } from "./mock-data";
+import { Monitor, Smartphone, Tablet, AlertCircle } from "lucide-react";
+import { useLive } from "@/hooks/useAnalytics";
+import { formatTimeSince } from "@/lib/analytics-api";
+import * as fallback from "./mock-data-fallback";
 import { Flag } from "./flags";
 
-const deviceIcons: Record<string, any> = { Desktop: Monitor, Mobile: Smartphone, Tablet: Tablet };
+const deviceIcons: Record<string, any> = { Desktop: Monitor, Mobile: Smartphone, Tablet: Tablet, desktop: Monitor, mobile: Smartphone, tablet: Tablet };
+
+const langLabels: Record<string, string> = { en: "English", es: "Spanish", de: "German", fr: "French", nl: "Dutch", ru: "Russian", sv: "Swedish" };
+
+const Skeleton = ({ className = "" }: { className?: string }) => (
+  <div className={`animate-pulse rounded-lg bg-muted ${className}`} />
+);
+
+const DemoBanner = () => (
+  <div className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-1.5 mb-4">
+    <AlertCircle className="h-3.5 w-3.5 text-amber-600" strokeWidth={1.5} />
+    <span className="text-[11px] text-amber-700 font-medium">Using demo data — API unavailable</span>
+  </div>
+);
 
 const AnalyticsLive = () => {
-  const deviceBreakdown = [
-    { device: "Desktop", count: 2 },
-    { device: "Mobile", count: 2 },
-    { device: "Tablet", count: 1 },
-  ];
+  const { data: apiData, isLoading, isError } = useLive();
 
-  const langBreakdown = [
-    { lang: "de", label: "German", count: 1 },
-    { lang: "en", label: "English", count: 1 },
-    { lang: "nl", label: "Dutch", count: 1 },
-    { lang: "sv", label: "Swedish", count: 1 },
-    { lang: "es", label: "Spanish", count: 1 },
-  ];
+  const usingFallback = isError || (!isLoading && !apiData);
+
+  // ── Transform API data or use fallback ──
+  const liveCount = apiData?.total ?? 5;
+
+  const liveVisitors = apiData?.sessions?.length
+    ? apiData.sessions.map((s: any) => ({
+        country: s.country ?? "—",
+        lang: s.langChosen || s.lang || "—",
+        device: s.device || "Desktop",
+        page: s.currentPage || "—",
+        time: formatTimeSince(s.startedAt),
+        pages: s.pageCount ?? 0,
+      }))
+    : fallback.liveVisitors;
+
+  const countryBreakdown = apiData?.byCountry
+    ? Object.entries(apiData.byCountry)
+        .map(([code, data]: [string, any]) => ({
+          code,
+          name: data.name || code,
+          sessions: data.count ?? 0,
+          pct: liveCount > 0 ? Math.round(((data.count ?? 0) / liveCount) * 100) : 0,
+        }))
+        .sort((a, b) => b.sessions - a.sessions)
+    : fallback.countryBreakdown.slice(0, 5).map((c) => ({
+        code: c.code,
+        name: c.name,
+        sessions: c.sessions,
+        pct: c.pct,
+      }));
+
+  const deviceBreakdown = apiData?.byDevice
+    ? Object.entries(apiData.byDevice).map(([device, count]: [string, any]) => ({ device, count: count as number }))
+    : [{ device: "Desktop", count: 2 }, { device: "Mobile", count: 2 }, { device: "Tablet", count: 1 }];
+
+  const langBreakdown = apiData?.byLang
+    ? Object.entries(apiData.byLang).map(([lang, count]: [string, any]) => ({
+        lang,
+        label: langLabels[lang] || lang,
+        count: count as number,
+      }))
+    : [
+        { lang: "de", label: "German", count: 1 },
+        { lang: "en", label: "English", count: 1 },
+        { lang: "nl", label: "Dutch", count: 1 },
+        { lang: "sv", label: "Swedish", count: 1 },
+        { lang: "es", label: "Spanish", count: 1 },
+      ];
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <Skeleton className="h-40" />
+        <Skeleton className="h-[300px]" />
+        <div className="grid lg:grid-cols-3 gap-6">
+          <Skeleton className="h-[200px]" />
+          <Skeleton className="h-[200px]" />
+          <Skeleton className="h-[200px]" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
+      {usingFallback && <DemoBanner />}
+
       {/* Big number */}
       <div className="rounded-xl border border-border bg-card p-8 text-center">
         <div className="flex items-center justify-center gap-3 mb-2">
           <span className="flex h-3 w-3 rounded-full bg-emerald-500 animate-pulse" />
           <span className="text-[13px] text-emerald-600 font-medium uppercase tracking-wider">Live Now</span>
         </div>
-        <p className="text-[72px] font-light text-foreground tracking-tighter leading-none">5</p>
+        <p className="text-[72px] font-light text-foreground tracking-tighter leading-none">{liveCount}</p>
         <p className="text-[13px] text-muted-foreground mt-2">Active visitors on your website</p>
       </div>
 
@@ -49,12 +118,15 @@ const AnalyticsLive = () => {
               </tr>
             </thead>
             <tbody>
-              {liveVisitors.map((v, i) => {
+              {liveVisitors.map((v: any, i: number) => {
                 const DeviceIcon = deviceIcons[v.device] || Monitor;
                 return (
                   <tr key={i} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
                     <td className="px-5 py-3 text-foreground">
-                      <span className="inline-flex items-center gap-2"><Flag code={v.country} />{v.country}</span>
+                      <span className="inline-flex items-center gap-2">
+                        <Flag code={v.country} />
+                        {v.country}
+                      </span>
                     </td>
                     <td className="px-5 py-3 text-muted-foreground uppercase">{v.lang}</td>
                     <td className="px-5 py-3 text-muted-foreground">
@@ -91,7 +163,7 @@ const AnalyticsLive = () => {
         <div className="rounded-xl border border-border bg-card p-5">
           <h3 className="text-[13px] font-semibold text-foreground mb-4">By Country</h3>
           <div className="space-y-2.5">
-            {countryBreakdown.slice(0, 5).map((c) => (
+            {countryBreakdown.slice(0, 5).map((c: any) => (
               <div key={c.code} className="flex items-center gap-2">
                 <Flag code={c.code} />
                 <span className="text-[12px] text-foreground flex-1">{c.name}</span>
@@ -105,7 +177,7 @@ const AnalyticsLive = () => {
           <div className="rounded-xl border border-border bg-card p-5">
             <h3 className="text-[13px] font-semibold text-foreground mb-3">By Device</h3>
             <div className="space-y-2">
-              {deviceBreakdown.map((d) => {
+              {deviceBreakdown.map((d: any) => {
                 const DIcon = deviceIcons[d.device] || Monitor;
                 return (
                   <div key={d.device} className="flex items-center gap-2">
@@ -120,7 +192,7 @@ const AnalyticsLive = () => {
           <div className="rounded-xl border border-border bg-card p-5">
             <h3 className="text-[13px] font-semibold text-foreground mb-3">By Language</h3>
             <div className="space-y-2">
-              {langBreakdown.map((l) => (
+              {langBreakdown.map((l: any) => (
                 <div key={l.lang} className="flex items-center gap-2">
                   <span className="text-[11px] text-muted-foreground/50 uppercase w-4">{l.lang}</span>
                   <span className="text-[12px] text-foreground flex-1">{l.label}</span>

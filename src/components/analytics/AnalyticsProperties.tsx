@@ -1,24 +1,80 @@
 import { useState } from "react";
 import { Eye, MessageSquare, Phone, Share2, Heart, AlertCircle } from "lucide-react";
-import { topProperties, viewedNeverContacted, MockProperty } from "./mock-data";
+import { usePropertiesRanking } from "@/hooks/useAnalytics";
+import * as fallback from "./mock-data-fallback";
+import type { MockProperty } from "./mock-data-fallback";
 
 const tabs = [
-  { id: "views", label: "Most Viewed", icon: Eye, key: "views" as const },
-  { id: "contacts", label: "Most Contacted", icon: MessageSquare, key: "contacts" as const },
-  { id: "calls", label: "Most Called", icon: Phone, key: "calls" as const },
-  { id: "shares", label: "Most Shared", icon: Share2, key: "shares" as const },
-  { id: "favorites", label: "Most Favorited", icon: Heart, key: "favorites" as const },
+  { id: "views", label: "Most Viewed", icon: Eye, apiKey: "mostViewed" as const, key: "views" as const },
+  { id: "contacts", label: "Most Contacted", icon: MessageSquare, apiKey: "mostContacted" as const, key: "contacts" as const },
+  { id: "calls", label: "Most Called", icon: Phone, apiKey: "mostCalled" as const, key: "calls" as const },
+  { id: "shares", label: "Most Shared", icon: Share2, apiKey: "mostShared" as const, key: "shares" as const },
+  { id: "favorites", label: "Most Favorited", icon: Heart, apiKey: "mostFavorited" as const, key: "favorites" as const },
 ];
 
-const AnalyticsProperties = () => {
+const Skeleton = ({ className = "" }: { className?: string }) => (
+  <div className={`animate-pulse rounded-lg bg-muted ${className}`} />
+);
+
+const DemoBanner = () => (
+  <div className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-1.5 mb-4">
+    <AlertCircle className="h-3.5 w-3.5 text-amber-600" strokeWidth={1.5} />
+    <span className="text-[11px] text-amber-700 font-medium">Using demo data — API unavailable</span>
+  </div>
+);
+
+const AnalyticsProperties = ({ dateRange = "Last 30 days" }: { dateRange?: string }) => {
   const [activeTab, setActiveTab] = useState("views");
+  const { data: apiData, isLoading, isError } = usePropertiesRanking(dateRange);
+
+  const usingFallback = isError || (!isLoading && !apiData);
+
+  // ── Build unified property list from API or fallback ──
+  const topProperties: MockProperty[] = (() => {
+    if (!apiData?.mostViewed?.length) return fallback.topProperties;
+    const allRefs = new Set<string>();
+    ["mostViewed", "mostContacted", "mostCalled", "mostShared", "mostFavorited"].forEach((key) => {
+      (apiData[key] || []).forEach((p: any) => allRefs.add(p.ref));
+    });
+    return Array.from(allRefs).map((ref) => ({
+      ref,
+      name: ref, // TODO: enrich with property data
+      location: "—",
+      type: "—",
+      price: "—",
+      views: apiData.mostViewed?.find((v: any) => v.ref === ref)?.count ?? 0,
+      contacts: apiData.mostContacted?.find((v: any) => v.ref === ref)?.count ?? 0,
+      calls: apiData.mostCalled?.find((v: any) => v.ref === ref)?.count ?? 0,
+      shares: apiData.mostShared?.find((v: any) => v.ref === ref)?.count ?? 0,
+      favorites: apiData.mostFavorited?.find((v: any) => v.ref === ref)?.count ?? 0,
+    }));
+  })();
+
+  const viewedNeverContacted = (() => {
+    if (!apiData?.mostViewed?.length) return fallback.viewedNeverContacted;
+    return topProperties.filter((p) => p.views > 0 && p.contacts === 0);
+  })();
 
   const currentTab = tabs.find((t) => t.id === activeTab)!;
   const sorted = [...topProperties].sort((a, b) => b[currentTab.key] - a[currentTab.key]);
   const featured = sorted[0];
 
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex gap-1"><Skeleton className="h-10 w-32" /><Skeleton className="h-10 w-32" /><Skeleton className="h-10 w-32" /></div>
+        <Skeleton className="h-40" />
+        <Skeleton className="h-[400px]" />
+      </div>
+    );
+  }
+
+  if (!featured) return null;
+
   return (
     <div className="space-y-6">
+      {usingFallback && <DemoBanner />}
+
       {/* Tabs */}
       <div className="flex gap-1 overflow-x-auto pb-1">
         {tabs.map((tab) => {
@@ -99,24 +155,26 @@ const AnalyticsProperties = () => {
       </div>
 
       {/* Viewed never contacted */}
-      <div className="rounded-xl border border-rose-300/30 bg-rose-50/50 p-5">
-        <div className="flex items-center gap-2 mb-4">
-          <AlertCircle className="h-4 w-4 text-rose-500" strokeWidth={1.5} />
-          <h3 className="text-[13px] font-semibold text-rose-600">Viewed but Never Contacted</h3>
-          <span className="text-[10px] text-rose-500/60 ml-auto">Potential listing issues</span>
+      {viewedNeverContacted.length > 0 && (
+        <div className="rounded-xl border border-rose-300/30 bg-rose-50/50 p-5">
+          <div className="flex items-center gap-2 mb-4">
+            <AlertCircle className="h-4 w-4 text-rose-500" strokeWidth={1.5} />
+            <h3 className="text-[13px] font-semibold text-rose-600">Viewed but Never Contacted</h3>
+            <span className="text-[10px] text-rose-500/60 ml-auto">Potential listing issues</span>
+          </div>
+          <div className="space-y-2">
+            {viewedNeverContacted.map((p) => (
+              <div key={p.ref} className="flex items-center gap-4 py-2 px-3 rounded-lg hover:bg-rose-100/30 transition-colors">
+                <span className="text-[12px] text-[#C9A96E] font-mono">{p.ref}</span>
+                <span className="text-[12px] text-foreground flex-1 truncate">{p.name}</span>
+                <span className="text-[12px] text-muted-foreground">{p.location}</span>
+                <span className="text-[12px] text-muted-foreground font-medium">{p.views} views</span>
+                <span className="text-[10px] text-rose-500 font-medium">0 contacts</span>
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="space-y-2">
-          {viewedNeverContacted.map((p) => (
-            <div key={p.ref} className="flex items-center gap-4 py-2 px-3 rounded-lg hover:bg-rose-100/30 transition-colors">
-              <span className="text-[12px] text-[#C9A96E] font-mono">{p.ref}</span>
-              <span className="text-[12px] text-foreground flex-1 truncate">{p.name}</span>
-              <span className="text-[12px] text-muted-foreground">{p.location}</span>
-              <span className="text-[12px] text-muted-foreground font-medium">{p.views} views</span>
-              <span className="text-[10px] text-rose-500 font-medium">0 contacts</span>
-            </div>
-          ))}
-        </div>
-      </div>
+      )}
     </div>
   );
 };

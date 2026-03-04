@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Shield, Download, Bot, ToggleLeft, ToggleRight } from "lucide-react";
-import { botSessions } from "./mock-data";
+import { botSessions } from "./mock-data-fallback";
+
+// TODO: Settings endpoint not available yet — using mock data
+// TODO: Bot sessions endpoint not available yet — using mock data
 
 const AnalyticsSettings = () => {
   const [retainData, setRetainData] = useState(true);

@@ -8,6 +8,7 @@ import AnalyticsFunnel from "./AnalyticsFunnel";
 import AnalyticsContacts from "./AnalyticsContacts";
 import AnalyticsAudience from "./AnalyticsAudience";
 import AnalyticsSettings from "./AnalyticsSettings";
+import { useLive } from "@/hooks/useAnalytics";
 
 type AnalyticsView = "overview" | "live" | "search" | "properties" | "funnel" | "contacts" | "audience" | "settings";
 
@@ -28,6 +29,9 @@ const AnalyticsDashboard = () => {
   const [view, setView] = useState<AnalyticsView>("overview");
   const [dateRange, setDateRange] = useState("Last 30 days");
   const [showDateDropdown, setShowDateDropdown] = useState(false);
+  const { data: liveData } = useLive();
+
+  const liveCount = liveData?.total ?? 0;
 
   return (
     <div className="flex-1 overflow-hidden flex flex-col bg-background min-h-0">
@@ -84,20 +88,22 @@ const AnalyticsDashboard = () => {
       {/* Live indicator bar */}
       <div className="shrink-0 px-6 py-2 flex items-center gap-2 border-b border-border/50 bg-card">
         <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-        <span className="text-[11px] text-emerald-600 font-medium">5 visitors online now</span>
+        <span className="text-[11px] text-emerald-600 font-medium">
+          {liveCount} visitor{liveCount !== 1 ? "s" : ""} online now
+        </span>
         <span className="text-[11px] text-muted-foreground/40">·</span>
         <span className="text-[11px] text-muted-foreground">{dateRange}</span>
       </div>
 
       {/* Content */}
       <div className="flex-1 overflow-auto p-6">
-        {view === "overview" && <AnalyticsOverview />}
+        {view === "overview" && <AnalyticsOverview dateRange={dateRange} />}
         {view === "live" && <AnalyticsLive />}
-        {view === "search" && <AnalyticsSearch />}
-        {view === "properties" && <AnalyticsProperties />}
-        {view === "funnel" && <AnalyticsFunnel />}
-        {view === "contacts" && <AnalyticsContacts />}
-        {view === "audience" && <AnalyticsAudience />}
+        {view === "search" && <AnalyticsSearch dateRange={dateRange} />}
+        {view === "properties" && <AnalyticsProperties dateRange={dateRange} />}
+        {view === "funnel" && <AnalyticsFunnel dateRange={dateRange} />}
+        {view === "contacts" && <AnalyticsContacts dateRange={dateRange} />}
+        {view === "audience" && <AnalyticsAudience dateRange={dateRange} />}
         {view === "settings" && <AnalyticsSettings />}
       </div>
     </div>
