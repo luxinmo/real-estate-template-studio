@@ -1,5 +1,10 @@
-import { useState, useMemo } from "react";
-import { Plus, ArrowUpDown, Download, Globe, GlobeIcon, Share2, Printer, Tag, X, ChevronDown, Check, SlidersHorizontal, Star, Circle, Home, Ban, EyeOff, User } from "lucide-react";
+import { useState, useMemo, useEffect, useRef } from "react";
+import { Plus, ArrowUpDown, Download, Globe, GlobeIcon, Share2, Printer, Tag, X, ChevronDown, Check, SlidersHorizontal, Star, Circle, Home, Ban, EyeOff, User, Sparkles, Languages, Loader2 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import PropertyCard, { PropertyData } from "@/components/properties/PropertyCard";
 import PropertySearchFilters, { FilterState, defaultFilters } from "@/components/properties/PropertySearchFilters";
@@ -112,6 +117,16 @@ const BulkActionsBar = ({ count, onClear, onAction }: { count: number; onClear: 
   </div>
 );
 
+const aiLanguages = [
+  { code: "ES", flag: "🇪🇸", label: "Español" },
+  { code: "EN", flag: "🇬🇧", label: "English" },
+  { code: "FR", flag: "🇫🇷", label: "Français" },
+  { code: "DE", flag: "🇩🇪", label: "Deutsch" },
+  { code: "RU", flag: "🇷🇺", label: "Русский" },
+  { code: "NL", flag: "🇳🇱", label: "Nederlands" },
+  { code: "SE", flag: "🇸🇪", label: "Svenska" },
+];
+
 const PropertiesPage = ({ onViewProperty, onAddProperty }: { onViewProperty?: () => void; onAddProperty?: () => void }) => {
   const [filters, setFilters] = useState<FilterState>(defaultFilters);
   const [sidebarFilters, setSidebarFilters] = useState<SidebarFilters>(defaultSidebarFilters);
@@ -119,12 +134,66 @@ const PropertiesPage = ({ onViewProperty, onAddProperty }: { onViewProperty?: ()
   const [sortBy, setSortBy] = useState("updatedAt-desc");
   const [sortOpen, setSortOpen] = useState(false);
 
+  // AI Description Generator state
+  const [aiDialogOpen, setAiDialogOpen] = useState(false);
+  const [aiSelectedLangs, setAiSelectedLangs] = useState<string[]>(["ES", "EN"]);
+  const [aiPrompt, setAiPrompt] = useState("Genera una descripción profesional y atractiva para una propiedad de lujo, destacando sus características principales, ubicación y estilo de vida.");
+  const [aiRunning, setAiRunning] = useState(false);
+  const [aiProgress, setAiProgress] = useState({ current: 0, total: 0 });
+  const [aiCurrentRef, setAiCurrentRef] = useState("");
+  const [aiCurrentLang, setAiCurrentLang] = useState("");
+  const aiIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const toggleAiLang = (code: string) => {
+    setAiSelectedLangs(prev =>
+      prev.includes(code) ? prev.filter(c => c !== code) : [...prev, code]
+    );
+  };
+
+  const startAiGeneration = () => {
+    setAiRunning(true);
+    const refs = demoProperties.filter(p => selectedIds.has(p.id)).map(p => p.reference);
+    const total = refs.length * aiSelectedLangs.length;
+    setAiProgress({ current: 0, total });
+    let step = 0;
+
+    aiIntervalRef.current = setInterval(() => {
+      step++;
+      const refIdx = Math.floor((step - 1) / aiSelectedLangs.length);
+      const langIdx = (step - 1) % aiSelectedLangs.length;
+      setAiProgress({ current: step, total });
+      setAiCurrentRef(refs[refIdx] || "");
+      setAiCurrentLang(aiSelectedLangs[langIdx] || "");
+
+      if (step >= total) {
+        if (aiIntervalRef.current) clearInterval(aiIntervalRef.current);
+        setTimeout(() => {
+          setAiRunning(false);
+          setAiDialogOpen(false);
+          setAiProgress({ current: 0, total: 0 });
+        }, 1200);
+      }
+    }, 1800);
+  };
+
+  useEffect(() => {
+    return () => { if (aiIntervalRef.current) clearInterval(aiIntervalRef.current); };
+  }, []);
+
   const toggleSelect = (id: number) => {
     setSelectedIds(prev => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id); else next.add(id);
       return next;
     });
+  };
+
+  const selectAll = () => {
+    if (selectedIds.size === demoProperties.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(demoProperties.map(p => p.id)));
+    }
   };
 
   const sortedProperties = useMemo(() => {
@@ -136,20 +205,25 @@ const PropertiesPage = ({ onViewProperty, onAddProperty }: { onViewProperty?: ()
   return (
     <div className="flex-1 overflow-auto pb-20 xl:pb-0">
       {/* Header */}
-      <div className="px-4 sm:px-8 pt-6 sm:pt-8 pb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="max-w-2xl">
-          <h1 className="text-2xl sm:text-3xl font-light text-foreground tracking-tight" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
-            Luxury Homes in Ibiza & Costa Blanca
-          </h1>
-          <p className="text-[13px] sm:text-[14px] text-muted-foreground mt-2 leading-relaxed font-light">
-            Discover the finest selection of luxury villas, penthouses, fincas and new-build properties across Ibiza and the Costa Blanca. From beachfront estates with panoramic sea views to exclusive golf-side residences, explore hand-picked homes curated for the most discerning buyers.
-          </p>
+      <div className="px-4 sm:px-8 pt-6 sm:pt-8 pb-4 flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight">Propiedades</h1>
+          <p className="text-xs text-muted-foreground mt-0.5">{demoProperties.length} propiedades en cartera</p>
         </div>
-        <Button className="gap-2 shrink-0" onClick={onAddProperty}>
-          <Plus className="h-4 w-4" />
-          <span className="hidden sm:inline">Nueva propiedad</span>
-          <span className="sm:hidden">Nueva</span>
-        </Button>
+        <div className="flex items-center gap-2">
+          {selectedIds.size > 0 && (
+            <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => setAiDialogOpen(true)}>
+              <Sparkles className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Generar descripciones IA</span>
+              <span className="sm:hidden">IA</span>
+            </Button>
+          )}
+          <Button className="gap-2 shrink-0" onClick={onAddProperty}>
+            <Plus className="h-4 w-4" />
+            <span className="hidden sm:inline">Nueva propiedad</span>
+            <span className="sm:hidden">Nueva</span>
+          </Button>
+        </div>
       </div>
 
       {/* Search Filters Bar */}
@@ -160,7 +234,16 @@ const PropertiesPage = ({ onViewProperty, onAddProperty }: { onViewProperty?: ()
       {/* Results bar + Sort */}
       <div className="px-4 sm:px-8 pb-3">
         <div className="flex items-center justify-between">
-          <p className="text-[12px] text-muted-foreground">{demoProperties.length} propiedades</p>
+          <div className="flex items-center gap-3">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <Checkbox
+                checked={selectedIds.size === demoProperties.length && demoProperties.length > 0}
+                onCheckedChange={selectAll}
+              />
+              <span className="text-[12px] text-muted-foreground">Seleccionar todo</span>
+            </label>
+            <p className="text-[12px] text-muted-foreground">{demoProperties.length} propiedades</p>
+          </div>
 
           <Popover open={sortOpen} onOpenChange={setSortOpen}>
             <PopoverTrigger asChild>
@@ -263,6 +346,107 @@ const PropertiesPage = ({ onViewProperty, onAddProperty }: { onViewProperty?: ()
           Portales
         </Button>
       </div>
+
+      {/* AI Description Generator Dialog */}
+      <Dialog open={aiDialogOpen} onOpenChange={(open) => { if (!aiRunning) setAiDialogOpen(open); }}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-primary" />
+              Generar descripciones con IA
+            </DialogTitle>
+          </DialogHeader>
+
+          {!aiRunning ? (
+            <div className="space-y-5 pt-2">
+              <div className="rounded-lg bg-muted/50 border border-border px-3 py-2.5">
+                <p className="text-xs text-muted-foreground">
+                  Se generarán descripciones para <span className="font-semibold text-foreground">{selectedIds.size}</span> propiedades
+                  sin descripción en los idiomas seleccionados.
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-xs text-muted-foreground">Idiomas de destino</Label>
+                <div className="flex flex-wrap gap-2">
+                  {aiLanguages.map(l => (
+                    <label key={l.code} className="flex items-center gap-2 cursor-pointer">
+                      <Checkbox
+                        checked={aiSelectedLangs.includes(l.code)}
+                        onCheckedChange={() => toggleAiLang(l.code)}
+                      />
+                      <span className="text-sm">{l.flag} {l.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-xs text-muted-foreground">Prompt / Instrucciones para la IA</Label>
+                <Textarea
+                  value={aiPrompt}
+                  onChange={e => setAiPrompt(e.target.value)}
+                  placeholder="Describe el tono y estilo que quieres para las descripciones..."
+                  className="min-h-[100px] text-sm"
+                />
+              </div>
+
+              <div className="flex justify-end gap-2 pt-1">
+                <Button variant="outline" onClick={() => setAiDialogOpen(false)}>Cancelar</Button>
+                <Button
+                  onClick={startAiGeneration}
+                  disabled={aiSelectedLangs.length === 0}
+                  className="gap-2"
+                >
+                  <Sparkles className="h-3.5 w-3.5" />
+                  Generar {selectedIds.size * aiSelectedLangs.length} descripciones
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-5 pt-2 pb-2">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-foreground">Generando descripciones...</span>
+                  <span className="text-xs font-mono text-muted-foreground">
+                    {aiProgress.current} de {aiProgress.total}
+                  </span>
+                </div>
+                <Progress value={(aiProgress.current / aiProgress.total) * 100} className="h-2" />
+              </div>
+
+              <div className="rounded-lg border border-border bg-muted/30 p-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                  <span className="text-sm text-foreground">
+                    Propiedad <span className="font-mono font-semibold">{aiCurrentRef}</span>
+                  </span>
+                  <span className="ml-auto text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">
+                    {aiLanguages.find(l => l.code === aiCurrentLang)?.flag} {aiCurrentLang}
+                  </span>
+                </div>
+                <div className="space-y-1.5">
+                  <div className="h-3 bg-muted rounded animate-pulse w-full" />
+                  <div className="h-3 bg-muted rounded animate-pulse w-[90%]" />
+                  <div className="h-3 bg-muted rounded animate-pulse w-[75%]" />
+                  <div className="h-3 bg-muted rounded animate-pulse w-[85%]" />
+                </div>
+              </div>
+
+              {aiProgress.current >= aiProgress.total && (
+                <div className="flex items-center gap-2 text-sm text-emerald-600">
+                  <Check className="h-4 w-4" />
+                  ¡Todas las descripciones generadas!
+                </div>
+              )}
+
+              <p className="text-[11px] text-muted-foreground">
+                No cierres esta ventana mientras se generan las descripciones.
+              </p>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
