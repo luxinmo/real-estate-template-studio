@@ -211,13 +211,11 @@ const PropertiesPage = ({ onViewProperty, onAddProperty }: { onViewProperty?: ()
           <p className="text-xs text-muted-foreground mt-0.5">{demoProperties.length} propiedades en cartera</p>
         </div>
         <div className="flex items-center gap-2">
-          {selectedIds.size > 0 && (
-            <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => setAiDialogOpen(true)}>
-              <Sparkles className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Generar descripciones IA</span>
-              <span className="sm:hidden">IA</span>
-            </Button>
-          )}
+          <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => setAiDialogOpen(true)}>
+            <Sparkles className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Generar descripciones IA</span>
+            <span className="sm:hidden">IA</span>
+          </Button>
           <Button className="gap-2 shrink-0" onClick={onAddProperty}>
             <Plus className="h-4 w-4" />
             <span className="hidden sm:inline">Nueva propiedad</span>
