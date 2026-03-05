@@ -8,6 +8,7 @@ import { CmsPagesListPage, CmsPageEditorPage, CmsBlogListPage, CmsBlogEditorPage
 import PropertiesPage from "@/components/PropertiesPage";
 import PropertyDetailPage from "@/components/PropertyDetailPage";
 import AddPropertyPage from "@/components/AddPropertyPage";
+import { OpportunitiesPage, OpportunityDetailPage } from "@/components/opportunities";
 import UsersPage from "@/components/UsersPage";
 import ComponentsPage from "@/components/ComponentsPage";
 import CardDesignerPage from "@/components/card-designer/CardDesignerPage";
@@ -18,6 +19,7 @@ import AnalyticsDashboard from "@/components/analytics/AnalyticsDashboard";
 type View =
   | "dashboard" | "properties" | "property-detail" | "add-property"
   | "contacts" | "add-contact" | "contact-detail"
+  | "opportunities" | "opportunity-detail"
   | "agencies" | "analytics" | "users" | "company" | "settings" | "components"
   | "loc-countries" | "loc-provinces" | "loc-regions" | "loc-municipalities" | "loc-municipality-detail" | "loc-borough-form"
   | "imp-fuentes" | "imp-mapeo" | "imp-historial" | "imp-scheduler" | "imp-pendientes"
@@ -38,7 +40,7 @@ const Index = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedContactId, setSelectedContactId] = useState<string>("1");
   const [cmsEditId, setCmsEditId] = useState<string | null>(null);
-
+  const [selectedLeadId, setSelectedLeadId] = useState<string>("5");
   // Location drill-down
   const [locCountryId, setLocCountryId] = useState("");
   const [locProvinceId, setLocProvinceId] = useState("");
@@ -52,6 +54,7 @@ const Index = () => {
   const sidebarView = (() => {
     if (["add-contact", "contact-detail"].includes(view)) return "contacts";
     if (["property-detail", "add-property"].includes(view)) return "properties";
+    if (view === "opportunity-detail") return "opportunities";
     if (view.startsWith("loc-")) return "locations";
     if (view === "imp-mapeo") return "imp-fuentes";
     if (view.startsWith("imp-")) return view;
@@ -82,6 +85,8 @@ const Index = () => {
         {view === "add-contact" && <AddContactPage onBack={() => setView("contacts")} />}
         {view === "contact-detail" && <ContactDetailPage contactId={selectedContactId} onBack={() => setView("contacts")} onEdit={() => setView("add-contact")} />}
         {view === "agencies" && <AgenciesPage />}
+        {view === "opportunities" && <OpportunitiesPage onViewDetail={(id) => { setSelectedLeadId(id); setView("opportunity-detail"); }} />}
+        {view === "opportunity-detail" && <OpportunityDetailPage leadId={selectedLeadId} onBack={() => setView("opportunities")} />}
         {view === "analytics" && <AnalyticsDashboard />}
 
         {view === "loc-countries" && (
