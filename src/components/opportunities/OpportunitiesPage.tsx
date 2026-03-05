@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Search, ChevronLeft, ChevronRight, Mail, UserPlus, Tag, Trash2, FileDown, MoreHorizontal, Plus, Flame, Sparkles, Phone, AtSign, Pencil, MessageSquare, X, Check } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, MoreHorizontal, Plus, Flame, ArrowRight, Mail, UserPlus, Tag, FileDown, Sparkles, SlidersHorizontal } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -9,23 +9,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { mockLeads, pipelineStages, stageCounts, agents, type Lead, type PipelineStage } from "./mock-data";
+import { mockLeads, pipelineStages, agents, type Lead, type PipelineStage } from "./mock-data";
 
 interface OpportunitiesPageProps {
   onViewDetail: (id: string) => void;
 }
 
 const PAGE_SIZE = 10;
-
-const stageColors: Record<string, string> = {
-  lead: "bg-muted text-muted-foreground",
-  opportunity: "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300",
-  first_contact: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300",
-  send_info: "bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300",
-  visit: "bg-violet-50 text-violet-700 dark:bg-violet-950 dark:text-violet-300",
-  valuing: "bg-cyan-50 text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300",
-  negotiation: "bg-rose-50 text-rose-700 dark:bg-rose-950 dark:text-rose-300",
-};
 
 type TabMode = "leads" | "opportunities";
 
@@ -50,8 +40,7 @@ const OpportunitiesPage = ({ onViewDetail }: OpportunitiesPageProps) => {
       items = items.filter(l =>
         l.contactName.toLowerCase().includes(q) ||
         l.email.toLowerCase().includes(q) ||
-        l.ref.toLowerCase().includes(q) ||
-        l.phone.includes(q)
+        l.ref.toLowerCase().includes(q)
       );
     }
     return items;
@@ -70,89 +59,105 @@ const OpportunitiesPage = ({ onViewDetail }: OpportunitiesPageProps) => {
   const leadCount = mockLeads.filter(l => l.stage === "lead").length;
   const oppCount = mockLeads.filter(l => l.stage !== "lead").length;
 
+  // Stage distribution for opportunities
+  const stageDistribution = useMemo(() => {
+    const opps = mockLeads.filter(l => l.stage !== "lead");
+    return pipelineStages.filter(s => s.key !== "lead").map(s => ({
+      ...s,
+      count: opps.filter(l => l.stage === s.key).length,
+    }));
+  }, []);
+
   return (
     <div className="flex-1 overflow-auto">
-      <div className="px-4 sm:px-8 pt-6 pb-2">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-5">
-          <div>
-            <h1 className="text-xl font-semibold text-foreground tracking-tight">
-              {tabMode === "leads" ? `(${leadCount} leads)` : `(${oppCount} oportunidades)`}
-            </h1>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button size="sm" className="h-8 gap-1.5 text-[12px]">
-              <Plus className="h-3.5 w-3.5" />
-              {tabMode === "leads" ? "Nuevo Lead" : "Nueva Oportunidad"}
-            </Button>
-          </div>
+      <div className="px-4 sm:px-8 pt-6 pb-8">
+        {/* Header row */}
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-xl font-semibold text-foreground tracking-tight">Pipeline</h1>
+          <Button size="sm" className="h-8 gap-1.5 text-[12px]">
+            <Plus className="h-3.5 w-3.5" />
+            Nuevo
+          </Button>
         </div>
 
-        {/* Tab toggle */}
-        <div className="flex items-center gap-2 mb-4">
+        {/* Mode toggle — pill style */}
+        <div className="inline-flex items-center rounded-lg bg-muted p-0.5 mb-5">
           <button
             onClick={() => { setTabMode("leads"); setStageFilter("all"); setPage(0); setSelectedIds(new Set()); }}
-            className={`flex items-center gap-2 rounded-full px-4 py-1.5 text-[13px] font-medium transition-colors ${
-              tabMode === "leads"
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground hover:bg-accent"
+            className={`flex items-center gap-2 rounded-md px-4 py-1.5 text-[13px] font-medium transition-all ${
+              tabMode === "leads" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-500 text-[10px] font-bold text-white">{leadCount}</span>
-            Leads ({leadCount})
+            Leads
+            <span className={`text-[11px] font-semibold tabular-nums px-1.5 py-0.5 rounded-md ${
+              tabMode === "leads" ? "bg-primary text-primary-foreground" : "bg-muted-foreground/10"
+            }`}>{leadCount}</span>
           </button>
           <button
             onClick={() => { setTabMode("opportunities"); setStageFilter("all"); setPage(0); setSelectedIds(new Set()); }}
-            className={`flex items-center gap-2 rounded-full px-4 py-1.5 text-[13px] font-medium transition-colors ${
-              tabMode === "opportunities"
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground hover:bg-accent"
+            className={`flex items-center gap-2 rounded-md px-4 py-1.5 text-[13px] font-medium transition-all ${
+              tabMode === "opportunities" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-bold text-white">{oppCount}</span>
-            Oportunidades ({oppCount})
+            Oportunidades
+            <span className={`text-[11px] font-semibold tabular-nums px-1.5 py-0.5 rounded-md ${
+              tabMode === "opportunities" ? "bg-primary text-primary-foreground" : "bg-muted-foreground/10"
+            }`}>{oppCount}</span>
           </button>
         </div>
 
-        {/* Pipeline stage pills - only for opportunities */}
+        {/* Pipeline stage bar — horizontal proportional visualization */}
         {tabMode === "opportunities" && (
-          <div className="flex items-center gap-1.5 mb-4 flex-wrap">
-            {pipelineStages.filter(s => s.key !== "lead").map(s => {
-              const count = stageCounts[s.key] || mockLeads.filter(l => l.stage === s.key).length;
-              const isActive = stageFilter === s.key;
-              return (
-                <button
-                  key={s.key}
-                  onClick={() => { setStageFilter(isActive ? "all" : s.key); setPage(0); }}
-                  className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-[12px] font-medium transition-colors border ${
-                    isActive
-                      ? "border-primary/30 bg-primary/5 text-foreground"
-                      : "border-transparent bg-muted/60 text-muted-foreground hover:bg-muted"
-                  }`}
-                >
-                  <span className={`flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-bold text-white ${
-                    count > 0 ? "bg-primary/70" : "bg-muted-foreground/30"
-                  }`}>{count}</span>
-                  {s.label}
-                </button>
-              );
-            })}
+          <div className="mb-5">
+            <div className="flex h-7 rounded-lg overflow-hidden border border-border bg-card">
+              {stageDistribution.map((s, i) => {
+                const total = stageDistribution.reduce((a, b) => a + b.count, 0) || 1;
+                const pct = Math.max((s.count / total) * 100, 8);
+                const isActive = stageFilter === s.key;
+                const colors = [
+                  "bg-blue-500/15 text-blue-700 hover:bg-blue-500/25",
+                  "bg-emerald-500/15 text-emerald-700 hover:bg-emerald-500/25",
+                  "bg-amber-500/15 text-amber-700 hover:bg-amber-500/25",
+                  "bg-violet-500/15 text-violet-700 hover:bg-violet-500/25",
+                  "bg-cyan-500/15 text-cyan-700 hover:bg-cyan-500/25",
+                  "bg-rose-500/15 text-rose-700 hover:bg-rose-500/25",
+                ];
+                return (
+                  <button
+                    key={s.key}
+                    onClick={() => { setStageFilter(isActive ? "all" : s.key); setPage(0); }}
+                    style={{ width: `${pct}%` }}
+                    className={`flex items-center justify-center gap-1 text-[10px] font-semibold transition-all border-r border-border last:border-r-0 ${colors[i % colors.length]} ${
+                      isActive ? "ring-1 ring-inset ring-primary/30" : ""
+                    }`}
+                  >
+                    <span className="truncate">{s.label}</span>
+                    <span className="opacity-60">{s.count}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         )}
 
-        {/* Search */}
-        <div className="relative mb-4">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            value={search}
-            onChange={(e) => { setSearch(e.target.value); setPage(0); }}
-            placeholder="Teléfono, nombre, dirección, título, ref..."
-            className="pl-9 h-9 text-[13px] bg-card border-border"
-          />
+        {/* Search + controls */}
+        <div className="flex items-center gap-2 mb-4">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+            <Input
+              value={search}
+              onChange={(e) => { setSearch(e.target.value); setPage(0); }}
+              placeholder="Buscar por nombre, email, teléfono o referencia..."
+              className="pl-9 h-8 text-[12px] bg-card border-border"
+            />
+          </div>
+          <Button variant="outline" size="sm" className="h-8 gap-1 text-[11px]">
+            <SlidersHorizontal className="h-3 w-3" /> Filtros
+          </Button>
         </div>
 
-        {/* Selection bar */}
-        <div className="flex items-center justify-between py-2 border-b border-border mb-1 text-[12px]">
+        {/* Toolbar */}
+        <div className="flex items-center justify-between py-2 mb-1 text-[11px] border-b border-border">
           <div className="flex items-center gap-3">
             <Checkbox
               checked={allSelected}
@@ -162,45 +167,48 @@ const OpportunitiesPage = ({ onViewDetail }: OpportunitiesPageProps) => {
               }}
               className="h-3.5 w-3.5"
             />
-            <span className="text-primary font-medium">{selectedIds.size} seleccionados</span>
-            <button onClick={() => setSelectedIds(new Set(filtered.map(l => l.id)))} className="text-primary hover:underline">Seleccionar todo</button>
-            <button onClick={() => setSelectedIds(new Set())} className="text-muted-foreground hover:underline">Limpiar</button>
-            {filtered.some(l => l.isNew) && (
-              <button className="text-emerald-600 hover:underline font-medium">Nuevos ({filtered.filter(l => l.isNew).length})</button>
-            )}
-            {filtered.some(l => l.isHot) && (
-              <button className="text-amber-600 hover:underline font-medium">Hot ({filtered.filter(l => l.isHot).length})</button>
+            {selectedIds.size > 0 ? (
+              <>
+                <span className="font-medium text-foreground">{selectedIds.size} sel.</span>
+                <span className="text-muted-foreground/40">·</span>
+                <button onClick={() => setSelectedIds(new Set(filtered.map(l => l.id)))} className="text-primary hover:underline">Todo</button>
+                <button onClick={() => setSelectedIds(new Set())} className="text-muted-foreground hover:underline">Limpiar</button>
+                <span className="text-muted-foreground/40">·</span>
+                <button className="text-muted-foreground hover:text-foreground flex items-center gap-1"><Mail className="h-3 w-3" />Email</button>
+                <button className="text-muted-foreground hover:text-foreground flex items-center gap-1"><UserPlus className="h-3 w-3" />Asignar</button>
+                <button className="text-muted-foreground hover:text-foreground flex items-center gap-1"><Tag className="h-3 w-3" />Tag</button>
+                <button className="text-muted-foreground hover:text-foreground flex items-center gap-1"><FileDown className="h-3 w-3" />Exportar</button>
+                {tabMode === "leads" && (
+                  <button className="text-emerald-600 font-medium flex items-center gap-1"><Sparkles className="h-3 w-3" />→ Oportunidad</button>
+                )}
+              </>
+            ) : (
+              <span className="text-muted-foreground">Seleccionar para acciones</span>
             )}
           </div>
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <span>{page * PAGE_SIZE + 1} - {Math.min((page + 1) * PAGE_SIZE, filtered.length)} de {filtered.length}</span>
-            <button onClick={() => setPage(Math.max(0, page - 1))} disabled={page === 0} className="p-0.5 hover:text-foreground disabled:opacity-30">
-              <ChevronLeft className="h-4 w-4" />
-            </button>
-            <button onClick={() => setPage(Math.min(totalPages - 1, page + 1))} disabled={page >= totalPages - 1} className="p-0.5 hover:text-foreground disabled:opacity-30">
-              <ChevronRight className="h-4 w-4" />
-            </button>
+          <div className="flex items-center gap-2 text-muted-foreground tabular-nums">
+            <span>{filtered.length > 0 ? `${page * PAGE_SIZE + 1}–${Math.min((page + 1) * PAGE_SIZE, filtered.length)}` : "0"} de {filtered.length}</span>
+            <button onClick={() => setPage(Math.max(0, page - 1))} disabled={page === 0} className="p-0.5 hover:text-foreground disabled:opacity-30"><ChevronLeft className="h-3.5 w-3.5" /></button>
+            <button onClick={() => setPage(Math.min(totalPages - 1, page + 1))} disabled={page >= totalPages - 1} className="p-0.5 hover:text-foreground disabled:opacity-30"><ChevronRight className="h-3.5 w-3.5" /></button>
           </div>
         </div>
 
-        {/* Bulk actions */}
-        {selectedIds.size > 0 && (
-          <div className="flex items-center gap-1.5 py-2 mb-1 text-[12px]">
-            <Button variant="ghost" size="sm" className="h-7 gap-1 text-[11px]"><Mail className="h-3 w-3" />Email</Button>
-            <Button variant="ghost" size="sm" className="h-7 gap-1 text-[11px]"><UserPlus className="h-3 w-3" />Asignar</Button>
-            <Button variant="ghost" size="sm" className="h-7 gap-1 text-[11px]"><Tag className="h-3 w-3" />Añadir tag</Button>
-            <Button variant="ghost" size="sm" className="h-7 gap-1 text-[11px]"><Tag className="h-3 w-3" />Quitar tag</Button>
-            <Button variant="ghost" size="sm" className="h-7 gap-1 text-[11px]"><FileDown className="h-3 w-3" />Exportar</Button>
-            {tabMode === "leads" && (
-              <Button variant="ghost" size="sm" className="h-7 gap-1 text-[11px] text-emerald-600"><Sparkles className="h-3 w-3" />Pasar a Oportunidad</Button>
-            )}
+        {/* Table */}
+        <div className="bg-card rounded-xl border border-border overflow-hidden">
+          {/* Table header */}
+          <div className="grid grid-cols-[32px_1fr_180px_120px_100px_80px_40px] items-center px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground border-b border-border bg-muted/30">
+            <div />
+            <div>Contacto</div>
+            <div>Propiedad</div>
+            <div>Origen</div>
+            <div>Etapa</div>
+            <div>Fecha</div>
+            <div />
           </div>
-        )}
 
-        {/* Lead rows */}
-        <div className="space-y-0">
+          {/* Rows */}
           {paged.map(lead => (
-            <LeadRow
+            <LeadTableRow
               key={lead.id}
               lead={lead}
               selected={selectedIds.has(lead.id)}
@@ -210,25 +218,22 @@ const OpportunitiesPage = ({ onViewDetail }: OpportunitiesPageProps) => {
               tabMode={tabMode}
             />
           ))}
-        </div>
 
-        {filtered.length === 0 && (
-          <div className="py-16 text-center text-muted-foreground text-sm">
-            No se encontraron resultados
-          </div>
-        )}
+          {filtered.length === 0 && (
+            <div className="py-16 text-center text-muted-foreground text-[13px]">
+              Sin resultados
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Edit Lead Dialog */}
-      {editLead && (
-        <EditLeadDialog lead={editLead} onClose={() => setEditLead(null)} />
-      )}
+      {editLead && <EditLeadDialog lead={editLead} onClose={() => setEditLead(null)} />}
     </div>
   );
 };
 
-/* ─── Lead Row ─── */
-interface LeadRowProps {
+/* ─── Table Row ─── */
+interface LeadTableRowProps {
   lead: Lead;
   selected: boolean;
   onToggle: () => void;
@@ -237,135 +242,119 @@ interface LeadRowProps {
   tabMode: TabMode;
 }
 
-const LeadRow = ({ lead, selected, onToggle, onView, onEdit, tabMode }: LeadRowProps) => {
-  const [showComments, setShowComments] = useState(false);
+const stageLabels: Record<string, { label: string; dot: string }> = {
+  lead: { label: "Lead", dot: "bg-muted-foreground" },
+  opportunity: { label: "Oportunidad", dot: "bg-blue-500" },
+  first_contact: { label: "1er Contacto", dot: "bg-emerald-500" },
+  send_info: { label: "Info Enviada", dot: "bg-amber-500" },
+  visit: { label: "Visita", dot: "bg-violet-500" },
+  valuing: { label: "Valoración", dot: "bg-cyan-500" },
+  negotiation: { label: "Negociación", dot: "bg-rose-500" },
+};
+
+const LeadTableRow = ({ lead, selected, onToggle, onView, onEdit, tabMode }: LeadTableRowProps) => {
+  const stage = stageLabels[lead.stage] || stageLabels.lead;
 
   return (
-    <div className={`border-b border-border transition-colors ${selected ? "bg-primary/[0.02]" : "hover:bg-muted/30"}`}>
-      {/* Top meta row */}
-      <div className="flex items-center justify-between px-3 pt-3 pb-1">
-        <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
-          <Checkbox checked={selected} onCheckedChange={onToggle} className="h-3.5 w-3.5" />
-          <Badge variant="outline" className={`text-[10px] font-semibold px-2 py-0 h-5 rounded ${
-            lead.type === "rent" ? "text-blue-600 border-blue-200 bg-blue-50" : "text-emerald-600 border-emerald-200 bg-emerald-50"
-          }`}>
-            {lead.type === "rent" ? "To rent" : "For sale"}
-          </Badge>
-          <span className="font-mono">{lead.ref}</span>
-          <span>editado hace {lead.editedAgo}</span>
-          {lead.isNew && <Badge className="bg-emerald-500 text-white text-[9px] px-1.5 py-0 h-4">New</Badge>}
-          {lead.isHot && <Flame className="h-3.5 w-3.5 text-amber-500" />}
+    <div
+      onClick={onView}
+      className={`grid grid-cols-[32px_1fr_180px_120px_100px_80px_40px] items-center px-3 py-2.5 border-b border-border last:border-b-0 cursor-pointer transition-colors group ${
+        selected ? "bg-primary/[0.02]" : "hover:bg-muted/20"
+      }`}
+    >
+      {/* Checkbox */}
+      <div onClick={e => e.stopPropagation()}>
+        <Checkbox checked={selected} onCheckedChange={onToggle} className="h-3.5 w-3.5" />
+      </div>
+
+      {/* Contact */}
+      <div className="min-w-0 flex items-center gap-3">
+        {/* Avatar circle */}
+        <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-[11px] font-semibold text-muted-foreground shrink-0">
+          {lead.contactName.split(" ").map(n => n[0]).join("").slice(0, 2)}
         </div>
-        <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
-          <span>Creado {lead.createdAt}</span>
-          {tabMode === "leads" && (
-            <button className="text-[10px] text-emerald-600 font-medium hover:underline">→ Oportunidad</button>
-          )}
+        <div className="min-w-0">
+          <div className="flex items-center gap-1.5">
+            <span className="text-[13px] font-medium text-foreground truncate">{lead.contactName}</span>
+            {lead.isNew && <Badge className="bg-emerald-500/10 text-emerald-600 border-0 text-[9px] px-1 py-0 h-3.5 font-semibold">NEW</Badge>}
+            {lead.isHot && <Flame className="h-3 w-3 text-amber-500 shrink-0" />}
+            {lead.tags.map(tag => (
+              <Badge key={tag} variant="outline" className="text-[9px] px-1 py-0 h-3.5 border-amber-300 text-amber-700 bg-amber-50">{tag}</Badge>
+            ))}
+          </div>
+          <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+            <span className="truncate">{lead.email}</span>
+            <span className="text-muted-foreground/30">·</span>
+            <span className="font-mono text-[10px]">{lead.ref}</span>
+          </div>
         </div>
       </div>
 
-      {/* Main content */}
-      <div className="flex gap-4 px-3 pb-3 cursor-pointer" onClick={onView}>
-        {/* Contact info */}
-        <div className="flex-1 min-w-0">
-          <h3 className="text-[14px] font-semibold text-primary hover:underline">{lead.contactName}</h3>
-          <div className="flex items-center gap-3 mt-1 text-[12px]">
-            <a className="text-primary/70 hover:underline flex items-center gap-1" onClick={e => e.stopPropagation()}>
-              <AtSign className="h-3 w-3" />{lead.email}
-            </a>
-          </div>
-          <div className="flex items-center gap-3 mt-1 text-[12px] text-muted-foreground">
-            <span className="flex items-center gap-1"><Phone className="h-3 w-3" />{lead.phone}</span>
-          </div>
-          <button
-            onClick={(e) => { e.stopPropagation(); }}
-            className="mt-1.5 text-[11px] text-primary/60 hover:text-primary flex items-center gap-1"
-          >
-            <Tag className="h-3 w-3" /> Añadir tag
-          </button>
-          {lead.tags.length > 0 && (
-            <div className="flex items-center gap-1 mt-1">
-              {lead.tags.map(tag => (
-                <Badge key={tag} variant="secondary" className="text-[10px] px-1.5 py-0 h-4 bg-amber-100 text-amber-800 border-amber-200">{tag}</Badge>
-              ))}
-            </div>
-          )}
-          <div className="flex items-center gap-2 mt-2 text-[11px] text-muted-foreground">
-            <span>Origen: <strong className="text-foreground">{lead.origin}</strong></span>
-          </div>
-          <div className="flex items-center gap-1 text-[11px] text-muted-foreground mt-0.5">
-            Responsable: <strong className="text-foreground">{lead.agent}</strong>
-            <Pencil className="h-2.5 w-2.5 text-muted-foreground/50 cursor-pointer hover:text-foreground" />
-          </div>
-        </div>
-
-        {/* Property card */}
-        {lead.property && (
-          <div className="flex items-start gap-3 shrink-0">
-            <div className="w-28 h-20 rounded-lg bg-muted overflow-hidden">
+      {/* Property */}
+      <div className="min-w-0">
+        {lead.property ? (
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-12 rounded bg-muted overflow-hidden shrink-0">
               <img src={lead.property.image} alt="" className="w-full h-full object-cover" />
             </div>
             <div className="min-w-0">
-              <p className="text-[13px] font-semibold text-primary">
-                {lead.property.title} <span className="text-muted-foreground font-normal text-[11px]">{lead.property.ref}</span>
-              </p>
-              <p className="text-[11px] text-muted-foreground">{lead.property.location}</p>
-              <p className="text-[12px] font-medium mt-0.5">
-                {lead.type === "rent" ? "To rent" : "For sale"} {lead.property.price}
-              </p>
-              <div className="flex items-center gap-1 mt-1">
-                <span className="flex items-center gap-1 text-[10px] text-emerald-600">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                  Available
-                </span>
-              </div>
+              <p className="text-[11px] font-medium text-foreground truncate">{lead.property.type}, {lead.property.bedrooms} Bed</p>
+              <p className="text-[10px] text-muted-foreground truncate">{lead.property.price}</p>
             </div>
           </div>
+        ) : (
+          <span className="text-[11px] text-muted-foreground/40">—</span>
         )}
-
-        {/* Action buttons */}
-        <div className="flex items-start gap-1 shrink-0 ml-2" onClick={e => e.stopPropagation()}>
-          <button className="p-1.5 rounded hover:bg-destructive/10 text-muted-foreground hover:text-destructive"><X className="h-3.5 w-3.5" /></button>
-          <button className="p-1.5 rounded hover:bg-emerald-50 text-muted-foreground hover:text-emerald-600"><Check className="h-3.5 w-3.5" /></button>
-          <button onClick={onEdit} className="p-1.5 rounded hover:bg-accent text-muted-foreground hover:text-foreground"><Pencil className="h-3.5 w-3.5" /></button>
-        </div>
       </div>
 
-      {/* Comments toggle */}
-      <div className="px-3 pb-2" onClick={e => e.stopPropagation()}>
-        <button
-          onClick={() => setShowComments(!showComments)}
-          className="text-[11px] text-muted-foreground hover:text-foreground flex items-center gap-1 border border-border rounded px-2 py-0.5"
-        >
-          <MessageSquare className="h-3 w-3" />
-          {showComments ? "Ocultar comentarios" : "Mostrar comentarios"} {lead.notes.length > 0 && `(${lead.notes.length})`}
-        </button>
-        {showComments && lead.notes.length > 0 && (
-          <div className="mt-2 space-y-1.5 pl-4 border-l-2 border-border">
-            {lead.notes.slice(0, 2).map(note => (
-              <div key={note.id} className="text-[11px]">
-                {note.isSystem && <p className="text-emerald-600 font-medium">{note.systemType}</p>}
-                <p className="text-muted-foreground">{note.text}</p>
-                <p className="text-[10px] text-muted-foreground/60 mt-0.5">{note.date} · {note.author}</p>
-              </div>
-            ))}
-          </div>
-        )}
+      {/* Origin */}
+      <div className="text-[11px] text-muted-foreground">{lead.origin}</div>
+
+      {/* Stage */}
+      <div className="flex items-center gap-1.5">
+        <span className={`h-1.5 w-1.5 rounded-full ${stage.dot}`} />
+        <span className="text-[11px] text-foreground">{stage.label}</span>
+      </div>
+
+      {/* Date */}
+      <div className="text-[10px] text-muted-foreground tabular-nums">
+        {lead.createdAt.split(" ")[0]}
+      </div>
+
+      {/* Actions */}
+      <div onClick={e => e.stopPropagation()} className="flex justify-end">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="p-1 rounded opacity-0 group-hover:opacity-100 hover:bg-accent transition-opacity">
+              <MoreHorizontal className="h-3.5 w-3.5 text-muted-foreground" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-40 text-[12px]">
+            <DropdownMenuItem onClick={onEdit}>Editar</DropdownMenuItem>
+            <DropdownMenuItem onClick={onView}>Ver detalle</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            {tabMode === "leads" && <DropdownMenuItem className="text-emerald-600">Pasar a Oportunidad</DropdownMenuItem>}
+            <DropdownMenuItem>Asignar agente</DropdownMenuItem>
+            <DropdownMenuItem>Enviar email</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="text-destructive">Descartar</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );
 };
 
-/* ─── Edit Lead Dialog ─── */
+/* ─── Edit Dialog ─── */
 const EditLeadDialog = ({ lead, onClose }: { lead: Lead; onClose: () => void }) => (
   <Dialog open onOpenChange={onClose}>
     <DialogContent className="sm:max-w-lg">
       <DialogHeader>
-        <DialogTitle className="text-base">Editar lead</DialogTitle>
+        <DialogTitle className="text-base">Editar · {lead.ref}</DialogTitle>
       </DialogHeader>
       <div className="space-y-4">
         <div>
-          <Label className="text-[11px] uppercase tracking-wider text-muted-foreground">Nombre de contacto</Label>
+          <Label className="text-[11px] uppercase tracking-wider text-muted-foreground">Nombre</Label>
           <Input defaultValue={lead.contactName} className="mt-1 h-9 text-[13px]" />
         </div>
         <div className="grid grid-cols-2 gap-3">
@@ -403,12 +392,12 @@ const EditLeadDialog = ({ lead, onClose }: { lead: Lead; onClose: () => void }) 
           </div>
         </div>
         <div>
-          <Label className="text-[11px] uppercase tracking-wider text-muted-foreground">Comentario del agente</Label>
-          <Textarea className="mt-1 text-[13px] min-h-[60px]" />
+          <Label className="text-[11px] uppercase tracking-wider text-muted-foreground">Nota</Label>
+          <Textarea className="mt-1 text-[13px] min-h-[60px]" placeholder="Añadir comentario del agente..." />
         </div>
       </div>
       <DialogFooter className="gap-2">
-        <Button variant="outline" onClick={onClose} className="text-[12px] h-8">Cerrar</Button>
+        <Button variant="outline" onClick={onClose} className="text-[12px] h-8">Cancelar</Button>
         <Button className="text-[12px] h-8">Guardar</Button>
       </DialogFooter>
     </DialogContent>
