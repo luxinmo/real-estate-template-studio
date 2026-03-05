@@ -188,7 +188,7 @@ const PropertyCard = ({ property, onClick, selected, onSelect }: PropertyCardPro
   return (
     <div
       onClick={onClick}
-      className={`rounded-xl border bg-card hover:shadow-elevated transition-all duration-200 cursor-pointer overflow-hidden group ${selected ? "border-primary ring-2 ring-primary/20" : "border-border"}`}
+      className={`rounded-xl border bg-card hover:shadow-elevated transition-all duration-200 cursor-pointer overflow-hidden group ${selected ? "bg-primary/[0.02] border-primary/30 shadow-sm" : "border-border"}`}
     >
       <div className="flex flex-col sm:flex-row sm:h-[220px]">
         {/* Image */}

@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect } from "react";
 import { Tag, User, Circle, Home, Globe, Ban, EyeOff, ChevronDown, Plus, Minus, Star, Settings } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
@@ -9,20 +10,80 @@ interface FilterChip {
   mode: FilterMode;
 }
 
-const FilterChipButton = ({ chip, onToggle }: { chip: FilterChip; onToggle: () => void }) => {
-  const base = "inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-[11px] font-medium transition-all cursor-pointer select-none";
+/* ─── Hover popover for chip options ─── */
+const ChipOptionsPopover = ({ onSelect, onClose }: { onSelect: (mode: FilterMode) => void; onClose: () => void }) => {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) onClose();
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [onClose]);
+
+  return (
+    <div
+      ref={ref}
+      className="absolute -top-1 left-1/2 -translate-x-1/2 -translate-y-full z-50 flex items-center gap-0.5 rounded-md bg-foreground px-1 py-0.5 shadow-lg animate-in fade-in-0 zoom-in-95 duration-100"
+    >
+      <button
+        onClick={(e) => { e.stopPropagation(); onSelect("include"); }}
+        className="px-2 py-1 text-[11px] font-medium text-background/70 hover:text-background rounded transition-colors"
+      >
+        and
+      </button>
+      <button
+        onClick={(e) => { e.stopPropagation(); onSelect("include"); }}
+        className="px-2 py-1 text-[11px] font-medium text-background/70 hover:text-background rounded transition-colors"
+      >
+        or
+      </button>
+      <button
+        onClick={(e) => { e.stopPropagation(); onSelect("exclude"); }}
+        className="px-2 py-1 text-[11px] font-medium rounded transition-colors bg-sky-500 text-background"
+      >
+        exclude
+      </button>
+    </div>
+  );
+};
+
+const FilterChipButton = ({ chip, onToggle, onSetMode }: { chip: FilterChip; onToggle: () => void; onSetMode: (mode: FilterMode) => void }) => {
+  const [showOptions, setShowOptions] = useState(false);
+  const base = "relative inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-[11px] font-medium transition-all cursor-pointer select-none";
   const styles: Record<FilterMode, string> = {
     off: "border-border bg-card text-muted-foreground hover:bg-accent",
     include: "border-emerald-300 bg-emerald-50 text-emerald-700",
     exclude: "border-red-300 bg-red-50 text-red-700",
   };
 
+  const handleClick = () => {
+    if (chip.mode === "off") {
+      onSetMode("include");
+    } else {
+      onSetMode("off");
+    }
+  };
+
   return (
-    <button onClick={onToggle} className={`${base} ${styles[chip.mode]}`}>
-      {chip.mode === "include" && <Plus className="h-3 w-3" />}
-      {chip.mode === "exclude" && <Minus className="h-3 w-3" />}
-      {chip.label}
-    </button>
+    <div
+      className="relative"
+      onMouseEnter={() => { if (chip.mode !== "off") setShowOptions(true); }}
+      onMouseLeave={() => setShowOptions(false)}
+    >
+      <button onClick={handleClick} className={`${base} ${styles[chip.mode]}`}>
+        {chip.mode === "include" && <Plus className="h-3 w-3" />}
+        {chip.mode === "exclude" && <Minus className="h-3 w-3" />}
+        {chip.label}
+      </button>
+      {showOptions && (
+        <ChipOptionsPopover
+          onSelect={(mode) => { onSetMode(mode); setShowOptions(false); }}
+          onClose={() => setShowOptions(false)}
+        />
+      )}
+    </div>
   );
 };
 
@@ -53,12 +114,14 @@ const FilterSection = ({
   title,
   chips,
   onToggle,
+  onSetMode,
   defaultOpen = true,
 }: {
   icon: React.ElementType;
   title: string;
   chips: FilterChip[];
   onToggle: (label: string) => void;
+  onSetMode: (label: string, mode: FilterMode) => void;
   defaultOpen?: boolean;
 }) => {
   const activeCount = chips.filter(c => c.mode !== "off").length;
@@ -80,7 +143,12 @@ const FilterSection = ({
       <CollapsibleContent>
         <div className="flex flex-wrap gap-1.5 pb-3">
           {chips.map((chip) => (
-            <FilterChipButton key={chip.label} chip={chip} onToggle={() => onToggle(chip.label)} />
+            <FilterChipButton
+              key={chip.label}
+              chip={chip}
+              onToggle={() => onToggle(chip.label)}
+              onSetMode={(mode) => onSetMode(chip.label, mode)}
+            />
           ))}
         </div>
       </CollapsibleContent>
@@ -177,6 +245,15 @@ const PropertyFilterSidebar = ({
     });
   };
 
+  const setChipMode = (section: keyof SidebarFilters, label: string, mode: FilterMode) => {
+    onChange({
+      ...filters,
+      [section]: filters[section].map((c) =>
+        c.label === label ? { ...c, mode } : c
+      ),
+    });
+  };
+
   const activeTotal = Object.values(filters).flat().filter(c => c.mode !== "off").length;
 
   return (
@@ -200,18 +277,10 @@ const PropertyFilterSidebar = ({
             <Settings className="h-3.5 w-3.5" />
           </button>
         </div>
-        {activeTotal > 0 && (
-          <button
-            onClick={() => onChange(defaultSidebarFilters)}
-            className="text-[11px] font-medium text-primary hover:underline"
-          >
-            Limpiar ({activeTotal})
-          </button>
-        )}
       </div>
 
       <p className="text-[10px] text-muted-foreground pb-2">
-        Clic: <span className="text-emerald-600 font-medium">incluir</span> → <span className="text-red-500 font-medium">excluir</span> → desactivar
+        Clic para seleccionar · Hover para opciones
       </p>
 
       <FilterSection
@@ -219,12 +288,14 @@ const PropertyFilterSidebar = ({
         title="Etiquetas"
         chips={filters.tags}
         onToggle={(l) => toggleChip("tags", l)}
+        onSetMode={(l, m) => setChipMode("tags", l, m)}
       />
       <FilterSection
         icon={User}
         title="Agente"
         chips={filters.users}
         onToggle={(l) => toggleChip("users", l)}
+        onSetMode={(l, m) => setChipMode("users", l, m)}
       />
 
       {/* Star ratings */}
@@ -255,11 +326,11 @@ const PropertyFilterSidebar = ({
         </CollapsibleContent>
       </Collapsible>
 
-      <FilterSection icon={Circle} title="Disponibilidad" chips={filters.availability} onToggle={(l) => toggleChip("availability", l)} />
-      <FilterSection icon={Home} title="Operación" chips={filters.operation} onToggle={(l) => toggleChip("operation", l)} />
-      <FilterSection icon={Globe} title="Portales" chips={filters.portals} onToggle={(l) => toggleChip("portals", l)} />
-      <FilterSection icon={Ban} title="Restricciones" chips={filters.restrictedPortals} onToggle={(l) => toggleChip("restrictedPortals", l)} defaultOpen={false} />
-      <FilterSection icon={EyeOff} title="Visibilidad" chips={filters.offMarket} onToggle={(l) => toggleChip("offMarket", l)} defaultOpen={false} />
+      <FilterSection icon={Circle} title="Disponibilidad" chips={filters.availability} onToggle={(l) => toggleChip("availability", l)} onSetMode={(l, m) => setChipMode("availability", l, m)} />
+      <FilterSection icon={Home} title="Operación" chips={filters.operation} onToggle={(l) => toggleChip("operation", l)} onSetMode={(l, m) => setChipMode("operation", l, m)} />
+      <FilterSection icon={Globe} title="Portales" chips={filters.portals} onToggle={(l) => toggleChip("portals", l)} onSetMode={(l, m) => setChipMode("portals", l, m)} />
+      <FilterSection icon={Ban} title="Restricciones" chips={filters.restrictedPortals} onToggle={(l) => toggleChip("restrictedPortals", l)} onSetMode={(l, m) => setChipMode("restrictedPortals", l, m)} defaultOpen={false} />
+      <FilterSection icon={EyeOff} title="Visibilidad" chips={filters.offMarket} onToggle={(l) => toggleChip("offMarket", l)} onSetMode={(l, m) => setChipMode("offMarket", l, m)} defaultOpen={false} />
     </div>
   );
 };
