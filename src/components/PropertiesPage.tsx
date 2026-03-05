@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from "react";
-import { Plus, ArrowUpDown, Download, Globe, GlobeIcon, Share2, Printer, Tag, X, ChevronDown, Check, SlidersHorizontal, Star, Circle, Home, Ban, EyeOff, User, Sparkles, Languages, Loader2, MoreHorizontal } from "lucide-react";
+import { Plus, ArrowUpDown, Download, Globe, GlobeIcon, Share2, Printer, Tag, X, ChevronDown, ChevronLeft, ChevronRight, Check, SlidersHorizontal, Star, Circle, Home, Ban, EyeOff, User, Sparkles, Languages, Loader2, MoreHorizontal, AlertTriangle } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
@@ -77,44 +77,132 @@ const sortOptions = [
   { value: "status", label: "Estado" },
 ];
 
-/* ─── Bulk Actions Bar — clean flat style ─── */
-const BulkActionsBar = ({ count, onClear, onAction }: { count: number; onClear: () => void; onAction: (action: string) => void }) => (
-  <div className="flex items-center bg-card border border-border rounded-lg shadow-sm animate-in slide-in-from-top-2 duration-200 overflow-x-auto">
-    <span className="text-[13px] font-medium text-foreground px-4 py-2.5 border-r border-border whitespace-nowrap">{count} sel.</span>
-    <button onClick={() => onAction("export-portals")} className="flex items-center gap-2 px-4 py-2.5 text-[13px] text-muted-foreground hover:text-foreground hover:bg-accent transition-colors whitespace-nowrap">
-      <Download className="h-3.5 w-3.5" /> Exportar a portales
-    </button>
-    <button onClick={() => onAction("publish-web")} className="flex items-center gap-2 px-4 py-2.5 text-[13px] text-muted-foreground hover:text-foreground hover:bg-accent transition-colors whitespace-nowrap">
-      <Globe className="h-3.5 w-3.5" /> Publicar en web
-    </button>
-    <button onClick={() => onAction("unpublish-web")} className="flex items-center gap-2 px-4 py-2.5 text-[13px] text-destructive/80 hover:text-destructive hover:bg-destructive/5 transition-colors whitespace-nowrap">
-      <GlobeIcon className="h-3.5 w-3.5" /> Despublicar
-    </button>
-    <button onClick={() => onAction("share")} className="flex items-center gap-2 px-4 py-2.5 text-[13px] text-muted-foreground hover:text-foreground hover:bg-accent transition-colors whitespace-nowrap">
-      <Share2 className="h-3.5 w-3.5" /> Compartir
-    </button>
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button className="flex items-center px-3 py-2.5 text-muted-foreground hover:text-foreground hover:bg-accent transition-colors">
-          <MoreHorizontal className="h-4 w-4" />
+/* ─── Demo tags ─── */
+const existingTags = [
+  { label: "A+", color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
+  { label: "A.A", color: "bg-blue-100 text-blue-700 border-blue-200" },
+  { label: "B.B+", color: "bg-amber-100 text-amber-700 border-amber-200" },
+  { label: "Premium", color: "bg-purple-100 text-purple-700 border-purple-200" },
+  { label: "Lujo", color: "bg-rose-100 text-rose-700 border-rose-200" },
+  { label: "Inversión", color: "bg-cyan-100 text-cyan-700 border-cyan-200" },
+  { label: "Reforma", color: "bg-orange-100 text-orange-700 border-orange-200" },
+  { label: "Destacado", color: "bg-yellow-100 text-yellow-700 border-yellow-200" },
+];
+
+/* ─── Tag Assignment Popover ─── */
+const TagAssignPopover = ({ children }: { children: React.ReactNode }) => {
+  const [search, setSearch] = useState("");
+  const filtered = existingTags.filter(t => t.label.toLowerCase().includes(search.toLowerCase()));
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>{children}</PopoverTrigger>
+      <PopoverContent className="w-56 p-0" align="start">
+        <div className="px-3 py-2 border-b border-border">
+          <input
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="Buscar etiqueta..."
+            className="w-full text-sm bg-transparent outline-none placeholder:text-muted-foreground"
+          />
+        </div>
+        <div className="max-h-48 overflow-y-auto p-1.5 space-y-0.5">
+          {filtered.map(tag => (
+            <button key={tag.label} className="flex items-center gap-2 w-full px-2.5 py-1.5 rounded-md text-sm hover:bg-accent transition-colors">
+              <span className={`inline-block w-2 h-2 rounded-full border ${tag.color}`} />
+              {tag.label}
+            </button>
+          ))}
+          {filtered.length === 0 && (
+            <p className="text-xs text-muted-foreground px-2 py-3 text-center">Sin resultados</p>
+          )}
+        </div>
+        <div className="border-t border-border px-3 py-2">
+          <button className="flex items-center gap-1.5 text-xs text-primary hover:underline">
+            <Plus className="h-3 w-3" /> Crear nueva etiqueta
+          </button>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+};
+
+/* ─── Fixed Selection Bar ─── */
+const SelectionBar = ({ count, total, onClear, onSelectAll, onAction }: {
+  count: number; total: number; onClear: () => void; onSelectAll: () => void; onAction: (action: string) => void;
+}) => (
+  <div className="sticky top-0 z-30 bg-muted/80 backdrop-blur-sm border-b border-border">
+    {/* Warning row */}
+    <div className="px-4 sm:px-8 py-1.5 flex items-center gap-3 text-[11px] border-b border-border/50">
+      <span className="flex items-center gap-1 text-amber-600">
+        <AlertTriangle className="h-3 w-3" /> 4 sin título
+      </span>
+      <span className="text-border">·</span>
+      <span className="flex items-center gap-1 text-orange-600">
+        <AlertTriangle className="h-3 w-3" /> 3 sin descripción
+      </span>
+      <span className="text-border">·</span>
+      <span className="flex items-center gap-1 text-red-500">
+        <Languages className="h-3 w-3" /> 18 sin traducir
+      </span>
+    </div>
+    {/* Actions row */}
+    <div className="px-4 sm:px-8 py-2 flex items-center gap-3">
+      <div className="flex items-center gap-2.5">
+        <Checkbox
+          checked={count === total && total > 0}
+          onCheckedChange={onSelectAll}
+        />
+        <span className="text-[12px] font-medium text-primary">{count} seleccionados</span>
+        <button onClick={onSelectAll} className="text-[12px] text-muted-foreground hover:text-foreground transition-colors">
+          Seleccionar todo
         </button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-52">
-        <DropdownMenuItem onClick={() => onAction("print-pdf")} className="gap-2 text-[13px]">
-          <Printer className="h-3.5 w-3.5" /> Imprimir PDF
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => onAction("add-tag")} className="gap-2 text-[13px]">
-          <Tag className="h-3.5 w-3.5" /> Etiqueta
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => onAction("ai-descriptions")} className="gap-2 text-[13px]">
-          <Sparkles className="h-3.5 w-3.5" /> Generar descripciones IA
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-    <div className="ml-auto border-l border-border">
-      <button onClick={onClear} className="flex items-center px-3 py-2.5 text-muted-foreground hover:text-foreground hover:bg-accent transition-colors">
-        <X className="h-4 w-4" />
-      </button>
+        <button onClick={onClear} className="text-[12px] text-muted-foreground hover:text-destructive transition-colors">
+          Limpiar
+        </button>
+      </div>
+
+      <div className="ml-auto flex items-center gap-1">
+        <span className="text-[12px] text-muted-foreground mr-2">
+          1 – {total} de {total}
+        </span>
+        <button className="p-1 rounded hover:bg-accent text-muted-foreground"><ChevronLeft className="h-4 w-4" /></button>
+        <button className="p-1 rounded hover:bg-accent text-muted-foreground"><ChevronRight className="h-4 w-4" /></button>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="p-1.5 rounded hover:bg-accent text-muted-foreground ml-1">
+              <MoreHorizontal className="h-4 w-4" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuItem onClick={() => onAction("export-portals")} className="gap-2 text-[13px]">
+              <Download className="h-3.5 w-3.5" /> Exportar a portales
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onAction("publish-web")} className="gap-2 text-[13px]">
+              <Globe className="h-3.5 w-3.5" /> Publicar en web
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onAction("unpublish-web")} className="gap-2 text-[13px] text-destructive">
+              <GlobeIcon className="h-3.5 w-3.5" /> Despublicar
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onAction("share")} className="gap-2 text-[13px]">
+              <Share2 className="h-3.5 w-3.5" /> Compartir
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onAction("print-pdf")} className="gap-2 text-[13px]">
+              <Printer className="h-3.5 w-3.5" /> Imprimir PDF
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onAction("ai-descriptions")} className="gap-2 text-[13px]">
+              <Sparkles className="h-3.5 w-3.5" /> Generar descripciones IA
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <TagAssignPopover>
+          <button className="p-1.5 rounded hover:bg-accent text-muted-foreground">
+            <Tag className="h-4 w-4" />
+          </button>
+        </TagAssignPopover>
+      </div>
     </div>
   </div>
 );
@@ -205,7 +293,20 @@ const PropertiesPage = ({ onViewProperty, onAddProperty }: { onViewProperty?: ()
   const currentSortLabel = sortOptions.find(o => o.value === sortBy)?.label ?? "Ordenar";
 
   return (
-    <div className="flex-1 overflow-auto pb-20 xl:pb-0">
+    <div className="flex-1 overflow-auto pb-20 xl:pb-0 relative">
+      {/* Fixed Selection Bar */}
+      {selectedIds.size > 0 && (
+        <SelectionBar
+          count={selectedIds.size}
+          total={demoProperties.length}
+          onClear={() => setSelectedIds(new Set())}
+          onSelectAll={selectAll}
+          onAction={(action) => {
+            if (action === "ai-descriptions") setAiDialogOpen(true);
+            console.log(action, Array.from(selectedIds));
+          }}
+        />
+      )}
       {/* Header */}
       <div className="px-4 sm:px-8 pt-6 sm:pt-8 pb-4 flex items-center justify-between gap-4">
         <div>
@@ -229,35 +330,7 @@ const PropertiesPage = ({ onViewProperty, onAddProperty }: { onViewProperty?: ()
       {/* Results bar + Sort */}
       <div className="px-4 sm:px-8 pb-3">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <Checkbox
-                checked={selectedIds.size === demoProperties.length && demoProperties.length > 0}
-                onCheckedChange={selectAll}
-              />
-              <span className="text-[12px] text-muted-foreground">Seleccionar todo</span>
-            </label>
-            <span className="text-[11px] text-muted-foreground/40">·</span>
-            <button
-              onClick={() => setSelectedIds(new Set(demoProperties.slice(0, 10).map(p => p.id)))}
-              className="text-[12px] text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Seleccionar 10
-            </button>
-            {selectedIds.size > 0 && (
-              <>
-                <span className="text-[11px] text-muted-foreground/40">·</span>
-                <button
-                  onClick={() => setSelectedIds(new Set())}
-                  className="text-[12px] text-muted-foreground hover:text-destructive transition-colors"
-                >
-                  Limpiar
-                </button>
-              </>
-            )}
-            <span className="text-[11px] text-muted-foreground/40 ml-1">·</span>
-            <p className="text-[12px] text-muted-foreground">{demoProperties.length} propiedades</p>
-          </div>
+          <p className="text-[12px] text-muted-foreground">{demoProperties.length} propiedades</p>
 
           <Popover open={sortOpen} onOpenChange={setSortOpen}>
             <PopoverTrigger asChild>
@@ -283,19 +356,6 @@ const PropertiesPage = ({ onViewProperty, onAddProperty }: { onViewProperty?: ()
         </div>
       </div>
 
-      {/* Bulk Actions */}
-      {selectedIds.size > 0 && (
-        <div className="px-4 sm:px-8 pb-3">
-          <BulkActionsBar
-            count={selectedIds.size}
-            onClear={() => setSelectedIds(new Set())}
-            onAction={(action) => {
-              if (action === "ai-descriptions") setAiDialogOpen(true);
-              console.log(action, Array.from(selectedIds));
-            }}
-          />
-        </div>
-      )}
 
       {/* Main content: cards + sidebar */}
       <div className="px-4 sm:px-8 pb-10 flex justify-center gap-6">

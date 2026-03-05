@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Tag, User, Circle, Home, Globe, Ban, EyeOff, ChevronDown, Plus, Minus, Star, Settings } from "lucide-react";
+import { Tag, User, Circle, Home, Globe, Ban, EyeOff, ChevronDown, Plus, Minus, X, Star, Settings } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 /* ─── Filter chip with include / exclude toggle ─── */
@@ -11,46 +11,34 @@ interface FilterChip {
 }
 
 /* ─── Hover popover for chip options ─── */
-const ChipOptionsPopover = ({ onSelect, onClose }: { onSelect: (mode: FilterMode) => void; onClose: () => void }) => {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) onClose();
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [onClose]);
+const ChipOptionsPopover = ({ currentMode, onSelect }: { currentMode: FilterMode; onSelect: (mode: FilterMode) => void }) => {
+  const options: { mode: FilterMode; label: string; icon: React.ReactNode; activeClass: string }[] = [
+    { mode: "include", label: "Incluir", icon: <Plus className="h-3 w-3" />, activeClass: "bg-emerald-500 text-white" },
+    { mode: "exclude", label: "Excluir", icon: <Minus className="h-3 w-3" />, activeClass: "bg-red-500 text-white" },
+    { mode: "off", label: "Quitar", icon: <X className="h-3 w-3" />, activeClass: "" },
+  ];
 
   return (
-    <div
-      ref={ref}
-      className="absolute -top-1 left-1/2 -translate-x-1/2 -translate-y-full z-50 flex items-center gap-0.5 rounded-md bg-foreground px-1 py-0.5 shadow-lg animate-in fade-in-0 zoom-in-95 duration-100"
-    >
-      <button
-        onClick={(e) => { e.stopPropagation(); onSelect("include"); }}
-        className="px-2 py-1 text-[11px] font-medium text-background/70 hover:text-background rounded transition-colors"
-      >
-        and
-      </button>
-      <button
-        onClick={(e) => { e.stopPropagation(); onSelect("include"); }}
-        className="px-2 py-1 text-[11px] font-medium text-background/70 hover:text-background rounded transition-colors"
-      >
-        or
-      </button>
-      <button
-        onClick={(e) => { e.stopPropagation(); onSelect("exclude"); }}
-        className="px-2 py-1 text-[11px] font-medium rounded transition-colors bg-sky-500 text-background"
-      >
-        exclude
-      </button>
+    <div className="absolute top-full left-0 mt-1 z-50 flex items-center gap-0.5 rounded-lg bg-popover border border-border px-1 py-1 shadow-lg animate-in fade-in-0 zoom-in-95 duration-100">
+      {options.map(opt => (
+        <button
+          key={opt.mode}
+          onClick={(e) => { e.stopPropagation(); onSelect(opt.mode); }}
+          className={`flex items-center gap-1 px-2 py-1 text-[11px] font-medium rounded-md transition-colors ${
+            currentMode === opt.mode ? opt.activeClass : "text-muted-foreground hover:bg-accent hover:text-foreground"
+          }`}
+        >
+          {opt.icon}
+          {opt.label}
+        </button>
+      ))}
     </div>
   );
 };
 
 const FilterChipButton = ({ chip, onToggle, onSetMode }: { chip: FilterChip; onToggle: () => void; onSetMode: (mode: FilterMode) => void }) => {
   const [showOptions, setShowOptions] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const base = "relative inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-[11px] font-medium transition-all cursor-pointer select-none";
   const styles: Record<FilterMode, string> = {
     off: "border-border bg-card text-muted-foreground hover:bg-accent",
@@ -62,16 +50,22 @@ const FilterChipButton = ({ chip, onToggle, onSetMode }: { chip: FilterChip; onT
     if (chip.mode === "off") {
       onSetMode("include");
     } else {
-      onSetMode("off");
+      setShowOptions(prev => !prev);
     }
   };
 
+  // Close on outside click
+  useEffect(() => {
+    if (!showOptions) return;
+    const handler = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) setShowOptions(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [showOptions]);
+
   return (
-    <div
-      className="relative"
-      onMouseEnter={() => { if (chip.mode !== "off") setShowOptions(true); }}
-      onMouseLeave={() => setShowOptions(false)}
-    >
+    <div ref={containerRef} className="relative">
       <button onClick={handleClick} className={`${base} ${styles[chip.mode]}`}>
         {chip.mode === "include" && <Plus className="h-3 w-3" />}
         {chip.mode === "exclude" && <Minus className="h-3 w-3" />}
@@ -79,8 +73,8 @@ const FilterChipButton = ({ chip, onToggle, onSetMode }: { chip: FilterChip; onT
       </button>
       {showOptions && (
         <ChipOptionsPopover
+          currentMode={chip.mode}
           onSelect={(mode) => { onSetMode(mode); setShowOptions(false); }}
-          onClose={() => setShowOptions(false)}
         />
       )}
     </div>
