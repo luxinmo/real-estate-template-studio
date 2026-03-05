@@ -1,11 +1,12 @@
 import { useState, useMemo, useEffect, useRef } from "react";
-import { Plus, ArrowUpDown, Download, Globe, GlobeIcon, Share2, Printer, Tag, X, ChevronDown, Check, SlidersHorizontal, Star, Circle, Home, Ban, EyeOff, User, Sparkles, Languages, Loader2 } from "lucide-react";
+import { Plus, ArrowUpDown, Download, Globe, GlobeIcon, Share2, Printer, Tag, X, ChevronDown, Check, SlidersHorizontal, Star, Circle, Home, Ban, EyeOff, User, Sparkles, Languages, Loader2, MoreHorizontal } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import PropertyCard, { PropertyData } from "@/components/properties/PropertyCard";
 import PropertySearchFilters, { FilterState, defaultFilters } from "@/components/properties/PropertySearchFilters";
 import PropertyFilterSidebar, { SidebarFilters, defaultSidebarFilters } from "@/components/properties/PropertyFilterSidebar";
@@ -76,43 +77,44 @@ const sortOptions = [
   { value: "status", label: "Estado" },
 ];
 
-/* ─── Bulk Actions Bar ─── */
+/* ─── Bulk Actions Bar — clean flat style ─── */
 const BulkActionsBar = ({ count, onClear, onAction }: { count: number; onClear: () => void; onAction: (action: string) => void }) => (
-  <div className="flex items-center gap-3 bg-primary/5 border border-primary/20 rounded-lg px-3 sm:px-4 py-2.5 animate-in slide-in-from-top-2 duration-200 overflow-x-auto">
-    <span className="text-sm font-medium text-foreground whitespace-nowrap">{count} sel.</span>
-    <div className="h-4 w-px bg-border shrink-0" />
-    <div className="flex items-center gap-1 shrink-0">
-      <Button variant="ghost" size="sm" className="h-8 text-xs gap-1.5 whitespace-nowrap" onClick={() => onAction("export-portals")}>
-        <Download className="h-3.5 w-3.5" />
-        <span className="hidden sm:inline">Exportar a portales</span>
-        <span className="sm:hidden">Exportar</span>
-      </Button>
-      <Button variant="ghost" size="sm" className="h-8 text-xs gap-1.5 whitespace-nowrap" onClick={() => onAction("publish-web")}>
-        <Globe className="h-3.5 w-3.5" />
-        <span className="hidden sm:inline">Publicar en web</span>
-        <span className="sm:hidden">Publicar</span>
-      </Button>
-      <Button variant="ghost" size="sm" className="h-8 text-xs gap-1.5 whitespace-nowrap hidden sm:inline-flex" onClick={() => onAction("unpublish-web")}>
-        <GlobeIcon className="h-3.5 w-3.5 text-destructive" />
-        Despublicar
-      </Button>
-      <Button variant="ghost" size="sm" className="h-8 text-xs gap-1.5 whitespace-nowrap" onClick={() => onAction("share")}>
-        <Share2 className="h-3.5 w-3.5" />
-        <span className="hidden sm:inline">Compartir</span>
-      </Button>
-      <Button variant="ghost" size="sm" className="h-8 text-xs gap-1.5 whitespace-nowrap hidden sm:inline-flex" onClick={() => onAction("print-pdf")}>
-        <Printer className="h-3.5 w-3.5" />
-        Imprimir PDF
-      </Button>
-      <Button variant="ghost" size="sm" className="h-8 text-xs gap-1.5 whitespace-nowrap" onClick={() => onAction("add-tag")}>
-        <Tag className="h-3.5 w-3.5" />
-        <span className="hidden sm:inline">Etiqueta</span>
-      </Button>
-    </div>
-    <div className="ml-auto shrink-0">
-      <Button variant="ghost" size="sm" className="h-8 text-xs gap-1" onClick={onClear}>
-        <X className="h-3.5 w-3.5" />
-      </Button>
+  <div className="flex items-center bg-card border border-border rounded-lg shadow-sm animate-in slide-in-from-top-2 duration-200 overflow-x-auto">
+    <span className="text-[13px] font-medium text-foreground px-4 py-2.5 border-r border-border whitespace-nowrap">{count} sel.</span>
+    <button onClick={() => onAction("export-portals")} className="flex items-center gap-2 px-4 py-2.5 text-[13px] text-muted-foreground hover:text-foreground hover:bg-accent transition-colors whitespace-nowrap">
+      <Download className="h-3.5 w-3.5" /> Exportar a portales
+    </button>
+    <button onClick={() => onAction("publish-web")} className="flex items-center gap-2 px-4 py-2.5 text-[13px] text-muted-foreground hover:text-foreground hover:bg-accent transition-colors whitespace-nowrap">
+      <Globe className="h-3.5 w-3.5" /> Publicar en web
+    </button>
+    <button onClick={() => onAction("unpublish-web")} className="flex items-center gap-2 px-4 py-2.5 text-[13px] text-destructive/80 hover:text-destructive hover:bg-destructive/5 transition-colors whitespace-nowrap">
+      <GlobeIcon className="h-3.5 w-3.5" /> Despublicar
+    </button>
+    <button onClick={() => onAction("share")} className="flex items-center gap-2 px-4 py-2.5 text-[13px] text-muted-foreground hover:text-foreground hover:bg-accent transition-colors whitespace-nowrap">
+      <Share2 className="h-3.5 w-3.5" /> Compartir
+    </button>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="flex items-center px-3 py-2.5 text-muted-foreground hover:text-foreground hover:bg-accent transition-colors">
+          <MoreHorizontal className="h-4 w-4" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-52">
+        <DropdownMenuItem onClick={() => onAction("print-pdf")} className="gap-2 text-[13px]">
+          <Printer className="h-3.5 w-3.5" /> Imprimir PDF
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => onAction("add-tag")} className="gap-2 text-[13px]">
+          <Tag className="h-3.5 w-3.5" /> Etiqueta
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => onAction("ai-descriptions")} className="gap-2 text-[13px]">
+          <Sparkles className="h-3.5 w-3.5" /> Generar descripciones IA
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+    <div className="ml-auto border-l border-border">
+      <button onClick={onClear} className="flex items-center px-3 py-2.5 text-muted-foreground hover:text-foreground hover:bg-accent transition-colors">
+        <X className="h-4 w-4" />
+      </button>
     </div>
   </div>
 );
@@ -211,11 +213,6 @@ const PropertiesPage = ({ onViewProperty, onAddProperty }: { onViewProperty?: ()
           <p className="text-xs text-muted-foreground mt-0.5">{demoProperties.length} propiedades en cartera</p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => setAiDialogOpen(true)}>
-            <Sparkles className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Generar descripciones IA</span>
-            <span className="sm:hidden">IA</span>
-          </Button>
           <Button className="gap-2 shrink-0" onClick={onAddProperty}>
             <Plus className="h-4 w-4" />
             <span className="hidden sm:inline">Nueva propiedad</span>
@@ -232,7 +229,7 @@ const PropertiesPage = ({ onViewProperty, onAddProperty }: { onViewProperty?: ()
       {/* Results bar + Sort */}
       <div className="px-4 sm:px-8 pb-3">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <label className="flex items-center gap-2 cursor-pointer">
               <Checkbox
                 checked={selectedIds.size === demoProperties.length && demoProperties.length > 0}
@@ -240,6 +237,25 @@ const PropertiesPage = ({ onViewProperty, onAddProperty }: { onViewProperty?: ()
               />
               <span className="text-[12px] text-muted-foreground">Seleccionar todo</span>
             </label>
+            <span className="text-[11px] text-muted-foreground/40">·</span>
+            <button
+              onClick={() => setSelectedIds(new Set(demoProperties.slice(0, 10).map(p => p.id)))}
+              className="text-[12px] text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Seleccionar 10
+            </button>
+            {selectedIds.size > 0 && (
+              <>
+                <span className="text-[11px] text-muted-foreground/40">·</span>
+                <button
+                  onClick={() => setSelectedIds(new Set())}
+                  className="text-[12px] text-muted-foreground hover:text-destructive transition-colors"
+                >
+                  Limpiar
+                </button>
+              </>
+            )}
+            <span className="text-[11px] text-muted-foreground/40 ml-1">·</span>
             <p className="text-[12px] text-muted-foreground">{demoProperties.length} propiedades</p>
           </div>
 
@@ -273,7 +289,10 @@ const PropertiesPage = ({ onViewProperty, onAddProperty }: { onViewProperty?: ()
           <BulkActionsBar
             count={selectedIds.size}
             onClear={() => setSelectedIds(new Set())}
-            onAction={(action) => console.log(action, Array.from(selectedIds))}
+            onAction={(action) => {
+              if (action === "ai-descriptions") setAiDialogOpen(true);
+              console.log(action, Array.from(selectedIds));
+            }}
           />
         </div>
       )}
